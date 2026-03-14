@@ -1,0 +1,1 @@
+../../../forge/lib/agents/security-agent.md

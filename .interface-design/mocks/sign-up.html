@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up — Therapist Referral Network</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* ============================================================
+       THERAPIST REFERRAL NETWORK — DESIGN SYSTEM TOKENS
+       Source of truth: .interface-design/system.md
+       All mocks reference this same CSS block.
+       ============================================================ */
+
+    /* --- Tokens: Light --- */
+    :root {
+      --fg: #3D3836; --fg-2: #6B5E57; --fg-3: #8F8279; --fg-4: #B5A99E;
+      --bg: #F7F4EF; --s1: #FDFBF8; --s2: #FFFFFF; --inset: #EFE9E0;
+      --brand: #2A7C7C; --brand-h: #1F6363; --brand-on: #fff; --brand-l: rgba(42,124,124,0.08);
+      --ok: #5A8A5A; --ok-l: rgba(90,138,90,0.1);
+      --warn: #B8704F; --warn-l: rgba(184,112,79,0.06);
+      --err: #B85454; --err-l: rgba(184,84,84,0.08);
+      --b: rgba(61,56,54,0.12); --b-s: rgba(61,56,54,0.06); --b-e: rgba(61,56,54,0.22); --b-f: #2A7C7C;
+      --sh1: 0 1px 3px rgba(61,56,54,0.06), 0 1px 2px rgba(61,56,54,0.04);
+      --sh2: 0 4px 12px rgba(61,56,54,0.08), 0 2px 4px rgba(61,56,54,0.04);
+      --sh3: 0 8px 24px rgba(61,56,54,0.12), 0 4px 8px rgba(61,56,54,0.06);
+    }
+    /* --- Tokens: Dark --- */
+    [data-theme="dark"] {
+      --fg: #EDEBE8; --fg-2: #B5AFA8; --fg-3: #857D76; --fg-4: #5C5650;
+      --bg: #1A1816; --s1: #242120; --s2: #2E2A28; --inset: #141210;
+      --brand: #3A9C9C; --brand-h: #2A8585; --brand-l: rgba(58,156,156,0.12);
+      --ok: #6BA06B; --ok-l: rgba(107,160,107,0.15);
+      --warn: #D4886B; --warn-l: rgba(212,136,107,0.1);
+      --err: #D46B6B; --err-l: rgba(212,107,107,0.12);
+      --b: rgba(237,235,232,0.10); --b-s: rgba(237,235,232,0.05); --b-e: rgba(237,235,232,0.18); --b-f: #3A9C9C;
+      --sh1: 0 1px 2px rgba(0,0,0,0.3); --sh2: 0 4px 12px rgba(0,0,0,0.4); --sh3: 0 8px 24px rgba(0,0,0,0.5);
+    }
+
+    /* --- Base --- */
+    *, *::before, *::after { box-sizing: border-box; }
+    body { background: var(--bg); color: var(--fg); font-family: 'Plus Jakarta Sans', system-ui, sans-serif; margin: 0; -webkit-font-smoothing: antialiased; }
+
+    /* --- Typography --- */
+    .t-display { font-size: 1.875rem; font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; color: var(--fg); }
+    .t-h1 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.015em; line-height: 1.3; color: var(--fg); }
+    .t-h2 { font-size: 1.25rem; font-weight: 600; letter-spacing: -0.01em; line-height: 1.35; color: var(--fg); }
+    .t-h3 { font-size: 1rem; font-weight: 600; letter-spacing: -0.005em; line-height: 1.4; color: var(--fg); }
+    .t-body { font-size: 0.9375rem; line-height: 1.5; }
+    .t-sm { font-size: 0.875rem; line-height: 1.5; color: var(--fg-2); }
+    .t-label { font-size: 0.8125rem; font-weight: 500; letter-spacing: 0.01em; line-height: 1.4; }
+    .t-caption { font-size: 0.75rem; letter-spacing: 0.015em; line-height: 1.4; color: var(--fg-3); }
+    .t-section { font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--fg-3); }
+
+    /* --- Buttons --- */
+    .btn-primary {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      height: 44px; padding: 0 24px; background: var(--brand); color: var(--brand-on); border: none;
+      border-radius: var(--r-sm, 6px); font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.01em;
+      cursor: pointer; transition: background 150ms ease-out; font-family: inherit; text-decoration: none;
+    }
+    .btn-primary:hover { background: var(--brand-h); }
+    .btn-primary:focus-visible { outline: 2px solid var(--b-f); outline-offset: 2px; }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-primary.btn-sm { height: 36px; padding: 0 16px; }
+    .btn-secondary {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      height: 44px; padding: 0 24px; background: transparent; color: var(--fg-2); font-family: inherit;
+      border: 1px solid var(--b); border-radius: 6px; font-size: 0.8125rem; font-weight: 500;
+      letter-spacing: 0.01em; cursor: pointer; transition: all 150ms ease-out;
+    }
+    .btn-secondary:hover { border-color: var(--b-e); color: var(--fg); }
+    .btn-secondary:focus-visible { outline: 2px solid var(--b-f); outline-offset: 2px; }
+    .btn-secondary.btn-sm { height: 36px; padding: 0 16px; }
+    .btn-google {
+      display: flex; align-items: center; justify-content: center; gap: 12px;
+      width: 100%; height: 48px; background: var(--s2); color: var(--fg); font-family: inherit;
+      border: 1px solid var(--b); border-radius: 6px; font-size: 0.9375rem; font-weight: 500;
+      cursor: pointer; transition: border-color 150ms ease-out, box-shadow 150ms ease-out;
+    }
+    .btn-google:hover { border-color: var(--b-e); box-shadow: var(--sh1); }
+    .btn-google:focus-visible { outline: 2px solid var(--b-f); outline-offset: 2px; }
+    .btn-text { background: none; border: none; color: var(--fg-2); font-size: 0.8125rem; font-weight: 500; cursor: pointer; font-family: inherit; padding: 0; transition: color 150ms; }
+    .btn-text:hover { color: var(--fg); }
+
+    /* --- Inputs --- */
+    .input {
+      width: 100%; height: 44px; padding: 0 12px; background: var(--inset); color: var(--fg);
+      border: 1px solid var(--b); border-radius: 6px; font-size: 0.9375rem; font-family: inherit;
+      transition: border-color 150ms ease-out, background 150ms ease-out, box-shadow 150ms ease-out;
+    }
+    .input:focus { border-color: var(--b-f); background: var(--bg); outline: 2px solid var(--b-f); outline-offset: 2px; }
+    .input::placeholder { color: var(--fg-4); }
+    .input.input-error { border-color: var(--err); }
+    .input:disabled { opacity: 0.5; cursor: not-allowed; }
+    .textarea {
+      width: 100%; min-height: 100px; padding: 12px; background: var(--inset); color: var(--fg);
+      border: 1px solid var(--b); border-radius: 6px; font-size: 0.9375rem; font-family: inherit;
+      resize: vertical; transition: border-color 150ms ease-out;
+    }
+    .textarea:focus { border-color: var(--b-f); background: var(--bg); outline: 2px solid var(--b-f); outline-offset: 2px; }
+    .textarea::placeholder { color: var(--fg-4); }
+    select.input { appearance: none; cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%238F8279' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 36px; }
+
+    /* --- Chips --- */
+    .chip { display: inline-flex; align-items: center; gap: 4px; height: 28px; padding: 0 10px; background: var(--brand-l); color: var(--brand); border-radius: 9999px; font-size: 0.8125rem; font-weight: 500; white-space: nowrap; }
+    .chip-neutral { background: var(--inset); color: var(--fg-2); }
+    .chip .x { background: none; border: none; color: inherit; cursor: pointer; padding: 0; margin-left: 2px; opacity: 0.6; width: 14px; height: 14px; display: inline-flex; align-items: center; justify-content: center; }
+    .chip .x:hover { opacity: 1; }
+
+    /* --- Badges --- */
+    .badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 9999px; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+    .badge-sent { background: var(--inset); color: var(--fg-3); }
+    .badge-responded { background: var(--brand-l); color: var(--brand); }
+    .badge-connected { background: var(--ok-l); color: var(--ok); }
+    .badge-closed { background: var(--inset); color: var(--fg-4); }
+
+    /* --- Match Ring (Signature Element) --- */
+    .match-ring { display: inline-block; }
+    .match-ring circle.filled { stroke: var(--brand); }
+    .match-ring circle.empty { stroke: var(--b); }
+    .match-ring-label { font-size: 0.6875rem; font-weight: 500; color: var(--fg-3); letter-spacing: 0.01em; }
+
+    /* --- Cards --- */
+    .card { background: var(--s1); border: 1px solid var(--b); border-radius: 10px; box-shadow: var(--sh1); }
+    .card-match { border-left-width: 3px; }
+    .card-match.accepted { border-left-color: var(--ok); }
+    .card-match.declined { border-left-color: var(--err); opacity: 0.65; }
+    .card-match.pending { border-left-color: var(--b); }
+
+    /* --- Toggle --- */
+    .toggle { position: relative; width: 44px; height: 24px; border-radius: 12px; cursor: pointer; border: none; padding: 0; transition: background 150ms ease-out; }
+    .toggle::after { content: ''; position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; border-radius: 50%; background: #fff; transition: transform 150ms ease-out; box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
+    .toggle.on { background: var(--ok); }
+    .toggle.on::after { transform: translateX(20px); }
+    .toggle.off { background: var(--fg-4); }
+    .toggle:focus-visible { outline: 2px solid var(--b-f); outline-offset: 2px; }
+
+    /* --- Progress Bar --- */
+    .progress-track { height: 6px; border-radius: 9999px; background: var(--inset); overflow: hidden; }
+    .progress-fill { height: 100%; border-radius: 9999px; background: var(--brand); transition: width 300ms ease-out; }
+
+    /* --- PHI Reminder --- */
+    .phi-notice { padding: 12px; border-radius: 6px; border-left: 3px solid var(--warn); background: var(--warn-l); }
+    .phi-notice p { font-size: 0.875rem; color: var(--fg-2); margin: 0; }
+
+    /* --- Row (clickable list item) --- */
+    .row { display: flex; align-items: center; padding: 16px; border-bottom: 1px solid var(--b-s); cursor: pointer; transition: background 150ms ease-out; border-radius: 6px; text-decoration: none; color: inherit; margin: 0 -16px; }
+    .row:hover { background: var(--s1); }
+    .row:focus-visible { outline: 2px solid var(--b-f); outline-offset: -2px; }
+
+    /* --- Navigation --- */
+    .nav { width: 100%; position: sticky; top: 0; z-index: 50; border-bottom: 1px solid var(--b); background: color-mix(in srgb, var(--s1) 90%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+    .nav-inner { max-width: 1120px; margin: 0 auto; height: 56px; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; }
+    .nav-link { color: var(--fg-2); text-decoration: none; font-size: 0.8125rem; font-weight: 500; letter-spacing: 0.01em; transition: color 150ms; padding: 4px 0; }
+    .nav-link:hover { color: var(--fg); }
+    .nav-link.active { color: var(--fg); }
+    .nav-link.active::after { content: ''; display: block; height: 2px; background: var(--brand); border-radius: 1px; margin-top: 2px; }
+    .nav a:focus-visible { outline: 2px solid var(--b-f); outline-offset: 2px; border-radius: 4px; }
+
+    /* --- Empty State --- */
+    .empty-state { text-align: center; padding: 64px 16px; max-width: 400px; margin: 0 auto; }
+    .empty-icon { display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; border-radius: 9999px; background: var(--brand-l); margin-bottom: 20px; }
+
+    /* --- Error Banner --- */
+    .error-banner { padding: 16px; border-radius: 10px; border: 1px solid color-mix(in srgb, var(--err) 20%, transparent); background: var(--err-l); display: flex; gap: 12px; align-items: flex-start; }
+
+    /* --- Skeleton --- */
+    @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+    .skeleton { background: linear-gradient(90deg, var(--inset) 25%, var(--bg) 50%, var(--inset) 75%); background-size: 200% 100%; animation: shimmer 1.5s ease-in-out infinite; border-radius: 6px; }
+
+    /* --- Spinner --- */
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner { width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.6s linear infinite; }
+    .spinner-brand { border-color: var(--brand-l); border-top-color: var(--brand); }
+
+    /* --- Radio --- */
+    .radio-group { display: flex; gap: 16px; flex-wrap: wrap; }
+    .radio-item { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+    .radio-item input[type="radio"] { width: 18px; height: 18px; accent-color: var(--brand); cursor: pointer; }
+
+    /* --- Controls (state switcher + theme toggle) --- */
+    #controls { position: fixed; bottom: 16px; right: 16px; z-index: 1000; background: var(--s2); border: 1px solid var(--b); border-radius: 10px; padding: 10px 14px; box-shadow: var(--sh2); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; max-width: 360px; }
+    #controls .ctrl-label { font-size: 0.6875rem; font-weight: 600; color: var(--fg-3); letter-spacing: 0.06em; text-transform: uppercase; margin-right: 4px; }
+    .ctrl-btn { font-size: 0.6875rem; font-weight: 500; padding: 3px 8px; border-radius: 4px; border: 1px solid var(--b); background: transparent; color: var(--fg-2); cursor: pointer; transition: all 150ms ease-out; font-family: inherit; }
+    .ctrl-btn:hover { border-color: var(--b-e); color: var(--fg); }
+    .ctrl-btn.active { background: var(--brand); color: var(--brand-on); border-color: var(--brand); }
+    .ctrl-sep { width: 1px; height: 16px; background: var(--b); margin: 0 4px; }
+
+    /* --- Google Icon --- */
+    .google-icon { width: 20px; height: 20px; }
+
+    /* --- Link styles --- */
+    a.link { color: var(--brand); text-decoration: none; font-weight: 500; }
+    a.link:hover { text-decoration: underline; }
+    a.link:focus-visible { outline: 2px solid var(--b-f); outline-offset: 2px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px;">
+    <div style="text-align: center; max-width: 360px; width: 100%;">
+
+      <!-- Logo Icon -->
+      <div>
+        <svg width="48" height="48" viewBox="0 0 48 48" style="color: var(--brand); display: block; margin: 0 auto;"><circle cx="24" cy="24" r="21" fill="none" stroke="currentColor" stroke-width="2.5"/><circle cx="24" cy="24" r="16" fill="none" stroke="currentColor" stroke-width="2.5"/><circle cx="24" cy="24" r="11" fill="none" stroke="currentColor" stroke-width="2.5"/><circle cx="24" cy="24" r="6" fill="none" stroke="currentColor" stroke-width="2.5"/></svg>
+      </div>
+
+      <!-- Title -->
+      <h1 class="t-h1" style="margin: 0 0 8px 0;">Therapist Referral Network</h1>
+
+      <!-- Tagline -->
+      <p class="t-sm" style="margin: 0 0 32px 0;">Join the network. Create better referral matches for your clients.</p>
+
+      <!-- Google Sign-Up Button -->
+      <button class="btn-google" style="margin-bottom: 24px;">
+        <svg class="google-icon" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+        Continue with Google
+      </button>
+
+      <!-- Link to Sign In -->
+      <p class="t-sm">Already have an account? <a href="sign-in.html" class="link">Sign in</a></p>
+
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <div id="controls">
+    <span class="ctrl-label">Theme</span>
+    <button class="ctrl-btn active" onclick="setTheme('light')">Light</button>
+    <button class="ctrl-btn" onclick="setTheme('dark')">Dark</button>
+  </div>
+
+  <script>
+    function setTheme(theme) {
+      document.documentElement.dataset.theme = theme;
+      document.querySelectorAll('#controls .ctrl-btn').forEach(btn =>
+        btn.classList.toggle('active', btn.textContent.toLowerCase() === theme)
+      );
+    }
+  </script>
+</body>
+</html>

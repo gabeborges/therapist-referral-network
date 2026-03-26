@@ -1,0 +1,15 @@
+name: therapist-referral-network-v0
+description: Build the v0 therapist referral network — profiles, referral posting, matching, email drip, fulfillment tracking, and shareable links
+status: ready
+prd: openspec/prd-referral-network.md
+artifacts:
+  proposal:
+    status: done
+  design:
+    status: done
+    dependencies: [proposal]
+  tasks:
+    status: done
+    dependencies: [design]
+apply:
+  requires: [tasks]

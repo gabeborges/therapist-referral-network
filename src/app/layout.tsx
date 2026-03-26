@@ -1,21 +1,19 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import { TRPCReactProvider } from "@/lib/trpc/provider";
+import { SessionProvider } from "@/app/providers/session-provider";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const plusJakartaSans = Plus_Jakarta_Sans({
+  variable: "--font-plus-jakarta-sans",
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
   title: "Therapist Referral Network",
-  description: "Structured referral matching for Canadian therapists",
+  description:
+    "Structured referral matching for Canadian therapists — find the right fit for every client.",
 };
 
 export default function RootLayout({
@@ -25,8 +23,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <TRPCReactProvider>{children}</TRPCReactProvider>
+      <body
+        className={`${plusJakartaSans.variable} antialiased bg-[var(--bg)] text-[var(--fg)]`}
+      >
+        <SessionProvider>
+          <TRPCReactProvider>{children}</TRPCReactProvider>
+        </SessionProvider>
       </body>
     </html>
   );

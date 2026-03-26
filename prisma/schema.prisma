@@ -104,6 +104,88 @@ model TherapistProfile {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  // Relations
+  postedReferrals       ReferralPost[]          @relation("PostedReferrals")
+  receivedNotifications ReferralNotification[]   @relation("ReceivedNotifications")
+
   @@index([country, province, city])
   @@index([acceptingClients, lastActiveAt])
+}
+
+// === Referral models ===
+
+enum ReferralStatus {
+  OPEN
+  FULFILLED
+  EXPIRED
+}
+
+model ReferralPost {
+  id       String           @id @default(cuid())
+  authorId String
+  author   TherapistProfile @relation("PostedReferrals", fields: [authorId], references: [id], onDelete: Cascade)
+
+  // Referral criteria
+  presentingIssue  String
+  ageGroup         String
+  locationCity     String?
+  locationProvince String
+  modality         String   // "in-person" | "virtual" | "both"
+  additionalNotes  String?
+
+  // Status
+  status ReferralStatus @default(OPEN)
+
+  // Drip tracking
+  currentBatch  Int       @default(0)
+  lastDrippedAt DateTime?
+
+  // Shareable link
+  slug String @unique @default(cuid())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  notifications     ReferralNotification[]
+  fulfillmentChecks FulfillmentCheck[]
+
+  @@index([status, createdAt])
+  @@index([slug])
+}
+
+model ReferralNotification {
+  id             String           @id @default(cuid())
+  referralPostId String
+  referralPost   ReferralPost     @relation(fields: [referralPostId], references: [id], onDelete: Cascade)
+  recipientId    String
+  recipient      TherapistProfile @relation("ReceivedNotifications", fields: [recipientId], references: [id])
+
+  batch   Int          // Which drip batch this was sent in
+  sentAt  DateTime     @default(now())
+  emailId String?      // Resend email ID for tracking
+
+  @@unique([referralPostId, recipientId])
+  @@index([referralPostId, batch])
+}
+
+model FulfillmentCheck {
+  id             String       @id @default(cuid())
+  referralPostId String
+  referralPost   ReferralPost @relation(fields: [referralPostId], references: [id], onDelete: Cascade)
+
+  sentAt      DateTime  @default(now())
+  respondedAt DateTime?
+  fulfilled   Boolean?  // null = pending, true = yes, false = no
+
+  token String @unique @default(cuid()) // Secure token for email link
+
+  @@index([referralPostId])
+  @@index([token])
+}
+
+model Waitlist {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  country   String   // "US" or other non-CA countries
+  createdAt DateTime @default(now())
 }

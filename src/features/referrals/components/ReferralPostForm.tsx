@@ -1,0 +1,299 @@
+"use client";
+
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useTRPC } from "@/lib/trpc/client";
+import { useMutation } from "@tanstack/react-query";
+import {
+  referralPostSchema,
+  type ReferralPostFormData,
+} from "@/lib/validations/referral-post";
+
+const AGE_GROUPS = [
+  "Children (6-12)",
+  "Adolescents (13-17)",
+  "Young Adults (18-25)",
+  "Adults (26-64)",
+  "Seniors (65+)",
+];
+
+const PROVINCES = [
+  { value: "AB", label: "Alberta" },
+  { value: "BC", label: "British Columbia" },
+  { value: "MB", label: "Manitoba" },
+  { value: "NB", label: "New Brunswick" },
+  { value: "NL", label: "Newfoundland and Labrador" },
+  { value: "NS", label: "Nova Scotia" },
+  { value: "NT", label: "Northwest Territories" },
+  { value: "NU", label: "Nunavut" },
+  { value: "ON", label: "Ontario" },
+  { value: "PE", label: "Prince Edward Island" },
+  { value: "QC", label: "Quebec" },
+  { value: "SK", label: "Saskatchewan" },
+  { value: "YT", label: "Yukon" },
+];
+
+const MODALITIES = [
+  { value: "in-person", label: "In-Person" },
+  { value: "virtual", label: "Virtual" },
+  { value: "both", label: "Both" },
+] as const;
+
+const inputBaseClass =
+  "w-full h-11 px-3 bg-inset text-fg border rounded-sm text-[0.9375rem] font-sans transition-[border-color,background,box-shadow] duration-150 ease-out focus:border-border-f focus:bg-bg focus:outline-2 focus:outline-border-f focus:outline-offset-2 placeholder:text-fg-4";
+
+const labelClass =
+  "block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2";
+
+export function ReferralPostForm(): React.ReactElement {
+  const router = useRouter();
+  const trpc = useTRPC();
+  const [serverError, setServerError] = useState<string | null>(null);
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<ReferralPostFormData>({
+    resolver: zodResolver(referralPostSchema),
+    defaultValues: {
+      presentingIssue: "",
+      ageGroup: "",
+      locationCity: "",
+      locationProvince: "",
+      modality: undefined,
+      additionalNotes: "",
+    },
+  });
+
+  const additionalNotes = watch("additionalNotes") ?? "";
+
+  const createReferral = useMutation(
+    trpc.referral.create.mutationOptions({
+      onSuccess() {
+        router.push("/referrals");
+      },
+      onError(error) {
+        setServerError(error.message);
+      },
+    }),
+  );
+
+  function onSubmit(data: ReferralPostFormData): void {
+    setServerError(null);
+    createReferral.mutate(data);
+  }
+
+  return (
+    <div className="bg-s1 border border-border rounded-md p-6 shadow-1">
+      <h2 className="text-[1.25rem] font-semibold tracking-[-0.01em] leading-[1.35] text-fg mb-1">
+        Post a Referral
+      </h2>
+      <p className="text-[0.875rem] text-fg-2 mb-6">
+        Describe the client need and we will match them with the right
+        therapist.
+      </p>
+
+      {serverError && (
+        <div className="p-4 rounded-md border border-err/20 bg-err-l flex gap-3 items-start mb-6">
+          <svg
+            className="w-5 h-5 shrink-0 mt-0.5 text-err"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"
+            />
+          </svg>
+          <p className="text-[0.9375rem] font-medium text-err">{serverError}</p>
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        {/* Presenting Issue */}
+        <div>
+          <label className={labelClass}>Presenting Issue</label>
+          <input
+            {...register("presentingIssue")}
+            className={`${inputBaseClass} ${
+              errors.presentingIssue ? "border-err" : "border-border"
+            }`}
+            placeholder="e.g., Anxiety, Depression, Trauma"
+          />
+          {errors.presentingIssue && (
+            <p className="mt-1 text-[0.75rem] text-err">
+              {errors.presentingIssue.message}
+            </p>
+          )}
+        </div>
+
+        {/* Age Group */}
+        <div>
+          <label className={labelClass}>Age Group</label>
+          <select
+            {...register("ageGroup")}
+            className={`${inputBaseClass} cursor-pointer pr-9 appearance-none ${
+              errors.ageGroup ? "border-err" : "border-border"
+            }`}
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%238F8279' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E")`,
+              backgroundRepeat: "no-repeat",
+              backgroundPosition: "right 12px center",
+            }}
+            defaultValue=""
+          >
+            <option value="" disabled>
+              Select age group...
+            </option>
+            {AGE_GROUPS.map((group) => (
+              <option key={group} value={group}>
+                {group}
+              </option>
+            ))}
+          </select>
+          {errors.ageGroup && (
+            <p className="mt-1 text-[0.75rem] text-err">
+              {errors.ageGroup.message}
+            </p>
+          )}
+        </div>
+
+        {/* Location */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className={labelClass}>
+              City{" "}
+              <span className="font-normal text-fg-4">(optional)</span>
+            </label>
+            <input
+              {...register("locationCity")}
+              className={`${inputBaseClass} border-border`}
+              placeholder="e.g., Toronto"
+            />
+          </div>
+          <div>
+            <label className={labelClass}>Province / Territory</label>
+            <select
+              {...register("locationProvince")}
+              className={`${inputBaseClass} cursor-pointer pr-9 appearance-none ${
+                errors.locationProvince ? "border-err" : "border-border"
+              }`}
+              style={{
+                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%238F8279' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E")`,
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "right 12px center",
+              }}
+              defaultValue=""
+            >
+              <option value="" disabled>
+                Select province...
+              </option>
+              {PROVINCES.map((p) => (
+                <option key={p.value} value={p.value}>
+                  {p.label}
+                </option>
+              ))}
+            </select>
+            {errors.locationProvince && (
+              <p className="mt-1 text-[0.75rem] text-err">
+                {errors.locationProvince.message}
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* Modality */}
+        <fieldset>
+          <legend className={labelClass}>Preferred Modality</legend>
+          <div className="flex flex-wrap gap-3">
+            {MODALITIES.map((m) => (
+              <label
+                key={m.value}
+                className="flex items-center gap-2 cursor-pointer"
+              >
+                <input
+                  type="radio"
+                  value={m.value}
+                  {...register("modality")}
+                  className="w-4 h-4 accent-brand"
+                />
+                <span className="text-[0.9375rem] text-fg">{m.label}</span>
+              </label>
+            ))}
+          </div>
+          {errors.modality && (
+            <p className="mt-1 text-[0.75rem] text-err">
+              {errors.modality.message}
+            </p>
+          )}
+        </fieldset>
+
+        {/* Additional Notes */}
+        <div>
+          <label className={labelClass}>Additional Notes</label>
+
+          {/* PHI reminder */}
+          <div className="p-3 rounded-sm border-l-[3px] border-l-warn bg-warn-l mb-3">
+            <p className="text-[0.875rem] text-fg-2 m-0">
+              Do not include client names, dates of birth, or identifying health
+              details.
+            </p>
+          </div>
+
+          <textarea
+            {...register("additionalNotes")}
+            className={`w-full min-h-[100px] p-3 bg-inset text-fg border rounded-sm text-[0.9375rem] font-sans resize-y transition-[border-color] duration-150 ease-out focus:border-border-f focus:bg-bg focus:outline-2 focus:outline-border-f focus:outline-offset-2 placeholder:text-fg-4 ${
+              errors.additionalNotes ? "border-err" : "border-border"
+            }`}
+            placeholder="Any additional context for the receiving therapist..."
+            maxLength={1000}
+          />
+          <div className="flex items-center justify-between mt-1">
+            {errors.additionalNotes ? (
+              <p className="text-[0.75rem] text-err">
+                {errors.additionalNotes.message}
+              </p>
+            ) : (
+              <span />
+            )}
+            <span className="text-[0.75rem] text-fg-4">
+              {additionalNotes.length}/1000
+            </span>
+          </div>
+        </div>
+
+        {/* Actions */}
+        <div className="flex items-center justify-end gap-3 pt-4 border-t border-border-s">
+          <button
+            type="button"
+            onClick={() => router.push("/referrals")}
+            className="inline-flex items-center justify-center h-11 px-6 bg-transparent text-fg-2 border border-border rounded-sm text-[0.8125rem] font-semibold tracking-[0.01em] cursor-pointer transition-[border-color,background] duration-150 ease-out font-sans hover:bg-inset hover:border-border-e focus-visible:outline-2 focus-visible:outline-border-f focus-visible:outline-offset-2"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={createReferral.isPending}
+            className="inline-flex items-center justify-center gap-2 h-11 px-6 bg-brand text-brand-on border-none rounded-sm text-[0.8125rem] font-semibold tracking-[0.01em] cursor-pointer transition-[background] duration-150 ease-out font-sans hover:bg-brand-h focus-visible:outline-2 focus-visible:outline-border-f focus-visible:outline-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {createReferral.isPending ? (
+              <>
+                <span className="w-[18px] h-[18px] border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                Posting...
+              </>
+            ) : (
+              "Post Referral"
+            )}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+}

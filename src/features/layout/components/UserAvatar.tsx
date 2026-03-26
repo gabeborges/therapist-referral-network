@@ -1,0 +1,56 @@
+"use client";
+
+import { useState, useRef, useEffect } from "react";
+import { SignOutButton } from "@/features/layout/components/SignOutButton";
+
+interface UserAvatarProps {
+  initials: string;
+}
+
+export function UserAvatar({ initials }: UserAvatarProps): React.ReactElement {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent): void {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  return (
+    <div className="relative" ref={dropdownRef}>
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-8 h-8 rounded-full flex items-center justify-center text-[0.75rem] tracking-[0.015em] leading-[1.4] font-medium cursor-pointer border-0"
+        style={{
+          background: "var(--inset)",
+          color: "var(--fg-2)",
+          fontFamily: "inherit",
+        }}
+        aria-label="User menu"
+      >
+        {initials}
+      </button>
+
+      {isOpen && (
+        <div
+          className="absolute right-0 top-full mt-2 w-40 rounded-md py-1 z-50"
+          style={{
+            background: "var(--s2)",
+            border: "1px solid var(--border)",
+            boxShadow: "var(--shadow-2)",
+          }}
+        >
+          <SignOutButton />
+        </div>
+      )}
+    </div>
+  );
+}

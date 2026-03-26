@@ -1,0 +1,129 @@
+"use client";
+
+import { useState, useRef, useEffect } from "react";
+
+interface ChipSelectProps {
+  label: string;
+  options: string[];
+  selected: string[];
+  onChange: (selected: string[]) => void;
+  placeholder?: string;
+  error?: string;
+  helperText?: string;
+}
+
+export function ChipSelect({
+  label,
+  options,
+  selected,
+  onChange,
+  placeholder = "Select...",
+  error,
+  helperText,
+}: ChipSelectProps): React.ReactElement {
+  const [isOpen, setIsOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent): void {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  function handleRemove(value: string): void {
+    onChange(selected.filter((v) => v !== value));
+  }
+
+  function handleAdd(value: string): void {
+    if (!selected.includes(value)) {
+      onChange([...selected, value]);
+    }
+    setIsOpen(false);
+  }
+
+  const availableOptions = options.filter((opt) => !selected.includes(opt));
+
+  return (
+    <div ref={containerRef} className="relative">
+      <label className="block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2">
+        {label}
+      </label>
+
+      {/* Selected chips */}
+      {selected.length > 0 && (
+        <div className="flex flex-wrap gap-2 mb-2">
+          {selected.map((value) => (
+            <span
+              key={value}
+              className="inline-flex items-center gap-1 h-7 px-2.5 bg-brand-l text-brand rounded-full text-[0.8125rem] font-medium whitespace-nowrap"
+            >
+              {value}
+              <button
+                type="button"
+                onClick={() => handleRemove(value)}
+                className="bg-transparent border-none text-inherit cursor-pointer p-0 ml-0.5 opacity-60 hover:opacity-100 w-3.5 h-3.5 inline-flex items-center justify-center"
+                aria-label={`Remove ${value}`}
+              >
+                &times;
+              </button>
+            </span>
+          ))}
+        </div>
+      )}
+
+      {/* Dropdown trigger */}
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className={`w-full h-11 px-3 bg-inset text-left border rounded-sm text-[0.9375rem] font-sans cursor-pointer transition-[border-color,background,box-shadow] duration-150 ease-out pr-9 appearance-none ${
+          error
+            ? "border-err"
+            : "border-border focus:border-border-f focus:bg-bg focus:outline-2 focus:outline-border-f focus:outline-offset-2"
+        }`}
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%238F8279' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E")`,
+          backgroundRepeat: "no-repeat",
+          backgroundPosition: "right 12px center",
+        }}
+      >
+        <span className={selected.length > 0 ? "text-fg" : "text-fg-4"}>
+          {selected.length > 0
+            ? `${selected.length} selected`
+            : placeholder}
+        </span>
+      </button>
+
+      {/* Dropdown list */}
+      {isOpen && availableOptions.length > 0 && (
+        <div className="absolute z-10 w-full mt-1 bg-s2 border border-border rounded-md shadow-2 max-h-48 overflow-y-auto">
+          {availableOptions.map((option) => (
+            <button
+              key={option}
+              type="button"
+              onClick={() => handleAdd(option)}
+              className="w-full px-3 py-2 text-left text-[0.9375rem] text-fg hover:bg-s1 cursor-pointer border-none bg-transparent font-sans transition-colors duration-150"
+            >
+              {option}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {error && (
+        <p className="mt-1 text-[0.75rem] text-err">{error}</p>
+      )}
+      {helperText && !error && (
+        <p className="mt-1 text-[0.75rem] italic text-fg-3 tracking-[0.015em]">
+          {helperText}
+        </p>
+      )}
+    </div>
+  );
+}

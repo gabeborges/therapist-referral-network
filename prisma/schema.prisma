@@ -1,0 +1,109 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// === Auth.js required models ===
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+
+  therapistProfile TherapistProfile?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+}
+
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+}
+
+// === Domain models ===
+
+model TherapistProfile {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Professional info
+  firstName   String
+  lastName    String
+  displayName String
+  bio         String?
+
+  // Location
+  city     String
+  province String
+  country  String @default("CA")
+
+  // Practice details
+  specialties         String[] // e.g., ["anxiety", "depression", "trauma"]
+  modalities          String[] // e.g., ["in-person", "virtual"]
+  therapeuticApproach String[] // e.g., ["CBT", "EMDR", "psychodynamic"]
+  languages           String[] // e.g., ["English", "French"]
+  ageGroups           String[] // e.g., ["children", "adolescents", "adults"]
+
+  // Insurance & pricing
+  acceptsInsurance Boolean  @default(false)
+  directBilling    Boolean  @default(false)
+  insurers         String[] // specific insurers accepted
+  hourlyRate       Int?     // in cents
+  reducedFees      Boolean  @default(false)
+
+  // Availability
+  acceptingClients Boolean @default(true)
+
+  // Activity tracking (for matching rank decay)
+  lastActiveAt DateTime @default(now())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([country, province, city])
+  @@index([acceptingClients, lastActiveAt])
+}

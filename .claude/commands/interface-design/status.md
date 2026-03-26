@@ -1,1 +1,0 @@
-../../../../forge/lib/commands/interface-design/status.md

@@ -30,11 +30,12 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files
-.env
+# env files (secrets)
 .env.local
 .env.*.local
-!.env.example
+
+# .env is a Prisma placeholder — not used at runtime
+.env
 
 # vercel
 .vercel

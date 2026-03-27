@@ -82,7 +82,7 @@
 
 **Data sources:** Supabase (Postgres) for therapist profiles, referral records, match data. No external APIs in V1.
 
-**Integration points:** Email service for referral notifications. Auth.js for authentication. Stripe for future paid tiers (not P0).
+**Integration points:** Email service for referral notifications. Auth.js for authentication.
 
 ---
 

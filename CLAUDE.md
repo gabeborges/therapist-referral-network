@@ -7,7 +7,6 @@
 - Prisma 7 ORM
 - tRPC API layer
 - Auth.js authentication
-- Stripe payments
 - Tailwind CSS v4
 - react-hook-form + Zod for forms
 - Vitest for unit/integration tests

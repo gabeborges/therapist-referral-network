@@ -9,7 +9,6 @@ A platform for therapists to refer clients to trusted colleagues in their profes
 - **Database:** Supabase (Postgres) via Prisma 7
 - **API:** tRPC
 - **Auth:** Auth.js (Google OAuth)
-- **Payments:** Stripe
 - **Email:** Resend
 - **Styling:** Tailwind CSS v4
 - **Testing:** Vitest + Playwright
@@ -21,8 +20,6 @@ A platform for therapists to refer clients to trusted colleagues in their profes
 - A [Supabase](https://supabase.com) project
 - A [Google OAuth](https://console.cloud.google.com) app (for authentication)
 - A [Resend](https://resend.com) account (for transactional email)
-- A [Stripe](https://stripe.com) account (optional, for payments)
-
 ## Getting Started
 
 ### 1. Clone and install dependencies
@@ -71,14 +68,6 @@ npm install
    - Copy the key — use for `RESEND_API_KEY`
 3. Navigate to **Domains** and add your sending domain (or use Resend's test domain for development)
 4. Set `RESEND_FROM_EMAIL` to an address on your verified domain (e.g., `referrals@yourdomain.com`)
-
-#### Stripe (Payments — optional)
-
-1. Go to [stripe.com](https://stripe.com) and create an account
-2. In the dashboard, make sure you're in **Test mode** (toggle in the top right)
-3. Go to **Developers > API keys**
-   - Copy the **Publishable key** — use for `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`
-   - Copy the **Secret key** — use for `STRIPE_SECRET_KEY`
 
 ### 3. Set up environment variables
 
@@ -141,33 +130,53 @@ The app will be available at [http://localhost:3000](http://localhost:3000).
 | `npm run db:migrate` | Run database migrations |
 | `npm run db:studio` | Open Prisma Studio |
 
-## Environment Configuration
+## Environments
 
-The project uses Next.js's built-in env file loading. Files are loaded in order of precedence (highest first):
+The project uses two environments. Local development and Vercel preview deploys share the **dev** services. Production is fully separate.
+
+| | Local | Staging (Vercel preview) | Production |
+|---|---|---|---|
+| **Runs on** | Your machine (`next dev`) | Vercel preview deploys | Vercel production |
+| **Supabase** | Dev project | Dev project | Prod project |
+| **Google OAuth** | Dev credentials | Dev credentials | Prod credentials |
+| **Resend** | Dev API key | Dev API key | Prod API key |
+
+### What you need to create
+
+| Service | Dev | Prod |
+|---|---|---|
+| Supabase | 1 project (free tier) | 1 project |
+| Google OAuth | 1 client ID (redirect: `http://localhost:3000/...`) | 1 client ID (redirect: `https://therapistreferral.network/...`) |
+| Resend | 1 account — same key works for both | Same account |
+| `AUTH_SECRET` | Generate one (`openssl rand -base64 32`) | Generate a separate one |
+
+### Where secrets live
+
+Secrets are **never** committed to the repo.
+
+- **Locally** — in `.env.local` (gitignored)
+- **Vercel (staging + production)** — in the Vercel dashboard under **Project Settings > Environment Variables**, scoped to Preview or Production
+
+### Env file structure
+
+Non-secret config that differs between environments is committed:
 
 | File | Purpose | Committed? | Loaded when |
 |---|---|---|---|
-| `.env.local` | **Secrets** (API keys, DB passwords, auth secrets) | No | Always (overrides everything) |
-| `.env.development` | Non-secret defaults for local dev | Yes | `next dev` |
+| `.env.local` | Your secrets | No | Always (overrides everything) |
+| `.env.development` | Non-secret defaults (app URL, drip config) | Yes | `next dev` |
 | `.env.production` | Non-secret defaults for production | Yes | `next build` / `next start` |
-| `.env.example` | Template listing all required variables | Yes | Never (reference only) |
-
-### How it works
-
-- **`.env.development`** and **`.env.production`** contain non-secret, environment-specific defaults (app URL, sender email, feature flags). These are committed to the repo so every developer and deployment gets the right defaults.
-- **`.env.local`** contains secrets that should never be committed (database passwords, API keys, OAuth credentials). This file is gitignored. Each developer creates their own from `.env.example`.
-- **Vercel (staging/production)**: Secrets are set in the Vercel dashboard under **Project Settings > Environment Variables**. Vercel ignores `.env.local` — it uses `.env.production` for defaults and dashboard variables for secrets. You can scope variables to Preview, Production, or Development environments.
+| `.env.example` | Template listing all secret names | Yes | Never (reference only) |
 
 ### Adding a new env variable
 
-1. Add it to `.env.example` with an empty value and a comment
-2. If it's a non-secret default, add it to `.env.development` and/or `.env.production`
-3. If it's a secret, add it to your `.env.local` and to Vercel's environment variables
-4. For client-side access, prefix with `NEXT_PUBLIC_`
+1. If it's a secret: add the name to `.env.example`, set the value in `.env.local` and in Vercel dashboard
+2. If it's a non-secret default: add it to `.env.development` and/or `.env.production`
+3. For client-side access, prefix with `NEXT_PUBLIC_`
 
 ### Deployment
 
-Vercel auto-deploys from `main` on every push. Secrets are set in the Vercel dashboard under **Project Settings > Environment Variables** — Vercel ignores `.env.local` and uses `.env.production` for non-secret defaults.
+Vercel auto-deploys from `main` on every push. Preview deploys use variables scoped to "Preview" in the Vercel dashboard; production deploys use "Production" scoped variables.
 
 Before pushing, run lint and tests locally:
 

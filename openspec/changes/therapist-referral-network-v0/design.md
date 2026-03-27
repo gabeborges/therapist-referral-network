@@ -250,7 +250,6 @@ Cron job logic (processDripQueue):
 AUTH_GOOGLE_ID, AUTH_GOOGLE_SECRET
 DATABASE_URL
 RESEND_API_KEY
-STRIPE_SECRET_KEY, STRIPE_PUBLISHABLE_KEY (future)
 
 # New
 RESEND_FROM_EMAIL=referrals@therapistreferral.network

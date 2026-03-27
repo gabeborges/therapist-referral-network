@@ -61,6 +61,5 @@ The project already has initial setup:
 - tRPC layer with basic therapist router
 - Zod validations for therapist profile and referral post
 - Resend email client + referral notification template
-- Stripe client (for future use)
 - Supabase client setup
 - Feature-based folder structure ready (`src/features/`)

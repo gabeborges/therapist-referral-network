@@ -215,3 +215,15 @@ const footerTextStyle: React.CSSProperties = {
   margin: "0 0 4px 0",
   textAlign: "center" as const,
 };
+
+// react-email dev server preview
+export default FulfillmentCheckEmail;
+
+FulfillmentCheckEmail.PreviewProps = {
+  referrerName: "Dr. Sarah Chen",
+  presentingIssue: "Anxiety & PTSD",
+  city: "Toronto",
+  province: "ON",
+  fulfillYesUrl: "https://therapistreferral.network/referrals/fulfill/tok123?fulfilled=true",
+  fulfillNoUrl: "https://therapistreferral.network/referrals/fulfill/tok123?fulfilled=false",
+} satisfies FulfillmentCheckEmailProps;

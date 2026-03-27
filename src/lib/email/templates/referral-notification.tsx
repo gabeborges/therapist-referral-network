@@ -235,3 +235,18 @@ const footerTextStyle: React.CSSProperties = {
   margin: "0 0 4px 0",
   textAlign: "center" as const,
 };
+
+// react-email dev server preview
+export default ReferralNotificationEmail;
+
+ReferralNotificationEmail.PreviewProps = {
+  referrerName: "Dr. Sarah Chen",
+  referrerEmail: "sarah.chen@practice.com",
+  presentingIssue: "Anxiety & PTSD",
+  ageGroup: "Adults",
+  city: "Toronto",
+  province: "ON",
+  modality: "virtual",
+  additionalNotes: "Client prefers evening availability and a therapist experienced with complex trauma.",
+  referralUrl: "https://therapistreferral.network/r/abc123",
+} satisfies ReferralNotificationEmailProps;

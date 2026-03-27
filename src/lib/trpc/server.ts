@@ -18,10 +18,21 @@ const t = initTRPC.context<Awaited<ReturnType<typeof createTRPCContext>>>().crea
 export const router = t.router;
 export const publicProcedure = t.procedure;
 
-export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
+export const protectedProcedure = t.procedure.use(async ({ ctx, next }) => {
   if (!ctx.session?.user?.id) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
+
+  // Touch lastActiveAt for matching decay scoring (fire-and-forget)
+  ctx.prisma.therapistProfile
+    .update({
+      where: { userId: ctx.session.user.id },
+      data: { lastActiveAt: new Date() },
+    })
+    .catch(() => {
+      // Profile may not exist yet (onboarding) — safe to ignore
+    });
+
   return next({
     ctx: {
       ...ctx,

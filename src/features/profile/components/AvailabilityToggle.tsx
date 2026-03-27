@@ -47,6 +47,12 @@ export function AvailabilityToggle({
         aria-checked={accepting}
         aria-label={accepting ? "Accepting referrals" : "Not accepting referrals"}
         onClick={handleToggle}
+        onKeyDown={(e) => {
+          if (e.key === " " || e.key === "Enter") {
+            e.preventDefault();
+            handleToggle();
+          }
+        }}
         disabled={toggleMutation.isPending}
         className={`relative w-11 h-6 rounded-xl cursor-pointer border-none p-0 transition-[background] duration-150 ease-out focus-visible:outline-2 focus-visible:outline-border-f focus-visible:outline-offset-2 disabled:opacity-50 disabled:cursor-not-allowed ${
           accepting ? "bg-ok" : "bg-fg-4"

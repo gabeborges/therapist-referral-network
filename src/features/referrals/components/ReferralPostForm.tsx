@@ -100,6 +100,7 @@ export function ReferralPostForm(): React.ReactElement {
       {serverError && (
         <div className="p-4 rounded-md border border-err/20 bg-err-l flex gap-3 items-start mb-6">
           <svg
+            aria-hidden="true"
             className="w-5 h-5 shrink-0 mt-0.5 text-err"
             fill="none"
             stroke="currentColor"
@@ -119,16 +120,20 @@ export function ReferralPostForm(): React.ReactElement {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Presenting Issue */}
         <div>
-          <label className={labelClass}>Presenting Issue</label>
+          <label htmlFor="presentingIssue" className={labelClass}>Presenting Issue</label>
           <input
+            id="presentingIssue"
             {...register("presentingIssue")}
+            aria-required="true"
+            aria-invalid={!!errors.presentingIssue}
+            aria-describedby={errors.presentingIssue ? "presentingIssue-error" : undefined}
             className={`${inputBaseClass} ${
               errors.presentingIssue ? "border-err" : "border-border"
             }`}
             placeholder="e.g., Anxiety, Depression, Trauma"
           />
           {errors.presentingIssue && (
-            <p className="mt-1 text-[0.75rem] text-err">
+            <p id="presentingIssue-error" className="mt-1 text-[0.75rem] text-err">
               {errors.presentingIssue.message}
             </p>
           )}
@@ -136,9 +141,13 @@ export function ReferralPostForm(): React.ReactElement {
 
         {/* Age Group */}
         <div>
-          <label className={labelClass}>Age Group</label>
+          <label htmlFor="ageGroup" className={labelClass}>Age Group</label>
           <select
+            id="ageGroup"
             {...register("ageGroup")}
+            aria-required="true"
+            aria-invalid={!!errors.ageGroup}
+            aria-describedby={errors.ageGroup ? "ageGroup-error" : undefined}
             className={`${inputBaseClass} cursor-pointer pr-9 appearance-none ${
               errors.ageGroup ? "border-err" : "border-border"
             }`}
@@ -159,7 +168,7 @@ export function ReferralPostForm(): React.ReactElement {
             ))}
           </select>
           {errors.ageGroup && (
-            <p className="mt-1 text-[0.75rem] text-err">
+            <p id="ageGroup-error" className="mt-1 text-[0.75rem] text-err">
               {errors.ageGroup.message}
             </p>
           )}
@@ -168,20 +177,25 @@ export function ReferralPostForm(): React.ReactElement {
         {/* Location */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className={labelClass}>
+            <label htmlFor="locationCity" className={labelClass}>
               City{" "}
               <span className="font-normal text-fg-4">(optional)</span>
             </label>
             <input
+              id="locationCity"
               {...register("locationCity")}
               className={`${inputBaseClass} border-border`}
               placeholder="e.g., Toronto"
             />
           </div>
           <div>
-            <label className={labelClass}>Province / Territory</label>
+            <label htmlFor="locationProvince" className={labelClass}>Province / Territory</label>
             <select
+              id="locationProvince"
               {...register("locationProvince")}
+              aria-required="true"
+              aria-invalid={!!errors.locationProvince}
+              aria-describedby={errors.locationProvince ? "locationProvince-error" : undefined}
               className={`${inputBaseClass} cursor-pointer pr-9 appearance-none ${
                 errors.locationProvince ? "border-err" : "border-border"
               }`}
@@ -202,7 +216,7 @@ export function ReferralPostForm(): React.ReactElement {
               ))}
             </select>
             {errors.locationProvince && (
-              <p className="mt-1 text-[0.75rem] text-err">
+              <p id="locationProvince-error" className="mt-1 text-[0.75rem] text-err">
                 {errors.locationProvince.message}
               </p>
             )}
@@ -210,7 +224,11 @@ export function ReferralPostForm(): React.ReactElement {
         </div>
 
         {/* Modality */}
-        <fieldset>
+        <fieldset
+          aria-required="true"
+          aria-invalid={!!errors.modality}
+          aria-describedby={errors.modality ? "modality-error" : undefined}
+        >
           <legend className={labelClass}>Preferred Modality</legend>
           <div className="flex flex-wrap gap-3">
             {MODALITIES.map((m) => (
@@ -229,7 +247,7 @@ export function ReferralPostForm(): React.ReactElement {
             ))}
           </div>
           {errors.modality && (
-            <p className="mt-1 text-[0.75rem] text-err">
+            <p id="modality-error" className="mt-1 text-[0.75rem] text-err">
               {errors.modality.message}
             </p>
           )}
@@ -237,7 +255,7 @@ export function ReferralPostForm(): React.ReactElement {
 
         {/* Additional Notes */}
         <div>
-          <label className={labelClass}>Additional Notes</label>
+          <label htmlFor="additionalNotes" className={labelClass}>Additional Notes</label>
 
           {/* PHI reminder */}
           <div className="p-3 rounded-sm border-l-[3px] border-l-warn bg-warn-l mb-3">
@@ -248,7 +266,10 @@ export function ReferralPostForm(): React.ReactElement {
           </div>
 
           <textarea
+            id="additionalNotes"
             {...register("additionalNotes")}
+            aria-invalid={!!errors.additionalNotes}
+            aria-describedby={errors.additionalNotes ? "additionalNotes-error" : undefined}
             className={`w-full min-h-[100px] p-3 bg-inset text-fg border rounded-sm text-[0.9375rem] font-sans resize-y transition-[border-color] duration-150 ease-out focus:border-border-f focus:bg-bg focus:outline-2 focus:outline-border-f focus:outline-offset-2 placeholder:text-fg-4 ${
               errors.additionalNotes ? "border-err" : "border-border"
             }`}
@@ -257,7 +278,7 @@ export function ReferralPostForm(): React.ReactElement {
           />
           <div className="flex items-center justify-between mt-1">
             {errors.additionalNotes ? (
-              <p className="text-[0.75rem] text-err">
+              <p id="additionalNotes-error" className="text-[0.75rem] text-err">
                 {errors.additionalNotes.message}
               </p>
             ) : (

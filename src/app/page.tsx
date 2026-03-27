@@ -27,11 +27,13 @@ export default function LandingPage(): React.ReactElement {
       className="min-h-screen flex flex-col"
       style={{ background: "var(--bg)" }}
     >
+      <main>
       {/* Hero */}
-      <section className="flex-1 flex flex-col items-center justify-center px-6 pt-20 pb-16 text-center">
+      <section aria-label="Hero" className="flex-1 flex flex-col items-center justify-center px-6 pt-20 pb-16 text-center">
         {/* Match Ring Logo */}
         <div className="mb-6">
           <svg
+            aria-hidden="true"
             width="80"
             height="80"
             viewBox="0 0 48 48"
@@ -100,7 +102,7 @@ export default function LandingPage(): React.ReactElement {
           }}
         >
           {/* Google icon */}
-          <svg width="20" height="20" viewBox="0 0 24 24">
+          <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24">
             <path
               d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"
               fill="#4285F4"
@@ -139,6 +141,7 @@ export default function LandingPage(): React.ReactElement {
 
       {/* How it works */}
       <section
+        aria-label="How it works"
         className="px-6 py-16 sm:py-20"
         style={{ borderTop: "1px solid var(--border-s)" }}
       >
@@ -184,7 +187,7 @@ export default function LandingPage(): React.ReactElement {
       </section>
 
       {/* Secondary CTA */}
-      <section className="px-6 pb-20 pt-4">
+      <section aria-label="Call to action" className="px-6 pb-20 pt-4">
         <div className="text-center">
           <p
             className="text-[1.125rem] font-medium m-0 mb-5"
@@ -205,6 +208,8 @@ export default function LandingPage(): React.ReactElement {
           </Link>
         </div>
       </section>
+
+      </main>
 
       {/* Footer */}
       <footer

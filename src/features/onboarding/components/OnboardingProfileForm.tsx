@@ -173,6 +173,7 @@ export function OnboardingProfileForm(): React.ReactElement {
       {serverError && (
         <div className="p-4 rounded-md border border-err/20 bg-err-l flex gap-3 items-start mb-6">
           <svg
+            aria-hidden="true"
             className="w-5 h-5 shrink-0 mt-0.5 text-err"
             fill="none"
             stroke="currentColor"
@@ -193,35 +194,43 @@ export function OnboardingProfileForm(): React.ReactElement {
         {/* Name fields */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2">
+            <label htmlFor="ob-firstName" className="block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2">
               First Name
             </label>
             <input
+              id="ob-firstName"
               {...register("firstName")}
+              aria-required="true"
+              aria-invalid={!!errors.firstName}
+              aria-describedby={errors.firstName ? "ob-firstName-error" : undefined}
               className={`w-full h-11 px-3 bg-inset text-fg border rounded-sm text-[0.9375rem] font-sans transition-[border-color,background,box-shadow] duration-150 ease-out focus:border-border-f focus:bg-bg focus:outline-2 focus:outline-border-f focus:outline-offset-2 placeholder:text-fg-4 ${
                 errors.firstName ? "border-err" : "border-border"
               }`}
               placeholder="First name"
             />
             {errors.firstName && (
-              <p className="mt-1 text-[0.75rem] text-err">
+              <p id="ob-firstName-error" className="mt-1 text-[0.75rem] text-err">
                 {errors.firstName.message}
               </p>
             )}
           </div>
           <div>
-            <label className="block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2">
+            <label htmlFor="ob-lastName" className="block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2">
               Last Name
             </label>
             <input
+              id="ob-lastName"
               {...register("lastName")}
+              aria-required="true"
+              aria-invalid={!!errors.lastName}
+              aria-describedby={errors.lastName ? "ob-lastName-error" : undefined}
               className={`w-full h-11 px-3 bg-inset text-fg border rounded-sm text-[0.9375rem] font-sans transition-[border-color,background,box-shadow] duration-150 ease-out focus:border-border-f focus:bg-bg focus:outline-2 focus:outline-border-f focus:outline-offset-2 placeholder:text-fg-4 ${
                 errors.lastName ? "border-err" : "border-border"
               }`}
               placeholder="Last name"
             />
             {errors.lastName && (
-              <p className="mt-1 text-[0.75rem] text-err">
+              <p id="ob-lastName-error" className="mt-1 text-[0.75rem] text-err">
                 {errors.lastName.message}
               </p>
             )}
@@ -230,18 +239,22 @@ export function OnboardingProfileForm(): React.ReactElement {
 
         {/* Display Name */}
         <div>
-          <label className="block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2">
+          <label htmlFor="ob-displayName" className="block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2">
             Display Name
           </label>
           <input
+            id="ob-displayName"
             {...register("displayName")}
+            aria-required="true"
+            aria-invalid={!!errors.displayName}
+            aria-describedby={errors.displayName ? "ob-displayName-error" : undefined}
             className={`w-full h-11 px-3 bg-inset text-fg border rounded-sm text-[0.9375rem] font-sans transition-[border-color,background,box-shadow] duration-150 ease-out focus:border-border-f focus:bg-bg focus:outline-2 focus:outline-border-f focus:outline-offset-2 placeholder:text-fg-4 ${
               errors.displayName ? "border-err" : "border-border"
             }`}
             placeholder="How your name appears to colleagues"
           />
           {errors.displayName && (
-            <p className="mt-1 text-[0.75rem] text-err">
+            <p id="ob-displayName-error" className="mt-1 text-[0.75rem] text-err">
               {errors.displayName.message}
             </p>
           )}
@@ -252,7 +265,7 @@ export function OnboardingProfileForm(): React.ReactElement {
 
         {/* Bio */}
         <div>
-          <label className="block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2">
+          <label htmlFor="ob-bio" className="block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2">
             About You
           </label>
           <div className="p-3 rounded-sm border-l-[3px] border-l-warn bg-warn-l mb-4">
@@ -262,14 +275,17 @@ export function OnboardingProfileForm(): React.ReactElement {
             </p>
           </div>
           <textarea
+            id="ob-bio"
             {...register("bio")}
+            aria-invalid={!!errors.bio}
+            aria-describedby={errors.bio ? "ob-bio-error" : undefined}
             className={`w-full min-h-[100px] p-3 bg-inset text-fg border rounded-sm text-[0.9375rem] font-sans resize-y transition-[border-color] duration-150 ease-out focus:border-border-f focus:bg-bg focus:outline-2 focus:outline-border-f focus:outline-offset-2 placeholder:text-fg-4 ${
               errors.bio ? "border-err" : "border-border"
             }`}
             placeholder="Tell colleagues about your practice, experience, and approach..."
           />
           {errors.bio && (
-            <p className="mt-1 text-[0.75rem] text-err">
+            <p id="ob-bio-error" className="mt-1 text-[0.75rem] text-err">
               {errors.bio.message}
             </p>
           )}
@@ -361,28 +377,36 @@ export function OnboardingProfileForm(): React.ReactElement {
         {/* Location */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2">
+            <label htmlFor="ob-city" className="block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2">
               City
             </label>
             <input
+              id="ob-city"
               {...register("city")}
+              aria-required="true"
+              aria-invalid={!!errors.city}
+              aria-describedby={errors.city ? "ob-city-error" : undefined}
               className={`w-full h-11 px-3 bg-inset text-fg border rounded-sm text-[0.9375rem] font-sans transition-[border-color,background,box-shadow] duration-150 ease-out focus:border-border-f focus:bg-bg focus:outline-2 focus:outline-border-f focus:outline-offset-2 placeholder:text-fg-4 ${
                 errors.city ? "border-err" : "border-border"
               }`}
               placeholder="Your city"
             />
             {errors.city && (
-              <p className="mt-1 text-[0.75rem] text-err">
+              <p id="ob-city-error" className="mt-1 text-[0.75rem] text-err">
                 {errors.city.message}
               </p>
             )}
           </div>
           <div>
-            <label className="block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2">
+            <label htmlFor="ob-province" className="block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2">
               Province / Territory
             </label>
             <select
+              id="ob-province"
               {...register("province")}
+              aria-required="true"
+              aria-invalid={!!errors.province}
+              aria-describedby={errors.province ? "ob-province-error" : undefined}
               className={`w-full h-11 px-3 bg-inset text-fg border rounded-sm text-[0.9375rem] font-sans cursor-pointer transition-[border-color,background,box-shadow] duration-150 ease-out pr-9 appearance-none focus:border-border-f focus:bg-bg focus:outline-2 focus:outline-border-f focus:outline-offset-2 ${
                 errors.province ? "border-err" : "border-border"
               }`}
@@ -403,7 +427,7 @@ export function OnboardingProfileForm(): React.ReactElement {
               ))}
             </select>
             {errors.province && (
-              <p className="mt-1 text-[0.75rem] text-err">
+              <p id="ob-province-error" className="mt-1 text-[0.75rem] text-err">
                 {errors.province.message}
               </p>
             )}
@@ -459,19 +483,22 @@ export function OnboardingProfileForm(): React.ReactElement {
 
         {/* Hourly Rate */}
         <div>
-          <label className="block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2">
+          <label htmlFor="ob-hourlyRate" className="block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2">
             Hourly Rate (CAD)
           </label>
           <input
+            id="ob-hourlyRate"
             type="number"
             {...register("hourlyRate", { valueAsNumber: true })}
+            aria-invalid={!!errors.hourlyRate}
+            aria-describedby={errors.hourlyRate ? "ob-hourlyRate-error" : undefined}
             className={`w-full h-11 px-3 bg-inset text-fg border rounded-sm text-[0.9375rem] font-sans transition-[border-color,background,box-shadow] duration-150 ease-out focus:border-border-f focus:bg-bg focus:outline-2 focus:outline-border-f focus:outline-offset-2 placeholder:text-fg-4 ${
               errors.hourlyRate ? "border-err" : "border-border"
             }`}
             placeholder="e.g. 150"
           />
           {errors.hourlyRate && (
-            <p className="mt-1 text-[0.75rem] text-err">
+            <p id="ob-hourlyRate-error" className="mt-1 text-[0.75rem] text-err">
               {errors.hourlyRate.message}
             </p>
           )}
@@ -507,7 +534,14 @@ export function OnboardingProfileForm(): React.ReactElement {
                 type="button"
                 role="switch"
                 aria-checked={field.value}
+                aria-label="Currently accepting clients"
                 onClick={() => field.onChange(!field.value)}
+                onKeyDown={(e) => {
+                  if (e.key === " " || e.key === "Enter") {
+                    e.preventDefault();
+                    field.onChange(!field.value);
+                  }
+                }}
                 className={`relative w-11 h-6 rounded-xl cursor-pointer border-none p-0 transition-[background] duration-150 ease-out focus-visible:outline-2 focus-visible:outline-border-f focus-visible:outline-offset-2 ${
                   field.value ? "bg-ok" : "bg-fg-4"
                 }`}

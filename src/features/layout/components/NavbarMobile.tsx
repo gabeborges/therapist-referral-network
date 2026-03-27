@@ -12,12 +12,35 @@ interface NavbarMobileProps {
 export function NavbarMobile({ initials }: NavbarMobileProps): React.ReactElement {
   const [isOpen, setIsOpen] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
+  const hamburgerRef = useRef<HTMLButtonElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
   const pathname = usePathname();
 
   // Close on route change
   useEffect(() => {
     setIsOpen(false);
   }, [pathname]);
+
+  // Focus close button when menu opens; return focus to hamburger on close
+  useEffect(() => {
+    if (isOpen) {
+      closeButtonRef.current?.focus();
+    } else {
+      hamburgerRef.current?.focus();
+    }
+  }, [isOpen]);
+
+  // Escape key handler
+  useEffect(() => {
+    if (!isOpen) return;
+    function handleEscape(event: KeyboardEvent): void {
+      if (event.key === "Escape") {
+        setIsOpen(false);
+      }
+    }
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, [isOpen]);
 
   const links = [
     { href: "/referrals", label: "Referrals" },
@@ -28,12 +51,14 @@ export function NavbarMobile({ initials }: NavbarMobileProps): React.ReactElemen
     <>
       {/* Hamburger button */}
       <button
+        ref={hamburgerRef}
         onClick={() => setIsOpen(!isOpen)}
         className="w-8 h-8 flex items-center justify-center border-0 bg-transparent cursor-pointer"
         style={{ color: "var(--fg-2)" }}
         aria-label="Toggle navigation menu"
       >
         <svg
+          aria-hidden="true"
           width="20"
           height="20"
           fill="none"
@@ -62,6 +87,9 @@ export function NavbarMobile({ initials }: NavbarMobileProps): React.ReactElemen
           {/* Panel */}
           <div
             ref={panelRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Navigation menu"
             className="fixed top-0 right-0 bottom-0 z-50 w-[260px] flex flex-col"
             style={{
               background: "var(--s1)",
@@ -81,12 +109,14 @@ export function NavbarMobile({ initials }: NavbarMobileProps): React.ReactElemen
                 {initials}
               </div>
               <button
+                ref={closeButtonRef}
                 onClick={() => setIsOpen(false)}
                 className="w-8 h-8 flex items-center justify-center border-0 bg-transparent cursor-pointer"
                 style={{ color: "var(--fg-2)" }}
                 aria-label="Close menu"
               >
                 <svg
+                  aria-hidden="true"
                   width="20"
                   height="20"
                   fill="none"
@@ -104,7 +134,7 @@ export function NavbarMobile({ initials }: NavbarMobileProps): React.ReactElemen
             </div>
 
             {/* Links */}
-            <nav className="flex flex-col px-2 gap-1">
+            <nav aria-label="Mobile navigation" className="flex flex-col px-2 gap-1">
               {links.map((link) => {
                 const isActive =
                   pathname === link.href || pathname.startsWith(link.href + "/");
@@ -135,6 +165,7 @@ export function NavbarMobile({ initials }: NavbarMobileProps): React.ReactElemen
                 }}
               >
                 <svg
+                  aria-hidden="true"
                   width="16"
                   height="16"
                   fill="none"

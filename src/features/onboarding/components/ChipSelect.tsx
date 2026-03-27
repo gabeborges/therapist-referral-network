@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 
 interface ChipSelectProps {
   label: string;
@@ -22,7 +22,9 @@ export function ChipSelect({
   helperText,
 }: ChipSelectProps): React.ReactElement {
   const [isOpen, setIsOpen] = useState(false);
+  const [focusedIndex, setFocusedIndex] = useState(-1);
   const containerRef = useRef<HTMLDivElement>(null);
+  const optionRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent): void {
@@ -31,6 +33,7 @@ export function ChipSelect({
         !containerRef.current.contains(event.target as Node)
       ) {
         setIsOpen(false);
+        setFocusedIndex(-1);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -46,9 +49,56 @@ export function ChipSelect({
       onChange([...selected, value]);
     }
     setIsOpen(false);
+    setFocusedIndex(-1);
   }
 
   const availableOptions = options.filter((opt) => !selected.includes(opt));
+
+  const handleKeyDown = useCallback(
+    (event: React.KeyboardEvent): void => {
+      if (!isOpen) {
+        if (event.key === "ArrowDown" || event.key === "Enter") {
+          event.preventDefault();
+          setIsOpen(true);
+          setFocusedIndex(0);
+        }
+        return;
+      }
+      switch (event.key) {
+        case "ArrowDown":
+          event.preventDefault();
+          setFocusedIndex((prev) => {
+            const next = prev < availableOptions.length - 1 ? prev + 1 : 0;
+            optionRefs.current[next]?.focus();
+            return next;
+          });
+          break;
+        case "ArrowUp":
+          event.preventDefault();
+          setFocusedIndex((prev) => {
+            const next = prev > 0 ? prev - 1 : availableOptions.length - 1;
+            optionRefs.current[next]?.focus();
+            return next;
+          });
+          break;
+        case "Enter":
+          event.preventDefault();
+          if (focusedIndex >= 0 && focusedIndex < availableOptions.length) {
+            const option = availableOptions[focusedIndex];
+            if (option !== undefined) {
+              handleAdd(option);
+            }
+          }
+          break;
+        case "Escape":
+          event.preventDefault();
+          setIsOpen(false);
+          setFocusedIndex(-1);
+          break;
+      }
+    },
+    [isOpen, availableOptions, focusedIndex],
+  );
 
   return (
     <div ref={containerRef} className="relative">
@@ -82,6 +132,9 @@ export function ChipSelect({
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
+        onKeyDown={handleKeyDown}
+        aria-expanded={isOpen}
+        aria-haspopup="listbox"
         className={`w-full h-11 px-3 bg-inset text-left border rounded-sm text-[0.9375rem] font-sans cursor-pointer transition-[border-color,background,box-shadow] duration-150 ease-out pr-9 appearance-none ${
           error
             ? "border-err"
@@ -102,11 +155,19 @@ export function ChipSelect({
 
       {/* Dropdown list */}
       {isOpen && availableOptions.length > 0 && (
-        <div className="absolute z-10 w-full mt-1 bg-s2 border border-border rounded-md shadow-2 max-h-48 overflow-y-auto">
-          {availableOptions.map((option) => (
+        <div
+          role="listbox"
+          aria-label={label}
+          onKeyDown={handleKeyDown}
+          className="absolute z-10 w-full mt-1 bg-s2 border border-border rounded-md shadow-2 max-h-48 overflow-y-auto"
+        >
+          {availableOptions.map((option, index) => (
             <button
               key={option}
+              ref={(el) => { optionRefs.current[index] = el; }}
               type="button"
+              role="option"
+              aria-selected={false}
               onClick={() => handleAdd(option)}
               className="w-full px-3 py-2 text-left text-[0.9375rem] text-fg hover:bg-s1 cursor-pointer border-none bg-transparent font-sans transition-colors duration-150"
             >

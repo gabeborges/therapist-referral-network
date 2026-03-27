@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useTRPC } from "@/lib/trpc/client";
 import { useMutation } from "@tanstack/react-query";
@@ -15,6 +15,13 @@ export function CloseReferralButton({
   const router = useRouter();
   const trpc = useTRPC();
   const [confirming, setConfirming] = useState(false);
+  const confirmButtonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (confirming) {
+      confirmButtonRef.current?.focus();
+    }
+  }, [confirming]);
 
   const closeReferral = useMutation(
     trpc.referral.close.mutationOptions({
@@ -37,8 +44,12 @@ export function CloseReferralButton({
   }
 
   return (
-    <div className="flex items-center gap-3">
-      <p className="text-[0.875rem] text-fg-2 m-0">
+    <div
+      role="alertdialog"
+      aria-labelledby="close-referral-confirm-text"
+      className="flex items-center gap-3"
+    >
+      <p id="close-referral-confirm-text" className="text-[0.875rem] text-fg-2 m-0">
         Mark this referral as fulfilled?
       </p>
       <button
@@ -50,6 +61,7 @@ export function CloseReferralButton({
         No
       </button>
       <button
+        ref={confirmButtonRef}
         type="button"
         onClick={() => closeReferral.mutate({ id: referralId })}
         disabled={closeReferral.isPending}

@@ -224,6 +224,6 @@ FulfillmentCheckEmail.PreviewProps = {
   presentingIssue: "Anxiety & PTSD",
   city: "Toronto",
   province: "ON",
-  fulfillYesUrl: "https://therapistreferral.network/referrals/fulfill/tok123?fulfilled=true",
-  fulfillNoUrl: "https://therapistreferral.network/referrals/fulfill/tok123?fulfilled=false",
+  fulfillYesUrl: "https://therapistreferralnetwork.com/referrals/fulfill/tok123?fulfilled=true",
+  fulfillNoUrl: "https://therapistreferralnetwork.com/referrals/fulfill/tok123?fulfilled=false",
 } satisfies FulfillmentCheckEmailProps;

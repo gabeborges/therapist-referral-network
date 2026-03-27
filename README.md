@@ -39,7 +39,7 @@ npm install
 3. Wait for the project to finish provisioning
 4. Go to **Project Settings > API** to find:
    - **Project URL** — use for `SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_URL`
-   - **anon/public key** — use for `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+   - **publishable key** — use for `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
    - **service_role key** — use for `SUPABASE_SERVICE_ROLE_KEY` (keep this secret)
 5. Go to **Project Settings > Database** to find:
    - **Connection string (URI)** — use for `DATABASE_URL` (use the pooled/Transaction connection string on port `6543`)
@@ -146,7 +146,7 @@ The project uses two environments. Local development and Vercel preview deploys 
 | Service | Dev | Prod |
 |---|---|---|
 | Supabase | 1 project (free tier) | 1 project |
-| Google OAuth | 1 client ID (redirect: `http://localhost:3000/...`) | 1 client ID (redirect: `https://therapistreferral.network/...`) |
+| Google OAuth | 1 client ID (redirect: `http://localhost:3000/...`) | 1 client ID (redirect: `https://therapistreferralnetwork.com/...`) |
 | Resend | 1 account — same key works for both | Same account |
 | `AUTH_SECRET` | Generate one (`openssl rand -base64 32`) | Generate a separate one |
 

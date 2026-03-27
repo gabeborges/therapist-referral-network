@@ -248,5 +248,5 @@ ReferralNotificationEmail.PreviewProps = {
   province: "ON",
   modality: "virtual",
   additionalNotes: "Client prefers evening availability and a therapist experienced with complex trauma.",
-  referralUrl: "https://therapistreferral.network/r/abc123",
+  referralUrl: "https://therapistreferralnetwork.com/r/abc123",
 } satisfies ReferralNotificationEmailProps;

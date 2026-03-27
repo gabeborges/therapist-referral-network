@@ -240,7 +240,7 @@ Cron job logic (processDripQueue):
 <meta property="og:title" content="Referral: {presentingIssue}" />
 <meta property="og:description" content="A therapist in {city}, {province} is looking for a colleague — {modality}" />
 <meta property="og:type" content="website" />
-<meta property="og:url" content="https://therapistreferral.network/r/{slug}" />
+<meta property="og:url" content="https://therapistreferralnetwork.com/r/{slug}" />
 ```
 
 ## Environment variables
@@ -252,13 +252,13 @@ DATABASE_URL
 RESEND_API_KEY
 
 # New
-RESEND_FROM_EMAIL=referrals@therapistreferral.network
+RESEND_FROM_EMAIL=referrals@therapistreferralnetwork.com
 DRIP_BATCH_SIZE=5
 DRIP_MAX_BATCHES=5
 DRIP_FOLLOWUP_HOURS=48
 DRIP_NEXT_BATCH_DELAY_HOURS=24
 CRON_SECRET=<secret for securing cron endpoint>
-NEXT_PUBLIC_APP_URL=https://therapistreferral.network
+NEXT_PUBLIC_APP_URL=https://therapistreferralnetwork.com
 ```
 
 ## Key decisions

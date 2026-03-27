@@ -2,7 +2,7 @@
 
 **Version:** v0
 **Thread:** free-tools-ecosystem
-**Domain:** therapistreferral.network / therapistreferralnetwork.com
+**Domain:** therapistreferralnetwork.com / therapistreferralnetwork.com
 
 ---
 

@@ -9,6 +9,9 @@ export type MatchDimensions = {
   ageGroup: boolean;
   modality: boolean;
   location: boolean;
+  participants: boolean;
+  language: boolean;
+  therapyType: boolean;
 };
 
 export type ProfileMatch = {
@@ -85,18 +88,58 @@ export function computeActivityDecay(
   return 0.2;
 }
 
+export function computeParticipantsScore(
+  profileParticipants: string[],
+  referralParticipants: string | null,
+): number {
+  if (!referralParticipants) return 0;
+  return profileParticipants
+    .map((p) => p.toLowerCase())
+    .includes(referralParticipants.toLowerCase())
+    ? 1
+    : 0;
+}
+
+export function computeLanguageScore(
+  profileLanguages: string[],
+  referralLanguages: string[],
+): number {
+  if (referralLanguages.length === 0) return 0;
+  const pLangs = profileLanguages.map((l) => l.toLowerCase());
+  const overlap = referralLanguages.filter((l) =>
+    pLangs.includes(l.toLowerCase()),
+  ).length;
+  return overlap > 0 ? 1 : 0;
+}
+
+export function computeTherapyTypeScore(
+  profileApproaches: string[],
+  referralTherapyTypes: string[],
+): number {
+  if (referralTherapyTypes.length === 0) return 0;
+  const pApproaches = profileApproaches.map((a) => a.toLowerCase());
+  const overlap = referralTherapyTypes.filter((t) =>
+    pApproaches.includes(t.toLowerCase()),
+  ).length;
+  return overlap > 0 ? 1 : 0;
+}
+
 export function computeCompletenessBoost(profile: {
   bio: string | null;
   therapeuticApproach: string[];
   languages: string[];
   insurers: string[];
+  participants: string[];
+  topSpecialties: string[];
 }): number {
   let filled = 0;
   if (profile.bio && profile.bio.length > 0) filled++;
   if (profile.therapeuticApproach.length > 0) filled++;
   if (profile.languages.length > 0) filled++;
   if (profile.insurers.length > 0) filled++;
-  return (filled / 4) * 0.5;
+  if (profile.participants.length > 0) filled++;
+  if (profile.topSpecialties.length > 0) filled++;
+  return (filled / 6) * 0.5;
 }
 
 /**
@@ -126,21 +169,36 @@ export function scoreProfile(
     referralPost.locationProvince,
     referralPost.locationCity,
   );
+  const participants = computeParticipantsScore(
+    profile.participants,
+    referralPost.participants,
+  );
+  const language = computeLanguageScore(
+    profile.languages,
+    referralPost.languageRequirements,
+  );
+  const therapyType = computeTherapyTypeScore(
+    profile.therapeuticApproach,
+    referralPost.therapyTypes,
+  );
 
   const activityDecay = computeActivityDecay(profile.lastActiveAt, now);
   const completenessBoost = computeCompletenessBoost(profile);
 
-  const rawScore = specialty + ageGroup + modality + location;
+  const rawScore = specialty + ageGroup + modality + location + participants + language + therapyType;
   const finalScore = rawScore * activityDecay + completenessBoost;
 
   return {
     profileId: profile.id,
-    score: Math.round(finalScore * 1000) / 1000, // 3 decimal places
+    score: Math.round(finalScore * 1000) / 1000,
     matchDimensions: {
       specialty: specialty > 0,
       ageGroup: ageGroup > 0,
       modality: modality > 0,
       location: location > 0,
+      participants: participants > 0,
+      language: language > 0,
+      therapyType: therapyType > 0,
     },
   };
 }

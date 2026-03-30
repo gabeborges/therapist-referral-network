@@ -26,6 +26,11 @@ export function ChipSelect({
   const containerRef = useRef<HTMLDivElement>(null);
   const optionRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
+  const chipId = label.toLowerCase().replace(/\s+/g, "-");
+  const labelId = `${chipId}-label`;
+  const triggerId = `${chipId}-trigger`;
+  const listboxId = `${chipId}-listbox`;
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent): void {
       if (
@@ -102,13 +107,13 @@ export function ChipSelect({
 
   return (
     <div ref={containerRef} className="relative">
-      <label className="block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2">
+      <label id={labelId} className="block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2">
         {label}
       </label>
 
       {/* Selected chips */}
       {selected.length > 0 && (
-        <div className="flex flex-wrap gap-2 mb-2">
+        <div className="flex flex-wrap gap-2 mb-2" aria-live="polite">
           {selected.map((value) => (
             <span
               key={value}
@@ -131,10 +136,13 @@ export function ChipSelect({
       {/* Dropdown trigger */}
       <button
         type="button"
+        id={triggerId}
         onClick={() => setIsOpen(!isOpen)}
         onKeyDown={handleKeyDown}
         aria-expanded={isOpen}
         aria-haspopup="listbox"
+        aria-labelledby={labelId}
+        aria-controls={isOpen ? listboxId : undefined}
         className={`w-full h-11 px-3 bg-inset text-left border rounded-sm text-[0.9375rem] font-sans cursor-pointer transition-[border-color,background,box-shadow] duration-150 ease-out pr-9 appearance-none ${
           error
             ? "border-err"
@@ -157,7 +165,8 @@ export function ChipSelect({
       {isOpen && availableOptions.length > 0 && (
         <div
           role="listbox"
-          aria-label={label}
+          id={listboxId}
+          aria-labelledby={labelId}
           onKeyDown={handleKeyDown}
           className="absolute z-10 w-full mt-1 bg-s2 border border-border rounded-md shadow-2 max-h-48 overflow-y-auto"
         >

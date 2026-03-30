@@ -96,6 +96,14 @@ export const referralRouter = router({
           locationProvince: input.locationProvince,
           modality: input.modality,
           additionalNotes: input.additionalNotes ?? null,
+          participants: input.participants ?? null,
+          rateBilling: input.rateBilling ?? null,
+          clientGender: input.clientGender ?? null,
+          clientAge: input.clientAge ?? null,
+          therapistGenderPref: input.therapistGenderPref ?? null,
+          therapyTypes: input.therapyTypes ?? [],
+          languageRequirements: input.languageRequirements ?? [],
+          additionalContext: input.additionalContext ?? null,
         },
       });
 

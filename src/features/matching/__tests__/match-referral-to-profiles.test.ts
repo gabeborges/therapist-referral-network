@@ -8,6 +8,9 @@ import {
   computeLocationScore,
   computeActivityDecay,
   computeCompletenessBoost,
+  computeParticipantsScore,
+  computeLanguageScore,
+  computeTherapyTypeScore,
   scoreProfile,
   matchReferralToProfiles,
 } from "@/features/matching/match-referral-to-profiles";
@@ -43,6 +46,24 @@ function makeProfile(
     lastActiveAt: new Date("2026-03-25T12:00:00Z"), // 1 day ago
     createdAt: new Date("2025-01-01"),
     updatedAt: new Date("2026-03-25"),
+    // New fields
+    imageUrl: null,
+    pronouns: null,
+    therapistGender: null,
+    primaryCredential: null,
+    credentials: [],
+    websiteUrl: null,
+    psychologyTodayUrl: null,
+    professionalEmail: null,
+    licensingLevel: null,
+    freeConsultation: false,
+    participants: [],
+    topSpecialties: [],
+    faithOrientation: null,
+    clientEthnicity: [],
+    styleDescriptors: [],
+    otherTreatmentOrientation: null,
+    proBono: false,
     ...overrides,
   };
 }
@@ -65,6 +86,15 @@ function makeReferralPost(
     slug: "abc123",
     createdAt: new Date("2026-03-20"),
     updatedAt: new Date("2026-03-20"),
+    // New fields
+    participants: null,
+    rateBilling: null,
+    clientGender: null,
+    clientAge: null,
+    therapistGenderPref: null,
+    therapyTypes: [],
+    languageRequirements: [],
+    additionalContext: null,
     ...overrides,
   };
 }
@@ -176,48 +206,154 @@ describe("computeActivityDecay", () => {
 });
 
 describe("computeCompletenessBoost", () => {
+  const base = {
+    bio: null as string | null,
+    therapeuticApproach: [] as string[],
+    languages: [] as string[],
+    insurers: [] as string[],
+    participants: [] as string[],
+    topSpecialties: [] as string[],
+  };
+
   it("returns 0.5 when all optional fields are filled", () => {
     expect(
       computeCompletenessBoost({
+        ...base,
         bio: "Some bio",
         therapeuticApproach: ["CBT"],
         languages: ["English"],
         insurers: ["Manulife"],
+        participants: ["Individuals"],
+        topSpecialties: ["Anxiety"],
       }),
     ).toBe(0.5);
   });
 
   it("returns 0 when no optional fields are filled", () => {
-    expect(
-      computeCompletenessBoost({
-        bio: null,
-        therapeuticApproach: [],
-        languages: [],
-        insurers: [],
-      }),
-    ).toBe(0);
+    expect(computeCompletenessBoost(base)).toBe(0);
   });
 
-  it("returns 0.25 for 2 out of 4 fields filled", () => {
+  it("returns proportional score for partial fill", () => {
+    // 3 out of 6 filled = (3/6)*0.5 = 0.25
     expect(
       computeCompletenessBoost({
+        ...base,
         bio: "A bio",
-        therapeuticApproach: [],
         languages: ["French"],
-        insurers: [],
+        participants: ["Couples"],
       }),
     ).toBe(0.25);
   });
 
   it("treats empty string bio as unfilled", () => {
+    // 1 out of 6 filled = (1/6)*0.5 ≈ 0.083
+    const result = computeCompletenessBoost({
+      ...base,
+      bio: "",
+      therapeuticApproach: ["CBT"],
+    });
+    expect(result).toBeCloseTo(0.083, 2);
+  });
+});
+
+// ─── New scoring helpers (participants, language, therapyType) ─────────────────
+
+describe("computeParticipantsScore", () => {
+  it("returns 1 when the profile includes the referral participant type", () => {
+    expect(computeParticipantsScore(["Individuals", "Couples"], "Couples")).toBe(
+      1,
+    );
+  });
+
+  it("returns 0 when the profile does not include the referral participant type", () => {
     expect(
-      computeCompletenessBoost({
-        bio: "",
-        therapeuticApproach: ["CBT"],
-        languages: [],
-        insurers: [],
-      }),
-    ).toBe(0.125);
+      computeParticipantsScore(["Individuals"], "Couples"),
+    ).toBe(0);
+  });
+
+  it("returns 0 when referralParticipants is null", () => {
+    expect(computeParticipantsScore(["Individuals", "Couples"], null)).toBe(0);
+  });
+
+  it("returns 0 when profile participants is empty", () => {
+    expect(computeParticipantsScore([], "Individuals")).toBe(0);
+  });
+
+  it("is case-insensitive", () => {
+    expect(
+      computeParticipantsScore(["individuals"], "Individuals"),
+    ).toBe(1);
+  });
+});
+
+describe("computeLanguageScore", () => {
+  it("returns 1 when there is at least one language overlap", () => {
+    expect(
+      computeLanguageScore(["English", "French"], ["French"]),
+    ).toBe(1);
+  });
+
+  it("returns 1 for multiple overlapping languages", () => {
+    expect(
+      computeLanguageScore(
+        ["English", "French", "Spanish"],
+        ["French", "Spanish"],
+      ),
+    ).toBe(1);
+  });
+
+  it("returns 0 when there is no overlap", () => {
+    expect(
+      computeLanguageScore(["English"], ["French", "Mandarin"]),
+    ).toBe(0);
+  });
+
+  it("returns 0 when referral languages is empty", () => {
+    expect(computeLanguageScore(["English", "French"], [])).toBe(0);
+  });
+
+  it("returns 0 when profile languages is empty", () => {
+    expect(computeLanguageScore([], ["English"])).toBe(0);
+  });
+
+  it("is case-insensitive", () => {
+    expect(
+      computeLanguageScore(["english"], ["English"]),
+    ).toBe(1);
+  });
+});
+
+describe("computeTherapyTypeScore", () => {
+  it("returns 1 when there is at least one therapy type overlap", () => {
+    expect(
+      computeTherapyTypeScore(["CBT", "DBT"], ["CBT"]),
+    ).toBe(1);
+  });
+
+  it("returns 1 for multiple overlapping therapy types", () => {
+    expect(
+      computeTherapyTypeScore(["CBT", "DBT", "EMDR"], ["DBT", "EMDR"]),
+    ).toBe(1);
+  });
+
+  it("returns 0 when there is no overlap", () => {
+    expect(
+      computeTherapyTypeScore(["CBT"], ["EMDR", "Somatic"]),
+    ).toBe(0);
+  });
+
+  it("returns 0 when referral therapy types is empty", () => {
+    expect(computeTherapyTypeScore(["CBT", "DBT"], [])).toBe(0);
+  });
+
+  it("returns 0 when profile approaches is empty", () => {
+    expect(computeTherapyTypeScore([], ["CBT"])).toBe(0);
+  });
+
+  it("is case-insensitive", () => {
+    expect(
+      computeTherapyTypeScore(["cbt"], ["CBT"]),
+    ).toBe(1);
   });
 });
 
@@ -235,11 +371,14 @@ describe("scoreProfile", () => {
       ageGroup: true,
       modality: true,
       location: true,
+      participants: false,
+      language: false,
+      therapyType: false,
     });
-    // specialty=1 + ageGroup=1 + modality=1 + location=2 = 5
-    // decay = 1.0 (1 day ago), completeness = 0.5 (all filled)
-    // score = 5 * 1.0 + 0.5 = 5.5
-    expect(result.score).toBe(5.5);
+    // specialty=1 + ageGroup=1 + modality=1 + location=2 + participants=0 + language=0 = 5
+    // decay = 1.0 (1 day ago), completeness = (4/6)*0.5 = 0.333 (bio, approach, languages, insurers filled; participants, topSpecialties empty)
+    // score = 5 * 1.0 + 0.333 = 5.333
+    expect(result.score).toBe(5.333);
     expect(result.profileId).toBe("profile-1");
   });
 
@@ -260,11 +399,14 @@ describe("scoreProfile", () => {
       ageGroup: false,
       modality: true,
       location: true,
+      participants: false,
+      language: false,
+      therapyType: false,
     });
     // specialty=0 + ageGroup=0 + modality=1 + location=2 = 3
-    // decay = 1.0, completeness = 0.5
-    // score = 3 * 1.0 + 0.5 = 3.5
-    expect(result.score).toBe(3.5);
+    // decay = 1.0, completeness = (4/6)*0.5 = 0.333
+    // score = 3 * 1.0 + 0.333 = 3.333
+    expect(result.score).toBe(3.333);
   });
 
   it("applies activity decay for inactive profiles", () => {
@@ -276,9 +418,85 @@ describe("scoreProfile", () => {
     const result = scoreProfile(profile, referral, NOW);
 
     // specialty=1 + ageGroup=1 + modality=1 + location=2 = 5
-    // decay = 0.2, completeness = 0.5
-    // score = 5 * 0.2 + 0.5 = 1.5
-    expect(result.score).toBe(1.5);
+    // decay = 0.2, completeness = (4/6)*0.5 = 0.333
+    // score = 5 * 0.2 + 0.333 = 1.333
+    expect(result.score).toBe(1.333);
+  });
+
+  it("scores participants dimension when referral specifies participants", () => {
+    const profile = makeProfile({ participants: ["Couples", "Family"] });
+    const referral = makeReferralPost({ participants: "Couples" });
+
+    const result = scoreProfile(profile, referral, NOW);
+
+    expect(result.matchDimensions.participants).toBe(true);
+  });
+
+  it("does not score participants when referral has no participants", () => {
+    const profile = makeProfile({ participants: ["Couples"] });
+    const referral = makeReferralPost({ participants: null });
+
+    const result = scoreProfile(profile, referral, NOW);
+
+    expect(result.matchDimensions.participants).toBe(false);
+  });
+
+  it("scores language dimension when referral has language requirements", () => {
+    const profile = makeProfile({ languages: ["English", "French"] });
+    const referral = makeReferralPost({ languageRequirements: ["French"] });
+
+    const result = scoreProfile(profile, referral, NOW);
+
+    expect(result.matchDimensions.language).toBe(true);
+  });
+
+  it("does not score language when referral has no language requirements", () => {
+    const profile = makeProfile({ languages: ["English", "French"] });
+    const referral = makeReferralPost({ languageRequirements: [] });
+
+    const result = scoreProfile(profile, referral, NOW);
+
+    expect(result.matchDimensions.language).toBe(false);
+  });
+
+  it("scores therapyType dimension when referral has therapy types", () => {
+    const profile = makeProfile({ therapeuticApproach: ["CBT", "EMDR"] });
+    const referral = makeReferralPost({ therapyTypes: ["EMDR"] });
+
+    const result = scoreProfile(profile, referral, NOW);
+
+    expect(result.matchDimensions.therapyType).toBe(true);
+  });
+
+  it("does not score therapyType when referral has no therapy types", () => {
+    const profile = makeProfile({ therapeuticApproach: ["CBT"] });
+    const referral = makeReferralPost({ therapyTypes: [] });
+
+    const result = scoreProfile(profile, referral, NOW);
+
+    expect(result.matchDimensions.therapyType).toBe(false);
+  });
+
+  it("adds all new dimension scores to the total", () => {
+    const profile = makeProfile({
+      participants: ["Couples"],
+      languages: ["French"],
+      therapeuticApproach: ["EMDR"],
+    });
+    const referral = makeReferralPost({
+      participants: "Couples",
+      languageRequirements: ["French"],
+      therapyTypes: ["EMDR"],
+    });
+
+    const result = scoreProfile(profile, referral, NOW);
+
+    expect(result.matchDimensions.participants).toBe(true);
+    expect(result.matchDimensions.language).toBe(true);
+    expect(result.matchDimensions.therapyType).toBe(true);
+    // Base (specialty=1 + ageGroup=1 + modality=1 + location=2 + participants=1 + language=1 + therapyType=1) = 8
+    // decay=1.0, completeness includes therapeuticApproach + languages + participants = (5/6)*0.5 = 0.417
+    expect(result.score).toBeGreaterThan(7);
   });
 
   it("scores zero when no dimensions match and profile is incomplete", () => {
@@ -302,6 +520,9 @@ describe("scoreProfile", () => {
       ageGroup: false,
       modality: false,
       location: false,
+      participants: false,
+      language: false,
+      therapyType: false,
     });
     // 0 * 1.0 + 0 = 0
     expect(result.score).toBe(0);

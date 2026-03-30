@@ -174,6 +174,23 @@ Non-secret config that differs between environments is committed:
 2. If it's a non-secret default: add it to `.env.development` and/or `.env.production`
 3. For client-side access, prefix with `NEXT_PUBLIC_`
 
+### DNS & email setup (production)
+
+Before going live, configure DNS records for the custom domain and email deliverability:
+
+**Domain (Vercel)**
+1. Add `therapistreferralnetwork.com` in Vercel Project Settings > Domains
+2. Set a CNAME record: `www` → `cname.vercel-dns.com`
+3. For apex domain, follow Vercel's A record instructions
+
+**Email deliverability (Resend)**
+1. In the Resend dashboard, add and verify `therapistreferralnetwork.com`
+2. Add the DNS records Resend provides:
+   - **SPF** — TXT record: `v=spf1 include:amazonses.com ~all`
+   - **DKIM** — CNAME records (3 provided by Resend)
+   - **DMARC** — TXT record: `v=DMARC1; p=quarantine; rua=mailto:dmarc@therapistreferralnetwork.com`
+3. Wait for DNS propagation and verify in Resend dashboard
+
 ### Deployment
 
 Vercel auto-deploys from `main` on every push. Preview deploys use variables scoped to "Preview" in the Vercel dashboard; production deploys use "Production" scoped variables.

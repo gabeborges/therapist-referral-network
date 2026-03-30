@@ -1,15 +1,19 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useTRPC } from "@/lib/trpc/client";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   referralPostSchema,
   type ReferralPostFormData,
 } from "@/lib/validations/referral-post";
+import {
+  AutocompleteSelect,
+  type AutocompleteOption,
+} from "@/features/onboarding/components/AutocompleteSelect";
 
 const AGE_GROUPS = [
   "Children (6-12)",
@@ -41,6 +45,32 @@ const MODALITIES = [
   { value: "both", label: "Both" },
 ] as const;
 
+const PARTICIPANTS = ["Individual", "Couples", "Family", "Group"] as const;
+
+const RATE_BILLING_OPTIONS = [
+  "",
+  "Full fee",
+  "Sliding scale",
+  "Pro-bono",
+  "Direct billing",
+] as const;
+
+const CLIENT_GENDER_OPTIONS = [
+  "",
+  "Male",
+  "Female",
+  "Non-binary",
+  "Prefer not to say",
+] as const;
+
+const THERAPIST_GENDER_PREF_OPTIONS = [
+  "",
+  "Any",
+  "Female",
+  "Male",
+  "Non-binary",
+] as const;
+
 const inputBaseClass =
   "w-full h-11 px-3 bg-inset text-fg border rounded-sm text-[0.9375rem] font-sans transition-[border-color,background,box-shadow] duration-150 ease-out focus:border-border-f focus:bg-bg focus:outline-2 focus:outline-border-f focus:outline-offset-2 placeholder:text-fg-4";
 
@@ -51,11 +81,35 @@ export function ReferralPostForm(): React.ReactElement {
   const router = useRouter();
   const trpc = useTRPC();
   const [serverError, setServerError] = useState<string | null>(null);
+  const [showDetails, setShowDetails] = useState(false);
+  const errorRef = useRef<HTMLDivElement>(null);
+
+  const { data: specialtiesData } = useQuery(
+    trpc.taxonomy.getSpecialties.queryOptions(),
+  );
+  const { data: therapyTypesData } = useQuery(
+    trpc.taxonomy.getTherapyTypes.queryOptions(),
+  );
+  const { data: languagesData } = useQuery(
+    trpc.taxonomy.getLanguages.queryOptions(),
+  );
+
+  const therapyTypeOptions: AutocompleteOption[] = (therapyTypesData ?? []).map(
+    (t) => ({ id: t.id, name: t.name }),
+  );
+  const languageOptions: AutocompleteOption[] = (languagesData ?? []).map(
+    (l) => ({ id: l.id, name: l.name }),
+  );
+
+  useEffect(() => {
+    if (serverError) errorRef.current?.focus();
+  }, [serverError]);
 
   const {
     register,
     handleSubmit,
     watch,
+    control,
     formState: { errors },
   } = useForm<ReferralPostFormData>({
     resolver: zodResolver(referralPostSchema),
@@ -65,11 +119,20 @@ export function ReferralPostForm(): React.ReactElement {
       locationCity: "",
       locationProvince: "",
       modality: undefined,
+      participants: undefined,
+      rateBilling: "",
       additionalNotes: "",
+      clientGender: "",
+      clientAge: "",
+      therapistGenderPref: "",
+      therapyTypes: [],
+      languageRequirements: [],
+      additionalContext: "",
     },
   });
 
   const additionalNotes = watch("additionalNotes") ?? "";
+  const additionalContext = watch("additionalContext") ?? "";
 
   const createReferral = useMutation(
     trpc.referral.create.mutationOptions({
@@ -98,7 +161,7 @@ export function ReferralPostForm(): React.ReactElement {
       </p>
 
       {serverError && (
-        <div className="p-4 rounded-md border border-err/20 bg-err-l flex gap-3 items-start mb-6">
+        <div ref={errorRef} role="alert" tabIndex={-1} className="p-4 rounded-md border border-err/20 bg-err-l flex gap-3 items-start mb-6">
           <svg
             aria-hidden="true"
             className="w-5 h-5 shrink-0 mt-0.5 text-err"
@@ -253,6 +316,245 @@ export function ReferralPostForm(): React.ReactElement {
           )}
         </fieldset>
 
+        {/* Participants */}
+        <fieldset>
+          <legend className={labelClass}>Participants</legend>
+          <div className="flex flex-wrap gap-3">
+            {PARTICIPANTS.map((p) => (
+              <label
+                key={p}
+                className="flex items-center gap-2 cursor-pointer"
+              >
+                <input
+                  type="radio"
+                  value={p}
+                  {...register("participants")}
+                  className="w-4 h-4 accent-brand"
+                />
+                <span className="text-[0.9375rem] text-fg">{p}</span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+
+        {/* Rate / Billing */}
+        <div>
+          <label htmlFor="rateBilling" className={labelClass}>
+            Rate / Billing{" "}
+            <span className="font-normal text-fg-4">(optional)</span>
+          </label>
+          <select
+            id="rateBilling"
+            {...register("rateBilling")}
+            className={`${inputBaseClass} cursor-pointer pr-9 appearance-none border-border`}
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%238F8279' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E")`,
+              backgroundRepeat: "no-repeat",
+              backgroundPosition: "right 12px center",
+            }}
+            defaultValue=""
+          >
+            <option value="">Select billing preference...</option>
+            {RATE_BILLING_OPTIONS.filter((o) => o !== "").map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Collapsible Additional Details */}
+        <div className="border border-border rounded-sm">
+          <button
+            type="button"
+            onClick={() => setShowDetails((prev) => !prev)}
+            className="w-full flex items-center justify-between px-4 py-3 bg-transparent border-none cursor-pointer text-left font-sans"
+            aria-expanded={showDetails}
+            aria-controls="additional-details-section"
+          >
+            <span className="text-[0.875rem] font-medium text-fg-2">
+              Additional Details
+            </span>
+            <svg
+              aria-hidden="true"
+              className={`w-4 h-4 text-fg-4 transition-transform duration-200 ${
+                showDetails ? "rotate-180" : ""
+              }`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </button>
+
+          {showDetails && (
+            <div
+              id="additional-details-section"
+              className="px-4 pb-4 space-y-5 border-t border-border"
+            >
+              {/* Client Gender */}
+              <div className="pt-4">
+                <label htmlFor="clientGender" className={labelClass}>
+                  Client Gender{" "}
+                  <span className="font-normal text-fg-4">(optional)</span>
+                </label>
+                <select
+                  id="clientGender"
+                  {...register("clientGender")}
+                  className={`${inputBaseClass} cursor-pointer pr-9 appearance-none border-border`}
+                  style={{
+                    backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%238F8279' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E")`,
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "right 12px center",
+                  }}
+                  defaultValue=""
+                >
+                  <option value="">Select gender...</option>
+                  {CLIENT_GENDER_OPTIONS.filter((o) => o !== "").map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Client Age */}
+              <div>
+                <label htmlFor="clientAge" className={labelClass}>
+                  Client Age{" "}
+                  <span className="font-normal text-fg-4">(optional)</span>
+                </label>
+                <input
+                  id="clientAge"
+                  {...register("clientAge")}
+                  className={`${inputBaseClass} border-border`}
+                  placeholder="e.g., 34"
+                />
+              </div>
+
+              {/* Therapist Gender Preference */}
+              <div>
+                <label htmlFor="therapistGenderPref" className={labelClass}>
+                  Therapist Gender Preference{" "}
+                  <span className="font-normal text-fg-4">(optional)</span>
+                </label>
+                <select
+                  id="therapistGenderPref"
+                  {...register("therapistGenderPref")}
+                  className={`${inputBaseClass} cursor-pointer pr-9 appearance-none border-border`}
+                  style={{
+                    backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%238F8279' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E")`,
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "right 12px center",
+                  }}
+                  defaultValue=""
+                >
+                  <option value="">Select preference...</option>
+                  {THERAPIST_GENDER_PREF_OPTIONS.filter((o) => o !== "").map(
+                    (option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ),
+                  )}
+                </select>
+              </div>
+
+              {/* Therapy Types */}
+              <Controller
+                name="therapyTypes"
+                control={control}
+                render={({ field }) => (
+                  <AutocompleteSelect
+                    label="Therapy Types"
+                    options={therapyTypeOptions}
+                    selected={
+                      (field.value ?? [])
+                        .map((name) =>
+                          therapyTypeOptions.find((o) => o.name === name),
+                        )
+                        .filter(Boolean) as AutocompleteOption[]
+                    }
+                    onChange={(selected) =>
+                      field.onChange(selected.map((s) => s.name))
+                    }
+                    placeholder="Search therapy types..."
+                    loading={!therapyTypesData}
+                  />
+                )}
+              />
+
+              {/* Language Requirements */}
+              <Controller
+                name="languageRequirements"
+                control={control}
+                render={({ field }) => (
+                  <AutocompleteSelect
+                    label="Language Requirements"
+                    options={languageOptions}
+                    selected={
+                      (field.value ?? [])
+                        .map((name) =>
+                          languageOptions.find((o) => o.name === name),
+                        )
+                        .filter(Boolean) as AutocompleteOption[]
+                    }
+                    onChange={(selected) =>
+                      field.onChange(selected.map((s) => s.name))
+                    }
+                    placeholder="Search languages..."
+                    loading={!languagesData}
+                  />
+                )}
+              />
+
+              {/* Additional Context */}
+              <div>
+                <label htmlFor="additionalContext" className={labelClass}>
+                  Additional Context{" "}
+                  <span className="font-normal text-fg-4">(optional)</span>
+                </label>
+                <textarea
+                  id="additionalContext"
+                  {...register("additionalContext")}
+                  aria-invalid={!!errors.additionalContext}
+                  aria-describedby={
+                    errors.additionalContext
+                      ? "additionalContext-error"
+                      : undefined
+                  }
+                  className={`w-full min-h-[100px] p-3 bg-inset text-fg border rounded-sm text-[0.9375rem] font-sans resize-y transition-[border-color] duration-150 ease-out focus:border-border-f focus:bg-bg focus:outline-2 focus:outline-border-f focus:outline-offset-2 placeholder:text-fg-4 ${
+                    errors.additionalContext ? "border-err" : "border-border"
+                  }`}
+                  placeholder="Any other relevant context for matching..."
+                  maxLength={2000}
+                />
+                <div className="flex items-center justify-between mt-1">
+                  {errors.additionalContext ? (
+                    <p
+                      id="additionalContext-error"
+                      className="text-[0.75rem] text-err"
+                    >
+                      {errors.additionalContext.message}
+                    </p>
+                  ) : (
+                    <span />
+                  )}
+                  <span className="text-[0.75rem] text-fg-4">
+                    {additionalContext.length}/2000
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
         {/* Additional Notes */}
         <div>
           <label htmlFor="additionalNotes" className={labelClass}>Additional Notes</label>
@@ -306,7 +608,7 @@ export function ReferralPostForm(): React.ReactElement {
           >
             {createReferral.isPending ? (
               <>
-                <span className="w-[18px] h-[18px] border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                <span aria-hidden="true" className="w-[18px] h-[18px] border-2 border-white/30 border-t-white rounded-full animate-spin" />
                 Posting...
               </>
             ) : (

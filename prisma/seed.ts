@@ -1,0 +1,276 @@
+import { PrismaClient } from "../src/generated/prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
+import { config } from "dotenv";
+config({ path: ".env.local" });
+config({ path: ".env" });
+
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
+const prisma = new PrismaClient({ adapter });
+
+async function upsertAll(
+  model: "specialty" | "therapyType" | "language" | "alliedGroup" | "paymentMethod",
+  items: { name: string; category?: string }[]
+) {
+  for (let i = 0; i < items.length; i++) {
+    const item = items[i]!;
+    await (prisma[model] as any).upsert({
+      where: { name: item.name },
+      update: { sortOrder: i, ...(item.category !== undefined ? { category: item.category } : {}) },
+      create: { name: item.name, sortOrder: i, ...(item.category !== undefined ? { category: item.category } : {}) },
+    });
+  }
+  console.log(`  Seeded ${items.length} ${model} records`);
+}
+
+async function main() {
+  console.log("Seeding taxonomy data...");
+
+  // --- Specialties (85 main + 3 Mental Health + 3 Sexuality) ---
+  await upsertAll("specialty", [
+    { name: "Addiction" },
+    { name: "ADHD" },
+    { name: "Adoption" },
+    { name: "Alcohol Use" },
+    { name: "Anger Management" },
+    { name: "Antisocial Personality" },
+    { name: "Anxiety" },
+    { name: "Asperger's Syndrome" },
+    { name: "Autism" },
+    { name: "Behavioural Issues" },
+    { name: "Bipolar Disorder" },
+    { name: "Body Image" },
+    { name: "Borderline Personality (BPD)" },
+    { name: "Cancer" },
+    { name: "Career Guidance" },
+    { name: "Caregivers" },
+    { name: "Child" },
+    { name: "Chronic Illness" },
+    { name: "Chronic Impulsivity" },
+    { name: "Chronic Pain" },
+    { name: "Chronic Relapse" },
+    { name: "Codependency" },
+    { name: "Coping Skills" },
+    { name: "Dementia" },
+    { name: "Depression" },
+    { name: "Developmental Disorders" },
+    { name: "Dissociative Disorders (DID)" },
+    { name: "Divorce" },
+    { name: "Domestic Abuse" },
+    { name: "Domestic Violence" },
+    { name: "Drug Abuse" },
+    { name: "Dual Diagnosis" },
+    { name: "Eating Disorders" },
+    { name: "Education and Learning Disabilities" },
+    { name: "Emotional Disturbance" },
+    { name: "Family Conflict" },
+    { name: "First Responders" },
+    { name: "Gambling" },
+    { name: "Geriatric and Seniors" },
+    { name: "Grief" },
+    { name: "Hoarding" },
+    { name: "Infertility" },
+    { name: "Infidelity" },
+    { name: "Intellectual Disability" },
+    { name: "Internet Addiction" },
+    { name: "Life Coaching" },
+    { name: "Life Transitions" },
+    { name: "Marital and Premarital" },
+    { name: "Medical Detox" },
+    { name: "Medication Management" },
+    { name: "Men's Issues" },
+    { name: "Narcissistic Personality (NPD)" },
+    { name: "Obesity" },
+    { name: "Obsessive-Compulsive (OCD)" },
+    { name: "Open Relationships Non-Monogamy" },
+    { name: "Oppositional Defiance (ODD)" },
+    { name: "Parenting" },
+    { name: "Peer Relationships" },
+    { name: "Personality Disorders" },
+    { name: "Pregnancy, Prenatal, Postpartum" },
+    { name: "Psychosis" },
+    { name: "Racial Identity" },
+    { name: "Relationship Issues" },
+    { name: "School Issues" },
+    { name: "Self Esteem" },
+    { name: "Self-Harming" },
+    { name: "Sex Therapy" },
+    { name: "Sex-Positive, Kink Allied" },
+    { name: "Sexual Abuse" },
+    { name: "Sexual Addiction" },
+    { name: "Sleep or Insomnia" },
+    { name: "Spirituality" },
+    { name: "Sports Performance" },
+    { name: "Stress" },
+    { name: "Substance Use" },
+    { name: "Suicidal Ideation" },
+    { name: "Teen Violence" },
+    { name: "Testing and Evaluation" },
+    { name: "Transgender" },
+    { name: "Trauma and PTSD" },
+    { name: "Traumatic Brain Injury (TBI)" },
+    { name: "Veterans" },
+    { name: "Video Game Addiction" },
+    { name: "Weight Loss" },
+    { name: "Women's Issues" },
+    // Mental Health sub-category
+    { name: "Impulse Control Disorders", category: "Mental Health" },
+    { name: "Mood Disorders", category: "Mental Health" },
+    { name: "Thinking Disorders", category: "Mental Health" },
+    // Sexuality sub-category
+    { name: "Bisexual", category: "Sexuality" },
+    { name: "Lesbian", category: "Sexuality" },
+    { name: "LGBTQ+", category: "Sexuality" },
+  ]);
+
+  // --- Therapy Types (68) ---
+  await upsertAll("therapyType", [
+    { name: "Acceptance and Commitment (ACT)" },
+    { name: "Adlerian" },
+    { name: "AEDP" },
+    { name: "Applied Behavioural Analysis (ABA)" },
+    { name: "Art Therapy" },
+    { name: "Attachment-based" },
+    { name: "Biofeedback" },
+    { name: "Brainspotting" },
+    { name: "Christian Counselling" },
+    { name: "Clinical Supervision and Qualified Supervisors" },
+    { name: "Coaching" },
+    { name: "Cognitive Behavioural (CBT)" },
+    { name: "Cognitive Processing (CPT)" },
+    { name: "Compassion Focused" },
+    { name: "Culturally Sensitive" },
+    { name: "Dance Movement Therapy" },
+    { name: "Dialectical Behavior (DBT)" },
+    { name: "Eclectic" },
+    { name: "EMDR" },
+    { name: "Emotionally Focused" },
+    { name: "Energy Psychology" },
+    { name: "Existential" },
+    { name: "Experiential Therapy" },
+    { name: "Exposure Response Prevention (ERP)" },
+    { name: "Expressive Arts" },
+    { name: "Family / Marital" },
+    { name: "Family Systems" },
+    { name: "Feminist" },
+    { name: "Forensic Psychology" },
+    { name: "Gestalt" },
+    { name: "Gottman Method" },
+    { name: "Humanistic" },
+    { name: "Hypnotherapy" },
+    { name: "Imago" },
+    { name: "Integrative" },
+    { name: "Internal Family Systems (IFS)" },
+    { name: "Interpersonal" },
+    { name: "Intervention" },
+    { name: "Jungian" },
+    { name: "Mindfulness-Based (MBCT)" },
+    { name: "Motivational Interviewing" },
+    { name: "Multicultural" },
+    { name: "Music Therapy" },
+    { name: "Narrative" },
+    { name: "Neuro-Linguistic (NLP)" },
+    { name: "Neurofeedback" },
+    { name: "Parent-Child Interaction (PCIT)" },
+    { name: "Person-Centered" },
+    { name: "Play Therapy" },
+    { name: "Positive Psychology" },
+    { name: "Prolonged Exposure Therapy" },
+    { name: "Psychoanalytic" },
+    { name: "Psychobiological Approach Couple Therapy" },
+    { name: "Psychodynamic" },
+    { name: "Psychological Testing and Evaluation" },
+    { name: "Rational Emotive Behaviour (REBT)" },
+    { name: "Reality Therapy" },
+    { name: "Relational" },
+    { name: "Sandplay" },
+    { name: "Schema Therapy" },
+    { name: "Solution Focused Brief (SFBT)" },
+    { name: "Somatic" },
+    { name: "Strength-Based" },
+    { name: "Structural Family Therapy" },
+    { name: "Transpersonal" },
+    { name: "Trauma Focused" },
+  ]);
+
+  // --- Languages (36 — English + 35 others) ---
+  await upsertAll("language", [
+    { name: "English" },
+    { name: "Arabic" },
+    { name: "Armenian" },
+    { name: "Bosnian" },
+    { name: "Cantonese" },
+    { name: "Creole" },
+    { name: "Croatian" },
+    { name: "Dutch" },
+    { name: "Farsi" },
+    { name: "Filipino" },
+    { name: "French" },
+    { name: "German" },
+    { name: "Greek" },
+    { name: "Gujarati" },
+    { name: "Hebrew" },
+    { name: "Hindi" },
+    { name: "Hungarian" },
+    { name: "Italian" },
+    { name: "Japanese" },
+    { name: "Korean" },
+    { name: "Mandarin" },
+    { name: "Polish" },
+    { name: "Portuguese" },
+    { name: "Punjabi" },
+    { name: "Romanian" },
+    { name: "Russian" },
+    { name: "Serbian" },
+    { name: "Sign Language (ASL)" },
+    { name: "Sinhalese" },
+    { name: "Spanish" },
+    { name: "Tamil" },
+    { name: "Turkish" },
+    { name: "Ukrainian" },
+    { name: "Urdu" },
+    { name: "Vietnamese" },
+  ]);
+
+  // --- Allied Groups (15) ---
+  await upsertAll("alliedGroup", [
+    { name: "Aviation Professionals" },
+    { name: "Bisexual Allied" },
+    { name: "Deaf Allied" },
+    { name: "Gay Allied" },
+    { name: "HIV / AIDS Allied" },
+    { name: "Immuno-disorders" },
+    { name: "Intersex Allied" },
+    { name: "Lesbian Allied" },
+    { name: "Little Person Allied" },
+    { name: "Non-Binary Allied" },
+    { name: "Queer Allied" },
+    { name: "Racial Justice Allied" },
+    { name: "Sex Worker Allied" },
+    { name: "Single Parent" },
+    { name: "Transgender Allied" },
+  ]);
+
+  // --- Payment Methods (11) ---
+  await upsertAll("paymentMethod", [
+    { name: "ACH Bank transfer" },
+    { name: "American Express" },
+    { name: "Cash" },
+    { name: "Cheque" },
+    { name: "Discover" },
+    { name: "e-Transfer" },
+    { name: "Health Savings Account" },
+    { name: "Mastercard" },
+    { name: "Paypal" },
+    { name: "Visa" },
+    { name: "Wire" },
+  ]);
+
+  console.log("Seed complete!");
+}
+
+main()
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
+  .finally(() => prisma.$disconnect());

@@ -40,7 +40,7 @@ export default async function ReferralsPage(): Promise<React.ReactElement> {
     <Navbar />
     <div className="px-4 sm:px-6 pt-12 pb-24">
       <div className="max-w-[640px] mx-auto">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between flex-wrap gap-3 mb-8">
           <h1 className="text-[1.5rem] font-semibold tracking-[-0.015em] leading-[1.3] text-fg m-0">
             My Referrals
           </h1>

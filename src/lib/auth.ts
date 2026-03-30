@@ -10,6 +10,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     jwt({ token, user }) {
       if (user) {
         token.sub = user.id;
+        // Touch lastActiveAt on login (fire-and-forget)
+        prisma.therapistProfile
+          .update({
+            where: { userId: user.id! },
+            data: { lastActiveAt: new Date() },
+          })
+          .catch(() => {
+            // Profile may not exist yet (first login before onboarding)
+          });
       }
       return token;
     },

@@ -26,6 +26,7 @@ export async function Navbar(): Promise<React.ReactElement> {
 
   return (
     <nav
+      aria-label="Main navigation"
       className="w-full sticky top-0 z-50"
       style={{
         borderBottom: "1px solid var(--border)",

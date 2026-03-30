@@ -77,7 +77,7 @@
 ### 6.1 Email templates
 - [x] Enhance existing `ReferralNotificationEmail` template — add referring therapist contact info (name, email), full referral details, styled with react-email
 - [x] Create `FulfillmentCheckEmail` template — referral summary + "Yes fulfilled" / "No, still looking" buttons with token-based URLs
-- [ ] Test email rendering locally
+- [x] Test email rendering locally
 
 ### 6.2 Notification sending
 - [x] Create `src/features/notifications/` feature folder
@@ -134,21 +134,21 @@
 ## Phase 10: Polish & deploy
 
 ### 10.1 Activity tracking
-- [ ] Update `lastActiveAt` on: login, profile view, referral post creation, referral link click
-- [ ] Add middleware or tRPC middleware to touch `lastActiveAt` on authenticated requests
+- [x] Update `lastActiveAt` on: login, profile view, referral post creation, referral link click
+- [x] Add middleware or tRPC middleware to touch `lastActiveAt` on authenticated requests
 
 ### 10.2 Environment & deployment
-- [ ] Set up all environment variables (RESEND_FROM_EMAIL, DRIP_*, CRON_SECRET, NEXT_PUBLIC_APP_URL)
+- [x] Set up all environment variables (RESEND_FROM_EMAIL, DRIP_*, CRON_SECRET, NEXT_PUBLIC_APP_URL)
 - [x] Add `vercel.json` with cron configuration
-- [ ] DNS setup for custom domain + email (SPF, DKIM, DMARC for Resend)
-- [ ] Test full flow: sign up → create profile → post referral → matching → email → fulfillment
+- [x] DNS setup for custom domain + email (SPF, DKIM, DMARC for Resend)
+- [x] Test full flow: sign up → create profile → post referral → matching → email → fulfillment
 
 ### 10.3 Mobile responsiveness
-- [ ] Ensure all forms work on mobile (profile creation, referral posting)
-- [ ] Ensure email templates render well on mobile
-- [ ] Test shareable link OG preview in Facebook/iMessage
+- [x] Ensure all forms work on mobile (profile creation, referral posting)
+- [x] Ensure email templates render well on mobile
+- [x] Test shareable link OG preview in Facebook/iMessage
 
 ### 10.4 Accessibility
-- [ ] WCAG 2.1 AA audit on all forms and pages
-- [ ] Keyboard navigation, focus management, ARIA labels
-- [ ] Color contrast check
+- [x] WCAG 2.1 AA audit on all forms and pages
+- [x] Keyboard navigation, focus management, ARIA labels
+- [x] Color contrast check

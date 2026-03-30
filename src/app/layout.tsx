@@ -26,8 +26,16 @@ export default function RootLayout({
       <body
         className={`${plusJakartaSans.variable} antialiased bg-[var(--bg)] text-[var(--fg)]`}
       >
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:px-4 focus:py-2 focus:bg-brand focus:text-brand-on focus:rounded-sm focus:text-[0.875rem] focus:font-semibold"
+        >
+          Skip to main content
+        </a>
         <SessionProvider>
-          <TRPCReactProvider>{children}</TRPCReactProvider>
+          <TRPCReactProvider>
+            <main id="main-content">{children}</main>
+          </TRPCReactProvider>
         </SessionProvider>
       </body>
     </html>

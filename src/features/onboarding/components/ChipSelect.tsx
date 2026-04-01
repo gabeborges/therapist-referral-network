@@ -33,10 +33,7 @@ export function ChipSelect({
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent): void {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(event.target as Node)
-      ) {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
         setIsOpen(false);
         setFocusedIndex(-1);
       }
@@ -107,7 +104,10 @@ export function ChipSelect({
 
   return (
     <div ref={containerRef} className="relative">
-      <label id={labelId} className="block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2">
+      <label
+        id={labelId}
+        className="block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2"
+      >
         {label}
       </label>
 
@@ -126,7 +126,18 @@ export function ChipSelect({
                 className="bg-transparent border-none text-inherit cursor-pointer p-0 ml-0.5 opacity-60 hover:opacity-100 w-3.5 h-3.5 inline-flex items-center justify-center"
                 aria-label={`Remove ${value}`}
               >
-                &times;
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={3}
+                  strokeLinecap="round"
+                  aria-hidden="true"
+                >
+                  <path d="M18 6L6 18M6 6l12 12" />
+                </svg>
               </button>
             </span>
           ))}
@@ -155,9 +166,7 @@ export function ChipSelect({
         }}
       >
         <span className={selected.length > 0 ? "text-fg" : "text-fg-4"}>
-          {selected.length > 0
-            ? `${selected.length} selected`
-            : placeholder}
+          {selected.length > 0 ? `${selected.length} selected` : placeholder}
         </span>
       </button>
 
@@ -173,7 +182,9 @@ export function ChipSelect({
           {availableOptions.map((option, index) => (
             <button
               key={option}
-              ref={(el) => { optionRefs.current[index] = el; }}
+              ref={(el) => {
+                optionRefs.current[index] = el;
+              }}
               type="button"
               role="option"
               aria-selected={false}
@@ -186,13 +197,9 @@ export function ChipSelect({
         </div>
       )}
 
-      {error && (
-        <p className="mt-1 text-[0.75rem] text-err">{error}</p>
-      )}
+      {error && <p className="mt-1 text-[0.75rem] text-err">{error}</p>}
       {helperText && !error && (
-        <p className="mt-1 text-[0.75rem] italic text-fg-3 tracking-[0.015em]">
-          {helperText}
-        </p>
+        <p className="mt-1 text-[0.75rem] italic text-fg-3 tracking-[0.015em]">{helperText}</p>
       )}
     </div>
   );

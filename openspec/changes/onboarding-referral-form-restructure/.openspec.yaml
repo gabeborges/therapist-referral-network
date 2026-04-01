@@ -1,0 +1,15 @@
+name: onboarding-referral-form-restructure
+description: Restructure onboarding as 3-step wizard with reduced fields, restructure referral form fields/order/controls, cross-cutting label and field changes
+status: ready
+prd: openspec/prd-referral-network.md
+artifacts:
+  proposal:
+    status: done
+  design:
+    status: done
+    dependencies: [proposal]
+  tasks:
+    status: done
+    dependencies: [design]
+apply:
+  requires: [tasks]

@@ -29,34 +29,24 @@ export function computeSpecialtyScore(
   presentingIssue: string,
 ): number {
   const issues = [presentingIssue.toLowerCase()];
-  const overlap = profileSpecialties.filter((s) =>
-    issues.includes(s.toLowerCase()),
-  ).length;
+  const overlap = profileSpecialties.filter((s) => issues.includes(s.toLowerCase())).length;
   return Math.min(overlap, 3);
 }
 
-export function computeAgeGroupScore(
-  profileAgeGroups: string[],
-  referralAgeGroup: string,
-): number {
-  return profileAgeGroups
-    .map((g) => g.toLowerCase())
-    .includes(referralAgeGroup.toLowerCase())
+export function computeAgeGroupScore(profileAgeGroups: string[], referralAgeGroup: string): number {
+  return profileAgeGroups.map((g) => g.toLowerCase()).includes(referralAgeGroup.toLowerCase())
     ? 1
     : 0;
 }
 
 export function computeModalityScore(
   profileModalities: string[],
-  referralModality: string,
+  referralModalities: string[],
 ): number {
+  if (referralModalities.length === 0) return 0;
   const pMods = profileModalities.map((m) => m.toLowerCase());
-  const rMod = referralModality.toLowerCase();
-
-  if (rMod === "both") return 1;
-  if (pMods.includes("both")) return 1;
-  if (pMods.includes(rMod)) return 1;
-  return 0;
+  const overlap = referralModalities.filter((m) => pMods.includes(m.toLowerCase())).length;
+  return overlap > 0 ? 1 : 0;
 }
 
 export function computeLocationScore(
@@ -67,20 +57,14 @@ export function computeLocationScore(
 ): number {
   if (!referralCity) {
     // Province-only comparison
-    return profileProvince.toLowerCase() === referralProvince.toLowerCase()
-      ? 1
-      : 0;
+    return profileProvince.toLowerCase() === referralProvince.toLowerCase() ? 1 : 0;
   }
   if (profileCity.toLowerCase() === referralCity.toLowerCase()) return 2;
-  if (profileProvince.toLowerCase() === referralProvince.toLowerCase())
-    return 1;
+  if (profileProvince.toLowerCase() === referralProvince.toLowerCase()) return 1;
   return 0;
 }
 
-export function computeActivityDecay(
-  lastActiveAt: Date,
-  now: Date = new Date(),
-): number {
+export function computeActivityDecay(lastActiveAt: Date, now: Date = new Date()): number {
   const daysSinceActive = (now.getTime() - lastActiveAt.getTime()) / MS_PER_DAY;
   if (daysSinceActive <= 7) return 1.0;
   if (daysSinceActive <= 14) return 0.8;
@@ -106,9 +90,7 @@ export function computeLanguageScore(
 ): number {
   if (referralLanguages.length === 0) return 0;
   const pLangs = profileLanguages.map((l) => l.toLowerCase());
-  const overlap = referralLanguages.filter((l) =>
-    pLangs.includes(l.toLowerCase()),
-  ).length;
+  const overlap = referralLanguages.filter((l) => pLangs.includes(l.toLowerCase())).length;
   return overlap > 0 ? 1 : 0;
 }
 
@@ -118,9 +100,7 @@ export function computeTherapyTypeScore(
 ): number {
   if (referralTherapyTypes.length === 0) return 0;
   const pApproaches = profileApproaches.map((a) => a.toLowerCase());
-  const overlap = referralTherapyTypes.filter((t) =>
-    pApproaches.includes(t.toLowerCase()),
-  ).length;
+  const overlap = referralTherapyTypes.filter((t) => pApproaches.includes(t.toLowerCase())).length;
   return overlap > 0 ? 1 : 0;
 }
 
@@ -151,32 +131,17 @@ export function scoreProfile(
   referralPost: ReferralPostModel,
   now: Date = new Date(),
 ): ProfileMatch {
-  const specialty = computeSpecialtyScore(
-    profile.specialties,
-    referralPost.presentingIssue,
-  );
-  const ageGroup = computeAgeGroupScore(
-    profile.ageGroups,
-    referralPost.ageGroup,
-  );
-  const modality = computeModalityScore(
-    profile.modalities,
-    referralPost.modality,
-  );
+  const specialty = computeSpecialtyScore(profile.specialties, referralPost.presentingIssue);
+  const ageGroup = computeAgeGroupScore(profile.ages, referralPost.ageGroup);
+  const modality = computeModalityScore(profile.modalities, referralPost.modalities);
   const location = computeLocationScore(
     profile.province,
     profile.city,
-    referralPost.locationProvince,
-    referralPost.locationCity,
+    referralPost.province ?? "",
+    referralPost.city,
   );
-  const participants = computeParticipantsScore(
-    profile.participants,
-    referralPost.participants,
-  );
-  const language = computeLanguageScore(
-    profile.languages,
-    referralPost.languageRequirements,
-  );
+  const participants = computeParticipantsScore(profile.participants, referralPost.participants);
+  const language = computeLanguageScore(profile.languages, referralPost.languages);
   const therapyType = computeTherapyTypeScore(
     profile.therapeuticApproach,
     referralPost.therapyTypes,
@@ -185,7 +150,8 @@ export function scoreProfile(
   const activityDecay = computeActivityDecay(profile.lastActiveAt, now);
   const completenessBoost = computeCompletenessBoost(profile);
 
-  const rawScore = specialty + ageGroup + modality + location + participants + language + therapyType;
+  const rawScore =
+    specialty + ageGroup + modality + location + participants + language + therapyType;
   const finalScore = rawScore * activityDecay + completenessBoost;
 
   return {

@@ -19,9 +19,7 @@ import {
 
 const NOW = new Date("2026-03-26T12:00:00Z");
 
-function makeProfile(
-  overrides: Partial<TherapistProfileModel> = {},
-): TherapistProfileModel {
+function makeProfile(overrides: Partial<TherapistProfileModel> = {}): TherapistProfileModel {
   return {
     id: "profile-1",
     userId: "user-1",
@@ -36,50 +34,51 @@ function makeProfile(
     modalities: ["virtual"],
     therapeuticApproach: ["CBT"],
     languages: ["English"],
-    ageGroups: ["adults"],
-    acceptsInsurance: true,
-    directBilling: false,
+    ages: ["adults"],
     insurers: ["Manulife"],
-    hourlyRate: 15000,
-    reducedFees: false,
     acceptingClients: true,
     lastActiveAt: new Date("2026-03-25T12:00:00Z"), // 1 day ago
     createdAt: new Date("2025-01-01"),
     updatedAt: new Date("2026-03-25"),
     // New fields
+    middleName: null,
     imageUrl: null,
     pronouns: null,
-    therapistGender: null,
     primaryCredential: null,
     credentials: [],
     websiteUrl: null,
     psychologyTodayUrl: null,
-    professionalEmail: null,
+    contactEmail: null,
     licensingLevel: null,
     freeConsultation: false,
     participants: [],
     topSpecialties: [],
-    faithOrientation: null,
-    clientEthnicity: [],
-    styleDescriptors: [],
-    otherTreatmentOrientation: null,
+    faithOrientation: [],
+    ethnicity: [],
+    therapyStyle: [],
+    therapistGender: null,
+    paymentMethods: [],
     proBono: false,
+    reducedFees: false,
+    acceptsInsurance: false,
+    rateIndividual: null,
+    rateGroup: null,
+    rateFamily: null,
+    rateCouples: null,
     ...overrides,
   };
 }
 
-function makeReferralPost(
-  overrides: Partial<ReferralPostModel> = {},
-): ReferralPostModel {
+function makeReferralPost(overrides: Partial<ReferralPostModel> = {}): ReferralPostModel {
   return {
     id: "referral-1",
     authorId: "author-profile-id",
     presentingIssue: "anxiety",
     ageGroup: "adults",
-    locationCity: "Toronto",
-    locationProvince: "ON",
-    modality: "virtual",
-    additionalNotes: null,
+    city: "Toronto",
+    province: "ON",
+    modalities: ["virtual"],
+    details: null,
     status: "OPEN",
     currentBatch: 0,
     lastDrippedAt: null,
@@ -88,12 +87,10 @@ function makeReferralPost(
     updatedAt: new Date("2026-03-20"),
     // New fields
     participants: null,
-    rateBilling: null,
-    clientGender: null,
-    clientAge: null,
+    rate: null,
     therapistGenderPref: null,
     therapyTypes: [],
-    languageRequirements: [],
+    languages: [],
     additionalContext: null,
     ...overrides,
   };
@@ -137,19 +134,19 @@ describe("computeAgeGroupScore", () => {
 
 describe("computeModalityScore", () => {
   it("returns 1 for exact modality match", () => {
-    expect(computeModalityScore(["virtual"], "virtual")).toBe(1);
+    expect(computeModalityScore(["virtual"], ["virtual"])).toBe(1);
   });
 
-  it('returns 1 when profile modalities include "both"', () => {
-    expect(computeModalityScore(["both"], "virtual")).toBe(1);
+  it("returns 1 when there is any overlap between arrays", () => {
+    expect(computeModalityScore(["virtual", "in-person"], ["virtual"])).toBe(1);
   });
 
-  it('returns 1 when referral modality is "both"', () => {
-    expect(computeModalityScore(["in-person"], "both")).toBe(1);
+  it("returns 1 when referral has multiple modalities with overlap", () => {
+    expect(computeModalityScore(["in-person"], ["in-person", "virtual"])).toBe(1);
   });
 
   it("returns 0 when there is no match", () => {
-    expect(computeModalityScore(["in-person"], "virtual")).toBe(0);
+    expect(computeModalityScore(["in-person"], ["virtual"])).toBe(0);
   });
 });
 
@@ -260,15 +257,11 @@ describe("computeCompletenessBoost", () => {
 
 describe("computeParticipantsScore", () => {
   it("returns 1 when the profile includes the referral participant type", () => {
-    expect(computeParticipantsScore(["Individuals", "Couples"], "Couples")).toBe(
-      1,
-    );
+    expect(computeParticipantsScore(["Individuals", "Couples"], "Couples")).toBe(1);
   });
 
   it("returns 0 when the profile does not include the referral participant type", () => {
-    expect(
-      computeParticipantsScore(["Individuals"], "Couples"),
-    ).toBe(0);
+    expect(computeParticipantsScore(["Individuals"], "Couples")).toBe(0);
   });
 
   it("returns 0 when referralParticipants is null", () => {
@@ -280,32 +273,21 @@ describe("computeParticipantsScore", () => {
   });
 
   it("is case-insensitive", () => {
-    expect(
-      computeParticipantsScore(["individuals"], "Individuals"),
-    ).toBe(1);
+    expect(computeParticipantsScore(["individuals"], "Individuals")).toBe(1);
   });
 });
 
 describe("computeLanguageScore", () => {
   it("returns 1 when there is at least one language overlap", () => {
-    expect(
-      computeLanguageScore(["English", "French"], ["French"]),
-    ).toBe(1);
+    expect(computeLanguageScore(["English", "French"], ["French"])).toBe(1);
   });
 
   it("returns 1 for multiple overlapping languages", () => {
-    expect(
-      computeLanguageScore(
-        ["English", "French", "Spanish"],
-        ["French", "Spanish"],
-      ),
-    ).toBe(1);
+    expect(computeLanguageScore(["English", "French", "Spanish"], ["French", "Spanish"])).toBe(1);
   });
 
   it("returns 0 when there is no overlap", () => {
-    expect(
-      computeLanguageScore(["English"], ["French", "Mandarin"]),
-    ).toBe(0);
+    expect(computeLanguageScore(["English"], ["French", "Mandarin"])).toBe(0);
   });
 
   it("returns 0 when referral languages is empty", () => {
@@ -317,29 +299,21 @@ describe("computeLanguageScore", () => {
   });
 
   it("is case-insensitive", () => {
-    expect(
-      computeLanguageScore(["english"], ["English"]),
-    ).toBe(1);
+    expect(computeLanguageScore(["english"], ["English"])).toBe(1);
   });
 });
 
 describe("computeTherapyTypeScore", () => {
   it("returns 1 when there is at least one therapy type overlap", () => {
-    expect(
-      computeTherapyTypeScore(["CBT", "DBT"], ["CBT"]),
-    ).toBe(1);
+    expect(computeTherapyTypeScore(["CBT", "DBT"], ["CBT"])).toBe(1);
   });
 
   it("returns 1 for multiple overlapping therapy types", () => {
-    expect(
-      computeTherapyTypeScore(["CBT", "DBT", "EMDR"], ["DBT", "EMDR"]),
-    ).toBe(1);
+    expect(computeTherapyTypeScore(["CBT", "DBT", "EMDR"], ["DBT", "EMDR"])).toBe(1);
   });
 
   it("returns 0 when there is no overlap", () => {
-    expect(
-      computeTherapyTypeScore(["CBT"], ["EMDR", "Somatic"]),
-    ).toBe(0);
+    expect(computeTherapyTypeScore(["CBT"], ["EMDR", "Somatic"])).toBe(0);
   });
 
   it("returns 0 when referral therapy types is empty", () => {
@@ -351,9 +325,7 @@ describe("computeTherapyTypeScore", () => {
   });
 
   it("is case-insensitive", () => {
-    expect(
-      computeTherapyTypeScore(["cbt"], ["CBT"]),
-    ).toBe(1);
+    expect(computeTherapyTypeScore(["cbt"], ["CBT"])).toBe(1);
   });
 });
 
@@ -385,7 +357,7 @@ describe("scoreProfile", () => {
   it("scores a partial match (2/4 dimensions)", () => {
     const profile = makeProfile({
       specialties: ["trauma"], // no match
-      ageGroups: ["children"], // no match
+      ages: ["children"], // no match
       modalities: ["virtual"], // match
       city: "Toronto", // match
       province: "ON",
@@ -443,7 +415,7 @@ describe("scoreProfile", () => {
 
   it("scores language dimension when referral has language requirements", () => {
     const profile = makeProfile({ languages: ["English", "French"] });
-    const referral = makeReferralPost({ languageRequirements: ["French"] });
+    const referral = makeReferralPost({ languages: ["French"] });
 
     const result = scoreProfile(profile, referral, NOW);
 
@@ -452,7 +424,7 @@ describe("scoreProfile", () => {
 
   it("does not score language when referral has no language requirements", () => {
     const profile = makeProfile({ languages: ["English", "French"] });
-    const referral = makeReferralPost({ languageRequirements: [] });
+    const referral = makeReferralPost({ languages: [] });
 
     const result = scoreProfile(profile, referral, NOW);
 
@@ -485,7 +457,7 @@ describe("scoreProfile", () => {
     });
     const referral = makeReferralPost({
       participants: "Couples",
-      languageRequirements: ["French"],
+      languages: ["French"],
       therapyTypes: ["EMDR"],
     });
 
@@ -502,7 +474,7 @@ describe("scoreProfile", () => {
   it("scores zero when no dimensions match and profile is incomplete", () => {
     const profile = makeProfile({
       specialties: ["grief"],
-      ageGroups: ["children"],
+      ages: ["children"],
       modalities: ["in-person"],
       city: "Vancouver",
       province: "BC",
@@ -567,10 +539,7 @@ describe("matchReferralToProfiles", () => {
   });
 
   it("excludes already-notified profiles", async () => {
-    const profiles = [
-      makeProfile({ id: "p1" }),
-      makeProfile({ id: "p2" }),
-    ];
+    const profiles = [makeProfile({ id: "p1" }), makeProfile({ id: "p2" })];
     const notifications = [{ recipientId: "p1" }];
     const prisma = createMockPrisma(profiles, notifications);
     const referral = makeReferralPost();
@@ -587,9 +556,8 @@ describe("matchReferralToProfiles", () => {
 
     await matchReferralToProfiles(referral, prisma);
 
-    const findManyCall = (
-      prisma.therapistProfile.findMany as ReturnType<typeof vi.fn>
-    ).mock.calls[0]![0] as { where: { id: { notIn: string[] } } };
+    const findManyCall = (prisma.therapistProfile.findMany as ReturnType<typeof vi.fn>).mock
+      .calls[0]![0] as { where: { id: { notIn: string[] } } };
     expect(findManyCall.where.id.notIn).toContain("author-profile-id");
   });
 
@@ -599,9 +567,8 @@ describe("matchReferralToProfiles", () => {
 
     await matchReferralToProfiles(referral, prisma);
 
-    const findManyCall = (
-      prisma.therapistProfile.findMany as ReturnType<typeof vi.fn>
-    ).mock.calls[0]![0] as {
+    const findManyCall = (prisma.therapistProfile.findMany as ReturnType<typeof vi.fn>).mock
+      .calls[0]![0] as {
       where: { acceptingClients: boolean; country: string };
     };
     expect(findManyCall.where.acceptingClients).toBe(true);
@@ -609,9 +576,7 @@ describe("matchReferralToProfiles", () => {
   });
 
   it("limits results to batchSize", async () => {
-    const profiles = Array.from({ length: 10 }, (_, i) =>
-      makeProfile({ id: `p${i}` }),
-    );
+    const profiles = Array.from({ length: 10 }, (_, i) => makeProfile({ id: `p${i}` }));
     const prisma = createMockPrisma(profiles);
     const referral = makeReferralPost();
 
@@ -644,7 +609,7 @@ describe("matchReferralToProfiles", () => {
       makeProfile({
         id: "low-score",
         specialties: ["grief"],
-        ageGroups: ["children"],
+        ages: ["children"],
         modalities: ["in-person"],
         city: "Vancouver",
         province: "BC",
@@ -656,7 +621,7 @@ describe("matchReferralToProfiles", () => {
       makeProfile({
         id: "high-score",
         specialties: ["anxiety"],
-        ageGroups: ["adults"],
+        ages: ["adults"],
         modalities: ["virtual"],
         city: "Toronto",
         province: "ON",

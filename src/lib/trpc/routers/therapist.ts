@@ -9,8 +9,7 @@ export const therapistRouter = router({
         specialtyRecords: { select: { id: true, name: true } },
         therapyTypeRecords: { select: { id: true, name: true } },
         languageRecords: { select: { id: true, name: true } },
-        alliedGroupRecords: { select: { id: true, name: true } },
-        paymentMethodRecords: { select: { id: true, name: true } },
+        groupRecords: { select: { id: true, name: true } },
       },
     });
   }),
@@ -24,18 +23,18 @@ export const therapistRouter = router({
           userId,
           // Core identity
           firstName: input.firstName,
+          middleName: input.middleName ?? null,
           lastName: input.lastName,
-          displayName: input.displayName,
+          displayName: input.displayName || `${input.firstName} ${input.lastName}`.trim(),
           bio: input.bio ?? null,
           imageUrl: input.imageUrl || null,
           pronouns: input.pronouns ?? null,
-          therapistGender: input.therapistGender ?? null,
           primaryCredential: input.primaryCredential ?? null,
           credentials: input.credentials ?? [],
           // Practice info
           websiteUrl: input.websiteUrl || null,
           psychologyTodayUrl: input.psychologyTodayUrl || null,
-          professionalEmail: input.professionalEmail || null,
+          contactEmail: input.contactEmail || null,
           licensingLevel: input.licensingLevel ?? null,
           freeConsultation: input.freeConsultation,
           // Location
@@ -44,35 +43,39 @@ export const therapistRouter = router({
           country: input.country,
           // Legacy String[] (kept for backward compat)
           specialties: input.specialties,
-          therapeuticApproach: input.therapeuticApproach,
-          languages: input.languages,
+          therapeuticApproach: input.therapeuticApproach ?? [],
+          languages: input.languages ?? [],
           // Taxonomy relations
           specialtyRecords: { connect: input.specialties.map((id) => ({ id })) },
-          therapyTypeRecords: { connect: input.therapeuticApproach.map((id) => ({ id })) },
-          languageRecords: { connect: input.languages.map((id) => ({ id })) },
-          alliedGroupRecords: input.alliedGroups?.length
-            ? { connect: input.alliedGroups.map((id) => ({ id })) }
+          therapyTypeRecords: input.therapeuticApproach?.length
+            ? { connect: input.therapeuticApproach.map((id) => ({ id })) }
             : undefined,
-          paymentMethodRecords: input.paymentMethods?.length
-            ? { connect: input.paymentMethods.map((id) => ({ id })) }
+          languageRecords: input.languages?.length
+            ? { connect: input.languages.map((id) => ({ id })) }
+            : undefined,
+          groupRecords: input.groups?.length
+            ? { connect: input.groups.map((id) => ({ id })) }
             : undefined,
           // Session details
           modalities: input.modalities,
-          ageGroups: input.ageGroups,
+          ages: input.ages,
           // Communities
-          participants: input.participants ?? [],
+          participants: input.participants,
           topSpecialties: input.topSpecialties ?? [],
-          faithOrientation: input.faithOrientation ?? null,
-          clientEthnicity: input.clientEthnicity ?? [],
-          styleDescriptors: input.styleDescriptors ?? [],
-          otherTreatmentOrientation: input.otherTreatmentOrientation ?? null,
+          faithOrientation: input.faithOrientation ?? [],
+          ethnicity: input.ethnicity ?? [],
+          therapyStyle: input.therapyStyle ?? [],
+          therapistGender: input.therapistGender ?? null,
           // Insurance & pricing
-          acceptsInsurance: input.acceptsInsurance,
-          directBilling: input.directBilling,
           insurers: input.insurers ?? [],
-          hourlyRate: input.hourlyRate ?? null,
-          reducedFees: input.reducedFees,
+          paymentMethods: input.paymentMethods ?? [],
           proBono: input.proBono,
+          reducedFees: input.reducedFees,
+          acceptsInsurance: input.acceptsInsurance,
+          rateIndividual: input.rateIndividual ?? null,
+          rateGroup: input.rateGroup ?? null,
+          rateFamily: input.rateFamily ?? null,
+          rateCouples: input.rateCouples ?? null,
           // Availability
           acceptingClients: input.acceptingClients,
         },
@@ -89,18 +92,18 @@ export const therapistRouter = router({
         data: {
           // Core identity
           firstName: input.firstName,
+          middleName: input.middleName ?? null,
           lastName: input.lastName,
-          displayName: input.displayName,
+          displayName: input.displayName || `${input.firstName} ${input.lastName}`.trim(),
           bio: input.bio ?? null,
           imageUrl: input.imageUrl || null,
           pronouns: input.pronouns ?? null,
-          therapistGender: input.therapistGender ?? null,
           primaryCredential: input.primaryCredential ?? null,
           credentials: input.credentials ?? [],
           // Practice info
           websiteUrl: input.websiteUrl || null,
           psychologyTodayUrl: input.psychologyTodayUrl || null,
-          professionalEmail: input.professionalEmail || null,
+          contactEmail: input.contactEmail || null,
           licensingLevel: input.licensingLevel ?? null,
           freeConsultation: input.freeConsultation,
           // Location
@@ -109,31 +112,33 @@ export const therapistRouter = router({
           country: input.country,
           // Legacy String[]
           specialties: input.specialties,
-          therapeuticApproach: input.therapeuticApproach,
-          languages: input.languages,
+          therapeuticApproach: input.therapeuticApproach ?? [],
+          languages: input.languages ?? [],
           // Taxonomy relations (set replaces all existing)
           specialtyRecords: { set: input.specialties.map((id) => ({ id })) },
-          therapyTypeRecords: { set: input.therapeuticApproach.map((id) => ({ id })) },
-          languageRecords: { set: input.languages.map((id) => ({ id })) },
-          alliedGroupRecords: { set: (input.alliedGroups ?? []).map((id) => ({ id })) },
-          paymentMethodRecords: { set: (input.paymentMethods ?? []).map((id) => ({ id })) },
+          therapyTypeRecords: { set: (input.therapeuticApproach ?? []).map((id) => ({ id })) },
+          languageRecords: { set: (input.languages ?? []).map((id) => ({ id })) },
+          groupRecords: { set: (input.groups ?? []).map((id) => ({ id })) },
           // Session details
           modalities: input.modalities,
-          ageGroups: input.ageGroups,
+          ages: input.ages,
           // Communities
-          participants: input.participants ?? [],
+          participants: input.participants,
           topSpecialties: input.topSpecialties ?? [],
-          faithOrientation: input.faithOrientation ?? null,
-          clientEthnicity: input.clientEthnicity ?? [],
-          styleDescriptors: input.styleDescriptors ?? [],
-          otherTreatmentOrientation: input.otherTreatmentOrientation ?? null,
+          faithOrientation: input.faithOrientation ?? [],
+          ethnicity: input.ethnicity ?? [],
+          therapyStyle: input.therapyStyle ?? [],
+          therapistGender: input.therapistGender ?? null,
           // Insurance & pricing
-          acceptsInsurance: input.acceptsInsurance,
-          directBilling: input.directBilling,
           insurers: input.insurers ?? [],
-          hourlyRate: input.hourlyRate ?? null,
-          reducedFees: input.reducedFees,
+          paymentMethods: input.paymentMethods ?? [],
           proBono: input.proBono,
+          reducedFees: input.reducedFees,
+          acceptsInsurance: input.acceptsInsurance,
+          rateIndividual: input.rateIndividual ?? null,
+          rateGroup: input.rateGroup ?? null,
+          rateFamily: input.rateFamily ?? null,
+          rateCouples: input.rateCouples ?? null,
           // Availability
           acceptingClients: input.acceptingClients,
           lastActiveAt: new Date(),

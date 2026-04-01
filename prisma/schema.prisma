@@ -101,7 +101,7 @@ model AlliedGroup {
   name      String @unique
   sortOrder Int    @default(0)
 
-  profiles TherapistProfile[] @relation("ProfileAlliedGroups")
+  profiles TherapistProfile[] @relation("ProfileGroups")
 
   createdAt DateTime @default(now())
 }
@@ -110,8 +110,6 @@ model PaymentMethod {
   id        String @id @default(cuid())
   name      String @unique
   sortOrder Int    @default(0)
-
-  profiles TherapistProfile[] @relation("ProfilePaymentMethods")
 
   createdAt DateTime @default(now())
 }
@@ -125,21 +123,22 @@ model TherapistProfile {
 
   // Professional info
   firstName   String
+  middleName  String?
   lastName    String
   displayName String
   bio         String?
 
   // Identity
-  imageUrl           String?
-  pronouns           String?
-  therapistGender    String?
-  primaryCredential  String?  // e.g., "Registered Psychotherapist"
-  credentials        String[] // post-nominal letters, max 3
+  imageUrl          String?
+  pronouns          String?
+  therapistGender   String?
+  primaryCredential String?  // e.g., "Registered Psychotherapist"
+  credentials       String[] // post-nominal letters, max 3
 
   // Practice details
   websiteUrl         String?
   psychologyTodayUrl String?
-  professionalEmail  String?
+  contactEmail       String?
   licensingLevel     String?  // "Fully Licensed" | "Supervised Practice" | "Practicum Student"
   freeConsultation   Boolean  @default(false)
 
@@ -153,30 +152,31 @@ model TherapistProfile {
   modalities          String[] // e.g., ["in-person", "virtual"]
   therapeuticApproach String[] // e.g., ["CBT", "EMDR", "psychodynamic"]
   languages           String[] // e.g., ["English", "French"]
-  ageGroups           String[] // e.g., ["children", "adolescents", "adults"]
+  ages                String[] // e.g., ["toddler", "children (6-10)", "preteen", "teen", "adults", "elders (65+)"]
 
   // Taxonomy relations (replacing String[] above)
   specialtyRecords     Specialty[]     @relation("ProfileSpecialties")
   therapyTypeRecords   TherapyType[]   @relation("ProfileTherapyTypes")
   languageRecords      Language[]      @relation("ProfileLanguages")
-  alliedGroupRecords   AlliedGroup[]   @relation("ProfileAlliedGroups")
-  paymentMethodRecords PaymentMethod[] @relation("ProfilePaymentMethods")
+  groupRecords         AlliedGroup[]   @relation("ProfileGroups")
 
   // Communities served
   participants     String[] // ["Individuals", "Couples", "Family", "Group"]
   topSpecialties   String[] // max 3, ordered
-  faithOrientation String?
-  clientEthnicity  String[]
-  styleDescriptors String[] // ["Structured", "Direct", "Relational", etc.]
-  otherTreatmentOrientation String?
+  faithOrientation String[]
+  ethnicity        String[]
+  therapyStyle     String[] // ["Structured", "Direct", "Relational", etc.]
 
   // Insurance & pricing
-  acceptsInsurance Boolean  @default(false)
-  directBilling    Boolean  @default(false)
   insurers         String[] // specific insurers accepted
-  hourlyRate       Int?     // in cents
-  reducedFees      Boolean  @default(false)
+  paymentMethods   String[] // payment instruments: "Visa", "Cash", "Direct billing", etc.
+  rateIndividual   Int?     // in cents
+  rateGroup        Int?     // in cents
+  rateFamily       Int?     // in cents
+  rateCouples      Int?     // in cents
   proBono          Boolean  @default(false)
+  reducedFees      Boolean  @default(false)
+  acceptsInsurance Boolean  @default(false)
 
   // Availability
   acceptingClients Boolean @default(true)
@@ -209,22 +209,20 @@ model ReferralPost {
   author   TherapistProfile @relation("PostedReferrals", fields: [authorId], references: [id], onDelete: Cascade)
 
   // Referral criteria
-  presentingIssue  String
-  ageGroup         String
-  locationCity     String?
-  locationProvince String
-  modality         String   // "in-person" | "virtual" | "both"
-  additionalNotes  String?
+  presentingIssue String
+  ageGroup        String
+  city            String?
+  province        String?
+  modalities      String[] // ["in-person", "virtual", "phone"]
+  details         String?
 
   // Expanded referral fields
-  participants         String?  // "Individual" | "Couples" | "Family" | "Group"
-  rateBilling          String?  // "Full fee" | "Sliding scale" | "Pro-bono" | "Direct billing"
-  clientGender         String?
-  clientAge            String?  // Free text: "27" or "30s" or "40-50"
-  therapistGenderPref  String?  // "Any" | "Female" | "Male" | "Non-binary"
-  therapyTypes         String[] // Therapy type names from taxonomy
-  languageRequirements String[] // Language names from taxonomy
-  additionalContext    String?  // Extended free text for nuance
+  participants        String?  // "Individual" | "Couples" | "Family" | "Group"
+  rate                String?  // "Full fee" | "Sliding scale" | "Pro-bono"
+  therapistGenderPref String?  // "Any" | "Female" | "Male" | "Non-binary"
+  therapyTypes        String[] // Therapy type names from taxonomy
+  languages           String[] // Language names from taxonomy
+  additionalContext   String?  // Extended free text for nuance
 
   // Status
   status ReferralStatus @default(OPEN)

@@ -1,24 +1,22 @@
 import { z } from "zod";
 
 export const referralPostSchema = z.object({
-  // Core fields (always visible)
+  // Core fields
   presentingIssue: z.string().min(1, "Presenting issue is required"),
-  ageGroup: z.string().min(1, "Age group is required"),
-  locationCity: z.string().optional(),
-  locationProvince: z.string().min(1, "Province is required"),
-  modality: z.enum(["in-person", "virtual", "both"], {
-    message: "Modality must be in-person, virtual, or both",
-  }),
+  details: z.string().max(1000).optional(),
   participants: z.string().optional(),
-  rateBilling: z.string().optional(),
-  additionalNotes: z.string().max(1000).optional(),
+  ageGroup: z.string().min(1, "Age group is required"),
+  modalities: z
+    .array(z.enum(["in-person", "virtual", "phone"]))
+    .min(1, "Select at least one modality"),
+  city: z.string().optional(),
+  province: z.string().optional(),
+  rate: z.string().optional(),
 
   // Additional details (expandable section)
-  clientGender: z.string().optional(),
-  clientAge: z.string().optional(),
   therapistGenderPref: z.string().optional(),
   therapyTypes: z.array(z.string()).optional(),
-  languageRequirements: z.array(z.string()).optional(),
+  languages: z.array(z.string()).optional(),
   additionalContext: z.string().max(2000).optional(),
 });
 

@@ -6,19 +6,13 @@ interface ReferralPostCardProps {
   status: "OPEN" | "FULFILLED" | "EXPIRED";
   presentingIssue: string;
   ageGroup: string;
-  locationCity: string | null;
-  locationProvince: string;
-  modality: string;
+  city: string | null;
+  province: string;
+  modalities: string[];
   currentBatch: number;
   createdAt: Date;
   notificationCount: number;
 }
-
-const MODALITY_LABELS: Record<string, string> = {
-  "in-person": "In-Person",
-  virtual: "Virtual",
-  both: "In-Person & Virtual",
-};
 
 function formatDate(date: Date): string {
   return new Intl.DateTimeFormat("en-CA", {
@@ -33,16 +27,14 @@ export function ReferralPostCard({
   status,
   presentingIssue,
   ageGroup,
-  locationCity,
-  locationProvince,
-  modality,
+  city,
+  province,
+  modalities,
   currentBatch,
   createdAt,
   notificationCount,
 }: ReferralPostCardProps): React.ReactElement {
-  const location = locationCity
-    ? `${locationCity}, ${locationProvince}`
-    : locationProvince;
+  const location = city ? `${city}, ${province}` : province;
 
   return (
     <Link
@@ -59,22 +51,15 @@ export function ReferralPostCard({
       <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-[0.8125rem] text-fg-2 mb-3">
         <span>{ageGroup}</span>
         <span>{location}</span>
-        <span>{MODALITY_LABELS[modality] ?? modality}</span>
+        <span>{modalities.join(", ")}</span>
       </div>
 
       <div className="flex items-center justify-between pt-3 border-t border-border-s">
-        <span className="text-[0.75rem] text-fg-3">
-          {formatDate(createdAt)}
-        </span>
+        <span className="text-[0.75rem] text-fg-3">{formatDate(createdAt)}</span>
 
         {/* Compact batch ring */}
         <div className="flex items-center gap-1.5">
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            className="text-brand"
-          >
+          <svg width="16" height="16" viewBox="0 0 24 24" className="text-brand">
             <circle
               cx="12"
               cy="12"
@@ -86,14 +71,7 @@ export function ReferralPostCard({
               strokeLinecap="round"
               transform="rotate(-90 12 12)"
             />
-            <circle
-              cx="12"
-              cy="12"
-              r="9"
-              fill="none"
-              stroke="var(--border)"
-              strokeWidth="2.5"
-            />
+            <circle cx="12" cy="12" r="9" fill="none" stroke="var(--border)" strokeWidth="2.5" />
             <circle
               cx="12"
               cy="12"

@@ -15,12 +15,12 @@ function validProfile(overrides: Record<string, unknown> = {}) {
     modalities: ["virtual"],
     therapeuticApproach: ["tt-id-1"],
     languages: ["lang-id-1"],
-    ageGroups: ["adults"],
-    acceptsInsurance: true,
-    directBilling: false,
-    reducedFees: false,
-    proBono: false,
+    ages: ["adults"],
+    participants: ["Individual"],
     freeConsultation: false,
+    proBono: false,
+    reducedFees: false,
+    acceptsInsurance: false,
     acceptingClients: true,
     ...overrides,
   };
@@ -41,36 +41,24 @@ describe("therapistProfileSchema", () => {
 
   // ─── Required field enforcement ───────────────────────────────────────────
 
-  it.each([
-    ["firstName"],
-    ["lastName"],
-    ["displayName"],
-    ["city"],
-    ["province"],
-  ])("rejects empty string for required field %s", (field) => {
-    const result = therapistProfileSchema.safeParse(
-      validProfile({ [field]: "" }),
-    );
-    expect(result.success).toBe(false);
-  });
+  it.each([["firstName"], ["lastName"], ["city"], ["province"]])(
+    "rejects empty string for required field %s",
+    (field) => {
+      const result = therapistProfileSchema.safeParse(validProfile({ [field]: "" }));
+      expect(result.success).toBe(false);
+    },
+  );
 
-  it.each([
-    ["specialties"],
-    ["modalities"],
-    ["therapeuticApproach"],
-    ["languages"],
-    ["ageGroups"],
-  ])("rejects empty array for required array field %s", (field) => {
-    const result = therapistProfileSchema.safeParse(
-      validProfile({ [field]: [] }),
-    );
-    expect(result.success).toBe(false);
-  });
+  it.each([["specialties"], ["modalities"], ["ages"], ["participants"]])(
+    "rejects empty array for required array field %s",
+    (field) => {
+      const result = therapistProfileSchema.safeParse(validProfile({ [field]: [] }));
+      expect(result.success).toBe(false);
+    },
+  );
 
   it("rejects country other than CA", () => {
-    const result = therapistProfileSchema.safeParse(
-      validProfile({ country: "US" }),
-    );
+    const result = therapistProfileSchema.safeParse(validProfile({ country: "US" }));
     expect(result.success).toBe(false);
   });
 
@@ -90,51 +78,40 @@ describe("therapistProfileSchema", () => {
     it.each([["imageUrl"], ["websiteUrl"], ["psychologyTodayUrl"]])(
       "accepts an empty string for optional URL field %s",
       (field) => {
-        const result = therapistProfileSchema.safeParse(
-          validProfile({ [field]: "" }),
-        );
+        const result = therapistProfileSchema.safeParse(validProfile({ [field]: "" }));
         expect(result.success).toBe(true);
       },
     );
 
-    it.each([["websiteUrl"], ["psychologyTodayUrl"]])(
-      "rejects an invalid URL for %s",
-      (field) => {
-        const result = therapistProfileSchema.safeParse(
-          validProfile({ [field]: "not-a-url" }),
-        );
-        expect(result.success).toBe(false);
-      },
-    );
+    it.each([["websiteUrl"], ["psychologyTodayUrl"]])("rejects an invalid URL for %s", (field) => {
+      const result = therapistProfileSchema.safeParse(validProfile({ [field]: "not-a-url" }));
+      expect(result.success).toBe(false);
+    });
 
     it("accepts null for imageUrl", () => {
-      const result = therapistProfileSchema.safeParse(
-        validProfile({ imageUrl: null }),
-      );
+      const result = therapistProfileSchema.safeParse(validProfile({ imageUrl: null }));
       expect(result.success).toBe(true);
     });
   });
 
   // ─── Email field ──────────────────────────────────────────────────────────
 
-  describe("professionalEmail", () => {
+  describe("contactEmail", () => {
     it("accepts a valid email", () => {
       const result = therapistProfileSchema.safeParse(
-        validProfile({ professionalEmail: "jane@example.com" }),
+        validProfile({ contactEmail: "jane@example.com" }),
       );
       expect(result.success).toBe(true);
     });
 
     it("accepts an empty string", () => {
-      const result = therapistProfileSchema.safeParse(
-        validProfile({ professionalEmail: "" }),
-      );
+      const result = therapistProfileSchema.safeParse(validProfile({ contactEmail: "" }));
       expect(result.success).toBe(true);
     });
 
     it("rejects an invalid email", () => {
       const result = therapistProfileSchema.safeParse(
-        validProfile({ professionalEmail: "not-an-email" }),
+        validProfile({ contactEmail: "not-an-email" }),
       );
       expect(result.success).toBe(false);
     });
@@ -176,20 +153,38 @@ describe("therapistProfileSchema", () => {
     });
   });
 
+  describe("faithOrientation", () => {
+    it("defaults to empty array when omitted", () => {
+      const result = therapistProfileSchema.safeParse(validProfile());
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data.faithOrientation).toEqual([]);
+      }
+    });
+
+    it("accepts an empty array", () => {
+      const result = therapistProfileSchema.safeParse(validProfile({ faithOrientation: [] }));
+      expect(result.success).toBe(true);
+    });
+
+    it("accepts multiple values", () => {
+      const result = therapistProfileSchema.safeParse(
+        validProfile({ faithOrientation: ["Christian", "Buddhist", "Jewish"] }),
+      );
+      expect(result.success).toBe(true);
+    });
+  });
+
   // ─── Bio max length ───────────────────────────────────────────────────────
 
   describe("bio", () => {
     it("accepts a bio within the 500 character limit", () => {
-      const result = therapistProfileSchema.safeParse(
-        validProfile({ bio: "A".repeat(500) }),
-      );
+      const result = therapistProfileSchema.safeParse(validProfile({ bio: "A".repeat(500) }));
       expect(result.success).toBe(true);
     });
 
     it("rejects a bio over 500 characters", () => {
-      const result = therapistProfileSchema.safeParse(
-        validProfile({ bio: "A".repeat(501) }),
-      );
+      const result = therapistProfileSchema.safeParse(validProfile({ bio: "A".repeat(501) }));
       expect(result.success).toBe(false);
     });
   });
@@ -205,25 +200,31 @@ describe("therapistProfileSchema", () => {
     const result = therapistProfileSchema.safeParse(
       validProfile({
         bio: "Experienced therapist",
+        middleName: "Marie",
         imageUrl: "https://example.com/photo.jpg",
         pronouns: "she/her",
-        therapistGender: "Female",
         primaryCredential: "RP",
         credentials: ["RP", "RSW"],
         websiteUrl: "https://janedoe.ca",
         psychologyTodayUrl: "https://psychologytoday.com/ca/therapists/12345",
-        professionalEmail: "jane@practice.ca",
+        contactEmail: "jane@practice.ca",
         licensingLevel: "Fully Licensed",
         topSpecialties: ["Anxiety", "Depression"],
-        otherTreatmentOrientation: "Somatic",
         participants: ["Individuals", "Couples"],
-        alliedGroups: ["ag-id-1"],
-        faithOrientation: "Christian",
-        clientEthnicity: ["South Asian"],
-        styleDescriptors: ["Relational", "Direct"],
+        groups: ["ag-id-1"],
+        faithOrientation: ["Christian", "Buddhist"],
+        ethnicity: ["South Asian"],
+        therapyStyle: ["Relational", "Direct"],
+        therapistGender: "Female",
         insurers: ["Manulife"],
-        hourlyRate: 150,
         paymentMethods: ["pm-id-1"],
+        proBono: true,
+        reducedFees: false,
+        acceptsInsurance: true,
+        rateIndividual: 150,
+        rateGroup: 80,
+        rateFamily: 200,
+        rateCouples: 180,
       }),
     );
     expect(result.success).toBe(true);
@@ -232,41 +233,35 @@ describe("therapistProfileSchema", () => {
   // ─── Boolean fields ───────────────────────────────────────────────────────
 
   it.each([
-    ["acceptsInsurance"],
-    ["directBilling"],
-    ["reducedFees"],
-    ["proBono"],
     ["freeConsultation"],
     ["acceptingClients"],
+    ["proBono"],
+    ["reducedFees"],
+    ["acceptsInsurance"],
   ])("rejects non-boolean for required boolean field %s", (field) => {
-    const result = therapistProfileSchema.safeParse(
-      validProfile({ [field]: "yes" }),
-    );
+    const result = therapistProfileSchema.safeParse(validProfile({ [field]: "yes" }));
     expect(result.success).toBe(false);
   });
 
-  // ─── hourlyRate ───────────────────────────────────────────────────────────
+  // ─── Rate fields ──────────────────────────────────────────────────────────
 
-  describe("hourlyRate", () => {
-    it("accepts a positive number", () => {
-      const result = therapistProfileSchema.safeParse(
-        validProfile({ hourlyRate: 200 }),
-      );
-      expect(result.success).toBe(true);
-    });
+  describe.each([["rateIndividual"], ["rateGroup"], ["rateFamily"], ["rateCouples"]])(
+    "%s",
+    (field) => {
+      it("accepts a positive number", () => {
+        const result = therapistProfileSchema.safeParse(validProfile({ [field]: 200 }));
+        expect(result.success).toBe(true);
+      });
 
-    it("rejects zero", () => {
-      const result = therapistProfileSchema.safeParse(
-        validProfile({ hourlyRate: 0 }),
-      );
-      expect(result.success).toBe(false);
-    });
+      it("rejects zero", () => {
+        const result = therapistProfileSchema.safeParse(validProfile({ [field]: 0 }));
+        expect(result.success).toBe(false);
+      });
 
-    it("rejects a negative number", () => {
-      const result = therapistProfileSchema.safeParse(
-        validProfile({ hourlyRate: -50 }),
-      );
-      expect(result.success).toBe(false);
-    });
-  });
+      it("rejects a negative number", () => {
+        const result = therapistProfileSchema.safeParse(validProfile({ [field]: -50 }));
+        expect(result.success).toBe(false);
+      });
+    },
+  );
 });

@@ -5,27 +5,25 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 const MODALITY_LABELS: Record<string, string> = {
-  "in-person": "In-Person",
+  "in-person": "In-person",
   virtual: "Virtual",
-  both: "In-Person & Virtual",
+  both: "In-person & virtual",
 };
 
 interface ReferralSharePageProps {
   params: Promise<{ slug: string }>;
 }
 
-export async function generateMetadata({
-  params,
-}: ReferralSharePageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: ReferralSharePageProps): Promise<Metadata> {
   const { slug } = await params;
 
   const referral = await prisma.referralPost.findUnique({
     where: { slug },
     select: {
       presentingIssue: true,
-      locationCity: true,
-      locationProvince: true,
-      modality: true,
+      city: true,
+      province: true,
+      modalities: true,
     },
   });
 
@@ -33,14 +31,12 @@ export async function generateMetadata({
     return { title: "Referral Not Found" };
   }
 
-  const location = referral.locationCity
-    ? `${referral.locationCity}, ${referral.locationProvince}`
-    : referral.locationProvince;
+  const location = referral.city ? `${referral.city}, ${referral.province}` : referral.province;
 
-  const modality = MODALITY_LABELS[referral.modality] ?? referral.modality;
+  const modalities = referral.modalities.map((m) => MODALITY_LABELS[m] ?? m).join(", ");
 
   const title = `Referral: ${referral.presentingIssue} — Therapist Referral Network`;
-  const description = `Looking for a therapist match: ${referral.presentingIssue} in ${location} (${modality}). Join the Therapist Referral Network to respond.`;
+  const description = `Looking for a therapist match: ${referral.presentingIssue} in ${location} (${modalities}). Join the Therapist Referral Network to respond.`;
 
   return {
     title,
@@ -89,11 +85,9 @@ export default async function ReferralSharePage({
   const session = await auth();
   const isAuthenticated = !!session?.user?.id;
 
-  const location = referral.locationCity
-    ? `${referral.locationCity}, ${referral.locationProvince}`
-    : referral.locationProvince;
+  const location = referral.city ? `${referral.city}, ${referral.province}` : referral.province;
 
-  const modality = MODALITY_LABELS[referral.modality] ?? referral.modality;
+  const modalities = referral.modalities.map((m) => MODALITY_LABELS[m] ?? m).join(", ");
 
   return (
     <div
@@ -103,12 +97,7 @@ export default async function ReferralSharePage({
       <div className="w-full max-w-[520px]">
         {/* Logo */}
         <div className="flex items-center justify-center gap-2 mb-8">
-          <svg
-            width="32"
-            height="32"
-            viewBox="0 0 48 48"
-            style={{ color: "var(--brand)" }}
-          >
+          <svg width="32" height="32" viewBox="0 0 48 48" style={{ color: "var(--brand)" }}>
             <circle cx="24" cy="24" r="21" fill="none" stroke="currentColor" strokeWidth="3" />
             <circle cx="24" cy="24" r="16" fill="none" stroke="currentColor" strokeWidth="3" />
             <circle cx="24" cy="24" r="11" fill="none" stroke="currentColor" strokeWidth="3" />
@@ -136,23 +125,14 @@ export default async function ReferralSharePage({
             <span
               className="inline-flex items-center px-2 py-0.5 rounded-full text-[0.6875rem] font-semibold tracking-[0.04em] uppercase"
               style={{
-                background:
-                  referral.status === "OPEN"
-                    ? "var(--ok-l)"
-                    : "var(--inset)",
-                color:
-                  referral.status === "OPEN"
-                    ? "var(--ok)"
-                    : "var(--fg-4)",
+                background: referral.status === "OPEN" ? "var(--ok-l)" : "var(--inset)",
+                color: referral.status === "OPEN" ? "var(--ok)" : "var(--fg-4)",
               }}
             >
               {referral.status}
             </span>
-            <span
-              className="text-[0.75rem]"
-              style={{ color: "var(--fg-3)" }}
-            >
-              Referral Request
+            <span className="text-[0.75rem]" style={{ color: "var(--fg-3)" }}>
+              Referral request
             </span>
           </div>
 
@@ -182,10 +162,10 @@ export default async function ReferralSharePage({
                 className="text-[0.75rem] font-medium tracking-[0.04em] uppercase mb-1 m-0"
                 style={{ color: "var(--fg-3)" }}
               >
-                Modality
+                Modalities
               </p>
               <p className="text-[0.9375rem] m-0" style={{ color: "var(--fg)" }}>
-                {modality}
+                {modalities}
               </p>
             </div>
 
@@ -195,7 +175,7 @@ export default async function ReferralSharePage({
                   className="text-[0.75rem] font-medium tracking-[0.04em] uppercase mb-1 m-0"
                   style={{ color: "var(--fg-3)" }}
                 >
-                  Age Group
+                  Age group
                 </p>
                 <p className="text-[0.9375rem] m-0" style={{ color: "var(--fg)" }}>
                   {referral.ageGroup}
@@ -203,19 +183,19 @@ export default async function ReferralSharePage({
               </div>
             )}
 
-            {isAuthenticated && referral.additionalNotes && (
+            {isAuthenticated && referral.details && (
               <div className="sm:col-span-2">
                 <p
                   className="text-[0.75rem] font-medium tracking-[0.04em] uppercase mb-1 m-0"
                   style={{ color: "var(--fg-3)" }}
                 >
-                  Additional Notes
+                  Details
                 </p>
                 <p
                   className="text-[0.9375rem] leading-relaxed m-0 whitespace-pre-wrap"
                   style={{ color: "var(--fg-2)" }}
                 >
-                  {referral.additionalNotes}
+                  {referral.details}
                 </p>
               </div>
             )}
@@ -223,15 +203,12 @@ export default async function ReferralSharePage({
 
           {/* Authenticated: Show author info */}
           {isAuthenticated && (
-            <div
-              className="pt-4 mt-1"
-              style={{ borderTop: "1px solid var(--border-s)" }}
-            >
+            <div className="pt-4 mt-1" style={{ borderTop: "1px solid var(--border-s)" }}>
               <p
                 className="text-[0.75rem] font-medium tracking-[0.04em] uppercase mb-1 m-0"
                 style={{ color: "var(--fg-3)" }}
               >
-                Referring Therapist
+                Referring therapist
               </p>
               <p className="text-[0.9375rem] font-medium m-0" style={{ color: "var(--fg)" }}>
                 {referral.author.displayName}
@@ -251,10 +228,7 @@ export default async function ReferralSharePage({
 
           {/* Unauthenticated: Show CTA */}
           {!isAuthenticated && (
-            <div
-              className="pt-5 mt-1"
-              style={{ borderTop: "1px solid var(--border-s)" }}
-            >
+            <div className="pt-5 mt-1" style={{ borderTop: "1px solid var(--border-s)" }}>
               <p
                 className="text-[0.875rem] leading-relaxed mb-4 m-0"
                 style={{ color: "var(--fg-2)" }}
@@ -272,10 +246,7 @@ export default async function ReferralSharePage({
               >
                 Sign up to respond to this referral
               </Link>
-              <p
-                className="text-[0.8125rem] text-center mt-3 m-0"
-                style={{ color: "var(--fg-3)" }}
-              >
+              <p className="text-[0.8125rem] text-center mt-3 m-0" style={{ color: "var(--fg-3)" }}>
                 Already have an account?{" "}
                 <Link
                   href="/auth/signin"

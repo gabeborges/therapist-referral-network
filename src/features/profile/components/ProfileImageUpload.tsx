@@ -68,7 +68,7 @@ export function ProfileImageUpload({
   return (
     <div>
       <label className="block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2">
-        Profile Photo
+        Profile photo
       </label>
       <div className="flex items-center gap-4">
         {/* Avatar preview */}
@@ -96,7 +96,7 @@ export function ProfileImageUpload({
             disabled={uploading}
             className="h-9 px-4 text-[0.8125rem] font-medium rounded-sm border border-border bg-s1 text-fg hover:bg-s2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
-            {uploading ? "Uploading..." : preview ? "Change Photo" : "Upload Photo"}
+            {uploading ? "Uploading..." : preview ? "Change photo" : "Upload photo"}
           </button>
           <p className="mt-1 text-[0.75rem] text-fg-4">
             JPEG, PNG, or WebP. Max 5MB.

@@ -33,7 +33,7 @@ export function AvailabilityToggle({
     <div className="flex items-center justify-between mt-6 pt-4 border-t border-border-s">
       <div>
         <p className="text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2">
-          {accepting ? "Accepting Referrals" : "Not Accepting Referrals"}
+          {accepting ? "Accepting referrals" : "Not accepting referrals"}
         </p>
         <p className="text-[0.75rem] tracking-[0.015em] text-fg-3">
           {accepting

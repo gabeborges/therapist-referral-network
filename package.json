@@ -21,7 +21,8 @@
     "db:studio": "prisma studio",
     "postinstall": "prisma generate",
     "email:dev": "email dev --dir src/lib/email/templates --port 3001",
-    "db:seed": "tsx prisma/seed.ts"
+    "db:seed": "tsx prisma/seed.ts",
+    "db:reset-user": "tsx prisma/reset-user.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

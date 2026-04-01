@@ -38,15 +38,13 @@ export async function sendReferralBatch(
     include: { user: { select: { email: true } } },
   });
 
-  const recipientMap = new Map(
-    recipientProfiles.map((p) => [p.id, p]),
-  );
+  const recipientMap = new Map(recipientProfiles.map((p) => [p.id, p]));
 
   const referralUrl = `${APP_URL}/r/${referralPost.slug}`;
   const subject = referralNotificationSubject(
     referralPost.presentingIssue,
-    referralPost.locationCity,
-    referralPost.locationProvince,
+    referralPost.city,
+    referralPost.province ?? "Unknown",
   );
 
   let sentCount = 0;
@@ -64,10 +62,10 @@ export async function sendReferralBatch(
         referrerEmail: author.user.email,
         presentingIssue: referralPost.presentingIssue,
         ageGroup: referralPost.ageGroup,
-        city: referralPost.locationCity,
-        province: referralPost.locationProvince,
-        modality: referralPost.modality,
-        additionalNotes: referralPost.additionalNotes,
+        city: referralPost.city,
+        province: referralPost.province ?? "Unknown",
+        modalities: referralPost.modalities,
+        details: referralPost.details,
         referralUrl,
       }),
     });

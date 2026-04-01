@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createClient } from "@supabase/supabase-js";
 
 const BUCKET = "profile-images";
 const MAX_SIZE = 5 * 1024 * 1024; // 5MB
@@ -36,7 +36,10 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   const ext = file.name.split(".").pop() ?? "jpg";
   const path = `${session.user.id}.${ext}`;
 
-  const supabase = await createSupabaseServerClient();
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SECRET!,
+  );
 
   // Upload (upsert to overwrite previous image)
   const { error: uploadError } = await supabase.storage

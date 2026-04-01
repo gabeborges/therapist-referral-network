@@ -2,17 +2,31 @@
 
 import { useState } from "react";
 import { CountryGate } from "@/features/onboarding/components/CountryGate";
-import { OnboardingProfileForm } from "@/features/onboarding/components/OnboardingProfileForm";
+import { OnboardingWizard } from "@/features/onboarding/components/OnboardingWizard";
 
-export function OnboardingFlow(): React.ReactElement {
+interface OnboardingFlowProps {
+  onHideHowItWorks?: (hide: boolean) => void;
+}
+
+export function OnboardingFlow({ onHideHowItWorks }: OnboardingFlowProps): React.ReactElement {
   const [passedGate, setPassedGate] = useState(false);
+
+  function handleProceed(): void {
+    setPassedGate(true);
+    onHideHowItWorks?.(true);
+  }
+
+  function handleBack(): void {
+    setPassedGate(false);
+    onHideHowItWorks?.(false);
+  }
 
   return (
     <>
       {!passedGate ? (
-        <CountryGate onProceed={() => setPassedGate(true)} />
+        <CountryGate onProceed={handleProceed} />
       ) : (
-        <OnboardingProfileForm />
+        <OnboardingWizard onBack={handleBack} />
       )}
     </>
   );

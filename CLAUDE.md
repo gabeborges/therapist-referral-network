@@ -41,6 +41,15 @@
 - See rules/health-data-compliance.md
 - No PHI in logs or third-party analytics
 
+## Workflow Rules
+- When debugging, read actual code and config before proposing a fix — trace the execution path first.
+- After any feature, verify completeness: DB migrations, API types, navigation entries, settings, tests.
+- Run preflight (lint, typecheck, tests) before reporting a task complete. Fix failures before declaring done.
+- When reviewing code or bugs, do a deep first pass — verify each finding before reporting it.
+- Do not make autonomous UI/design changes beyond what was requested (column counts, font sizes, etc.).
+- Match intent: answer questions without acting; save plans as files without implementing them.
+- Change ONLY what was requested. List planned edits before touching files and wait for approval.
+
 ## Boundaries
 - Full-stack web application — optimize for performance and security
 - react-hook-form + Zod for forms (same patterns as Mobile App)

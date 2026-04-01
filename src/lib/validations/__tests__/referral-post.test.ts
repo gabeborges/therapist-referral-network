@@ -7,8 +7,8 @@ function validReferral(overrides: Record<string, unknown> = {}) {
   return {
     presentingIssue: "anxiety",
     ageGroup: "adults",
-    locationProvince: "ON",
-    modality: "virtual" as const,
+    province: "ON",
+    modalities: ["virtual"],
     ...overrides,
   };
 }
@@ -28,33 +28,31 @@ describe("referralPostSchema", () => {
 
   // ─── Required fields ─────────────────────────────────────────────────────
 
-  it.each([["presentingIssue"], ["ageGroup"], ["locationProvince"]])(
+  it.each([["presentingIssue"], ["ageGroup"]])(
     "rejects empty string for required field %s",
     (field) => {
-      const result = referralPostSchema.safeParse(
-        validReferral({ [field]: "" }),
-      );
+      const result = referralPostSchema.safeParse(validReferral({ [field]: "" }));
       expect(result.success).toBe(false);
     },
   );
 
   // ─── Modality enum ────────────────────────────────────────────────────────
 
-  describe("modality", () => {
-    it.each(["in-person", "virtual", "both"])(
-      "accepts valid modality: %s",
-      (modality) => {
-        const result = referralPostSchema.safeParse(
-          validReferral({ modality }),
-        );
-        expect(result.success).toBe(true);
-      },
-    );
+  describe("modalities", () => {
+    it.each(["in-person", "virtual", "phone"])("accepts valid modality: %s", (modality) => {
+      const result = referralPostSchema.safeParse(validReferral({ modalities: [modality] }));
+      expect(result.success).toBe(true);
+    });
 
     it("rejects an invalid modality", () => {
       const result = referralPostSchema.safeParse(
-        validReferral({ modality: "phone" }),
+        validReferral({ modalities: ["carrier-pigeon"] }),
       );
+      expect(result.success).toBe(false);
+    });
+
+    it("rejects an empty array", () => {
+      const result = referralPostSchema.safeParse(validReferral({ modalities: [] }));
       expect(result.success).toBe(false);
     });
   });
@@ -64,15 +62,13 @@ describe("referralPostSchema", () => {
   it("validates with all optional fields populated", () => {
     const result = referralPostSchema.safeParse(
       validReferral({
-        locationCity: "Toronto",
+        city: "Toronto",
         participants: "Couples",
-        rateBilling: "Sliding scale",
-        additionalNotes: "Prefers evenings",
-        clientGender: "Female",
-        clientAge: "30s",
+        rate: "Sliding scale",
+        details: "Prefers evenings",
         therapistGenderPref: "Female",
         therapyTypes: ["CBT", "EMDR"],
-        languageRequirements: ["English", "French"],
+        languages: ["English", "French"],
         additionalContext: "Client has previous CBT experience",
       }),
     );
@@ -81,18 +77,14 @@ describe("referralPostSchema", () => {
 
   // ─── Text length limits ───────────────────────────────────────────────────
 
-  describe("additionalNotes", () => {
+  describe("details", () => {
     it("accepts up to 1000 characters", () => {
-      const result = referralPostSchema.safeParse(
-        validReferral({ additionalNotes: "A".repeat(1000) }),
-      );
+      const result = referralPostSchema.safeParse(validReferral({ details: "A".repeat(1000) }));
       expect(result.success).toBe(true);
     });
 
     it("rejects over 1000 characters", () => {
-      const result = referralPostSchema.safeParse(
-        validReferral({ additionalNotes: "A".repeat(1001) }),
-      );
+      const result = referralPostSchema.safeParse(validReferral({ details: "A".repeat(1001) }));
       expect(result.success).toBe(false);
     });
   });
@@ -117,32 +109,26 @@ describe("referralPostSchema", () => {
 
   describe("therapyTypes", () => {
     it("accepts an array of strings", () => {
-      const result = referralPostSchema.safeParse(
-        validReferral({ therapyTypes: ["CBT", "DBT"] }),
-      );
+      const result = referralPostSchema.safeParse(validReferral({ therapyTypes: ["CBT", "DBT"] }));
       expect(result.success).toBe(true);
     });
 
     it("accepts an empty array", () => {
-      const result = referralPostSchema.safeParse(
-        validReferral({ therapyTypes: [] }),
-      );
+      const result = referralPostSchema.safeParse(validReferral({ therapyTypes: [] }));
       expect(result.success).toBe(true);
     });
   });
 
-  describe("languageRequirements", () => {
+  describe("languages", () => {
     it("accepts an array of strings", () => {
       const result = referralPostSchema.safeParse(
-        validReferral({ languageRequirements: ["English", "French"] }),
+        validReferral({ languages: ["English", "French"] }),
       );
       expect(result.success).toBe(true);
     });
 
     it("accepts an empty array", () => {
-      const result = referralPostSchema.safeParse(
-        validReferral({ languageRequirements: [] }),
-      );
+      const result = referralPostSchema.safeParse(validReferral({ languages: [] }));
       expect(result.success).toBe(true);
     });
   });

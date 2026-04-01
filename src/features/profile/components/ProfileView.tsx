@@ -22,8 +22,7 @@ function calculateCompleteness(profile: TherapistProfile): number {
     profile.modalities.length > 0,
     profile.therapeuticApproach.length > 0,
     profile.languages.length > 0,
-    profile.ageGroups.length > 0,
-    profile.hourlyRate !== null,
+    profile.ages.length > 0,
   ];
 
   const filled = fields.filter(Boolean).length;
@@ -50,15 +49,13 @@ export function ProfileView({ profile }: ProfileViewProps): React.ReactElement {
               <p className="text-[0.875rem] leading-[1.5] text-fg-2 mb-1">
                 {profile.firstName} {profile.lastName}
               </p>
-              <p className="text-[0.75rem] tracking-[0.015em] text-fg-3">
-                {profile.user.email}
-              </p>
+              <p className="text-[0.75rem] tracking-[0.015em] text-fg-3">{profile.user.email}</p>
             </div>
             <Link
               href="/profile/edit"
               className="inline-flex items-center justify-center gap-2 h-9 px-4 bg-transparent text-fg-2 border border-border rounded-sm text-[0.8125rem] font-medium tracking-[0.01em] cursor-pointer transition-all duration-150 ease-out hover:border-border-e hover:text-fg no-underline"
             >
-              Edit Profile
+              Edit profile
             </Link>
           </div>
 
@@ -68,9 +65,7 @@ export function ProfileView({ profile }: ProfileViewProps): React.ReactElement {
           {/* Profile Completeness */}
           <div className="mt-4">
             <div className="flex items-center justify-between mb-2">
-              <p className="text-[0.75rem] tracking-[0.015em] text-fg-3">
-                Profile completeness
-              </p>
+              <p className="text-[0.75rem] tracking-[0.015em] text-fg-3">Profile completeness</p>
               <p className="text-[0.75rem] tracking-[0.015em] text-fg-3 font-medium text-brand">
                 {completeness}%
               </p>
@@ -87,7 +82,7 @@ export function ProfileView({ profile }: ProfileViewProps): React.ReactElement {
         {/* Matching Information */}
         <div className="bg-s1 border border-border rounded-md p-6 shadow-1 mb-6">
           <h2 className="text-[1.25rem] font-semibold tracking-[-0.01em] leading-[1.35] text-fg mb-4">
-            Matching Information
+            Matching information
           </h2>
 
           {/* Specialties */}
@@ -113,7 +108,7 @@ export function ProfileView({ profile }: ProfileViewProps): React.ReactElement {
           {profile.insurers.length > 0 && (
             <div className="mb-4">
               <p className="text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2 mb-2">
-                Insurance Accepted
+                Insurance accepted
               </p>
               <div className="flex flex-wrap gap-2">
                 {profile.insurers.map((insurer) => (
@@ -132,7 +127,7 @@ export function ProfileView({ profile }: ProfileViewProps): React.ReactElement {
           {profile.therapeuticApproach.length > 0 && (
             <div className="mb-4">
               <p className="text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2 mb-2">
-                Therapeutic Approaches
+                Therapeutic approaches
               </p>
               <div className="flex flex-wrap gap-2">
                 {profile.therapeuticApproach.map((approach) => (
@@ -155,9 +150,7 @@ export function ProfileView({ profile }: ProfileViewProps): React.ReactElement {
             <p className="text-[0.9375rem] leading-[1.5] text-fg">
               {profile.city}, {profile.province}
             </p>
-            {profile.modalities.some(
-              (m) => m.toLowerCase() === "virtual",
-            ) && (
+            {profile.modalities.some((m) => m.toLowerCase() === "virtual") && (
               <p className="text-[0.75rem] tracking-[0.015em] text-fg-3 mt-1">
                 Also available virtually
               </p>

@@ -50,9 +50,9 @@ export function AutocompleteSelect({
 
   const filtered = useMemo(() => {
     const available = options.filter((opt) => !selectedIds.has(opt.id));
-    if (!query.trim()) return available.slice(0, 10);
+    if (!query.trim()) return available;
     const q = query.toLowerCase();
-    return available.filter((opt) => opt.name.toLowerCase().includes(q)).slice(0, 10);
+    return available.filter((opt) => opt.name.toLowerCase().includes(q));
   }, [options, selectedIds, query]);
 
   useEffect(() => {
@@ -150,7 +150,11 @@ export function AutocompleteSelect({
 
   return (
     <div ref={containerRef} className="relative">
-      <label id={labelId} htmlFor={inputId} className="block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2">
+      <label
+        id={labelId}
+        htmlFor={inputId}
+        className="block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2"
+      >
         {label}
         {maxItems && (
           <span className="ml-1 font-normal text-fg-4">
@@ -167,9 +171,7 @@ export function AutocompleteSelect({
               key={item.id}
               className="inline-flex items-center gap-1 h-7 px-2.5 bg-brand-l text-brand rounded-full text-[0.8125rem] font-medium whitespace-nowrap"
             >
-              {ranked && (
-                <span className="text-fg-4 mr-0.5">{index + 1}.</span>
-              )}
+              {ranked && <span className="text-fg-4 mr-0.5">{index + 1}.</span>}
               {item.name}
               {ranked && index > 0 && (
                 <button
@@ -197,7 +199,18 @@ export function AutocompleteSelect({
                 className="bg-transparent border-none text-inherit cursor-pointer p-0 ml-0.5 opacity-60 hover:opacity-100 w-3.5 h-3.5 inline-flex items-center justify-center"
                 aria-label={`Remove ${item.name}`}
               >
-                &times;
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={3}
+                  strokeLinecap="round"
+                  aria-hidden="true"
+                >
+                  <path d="M18 6L6 18M6 6l12 12" />
+                </svg>
               </button>
             </span>
           ))}
@@ -214,7 +227,9 @@ export function AutocompleteSelect({
         aria-haspopup="listbox"
         aria-controls={isOpen ? listboxId : undefined}
         aria-labelledby={labelId}
-        aria-activedescendant={focusedIndex >= 0 ? `${componentId}-option-${focusedIndex}` : undefined}
+        aria-activedescendant={
+          focusedIndex >= 0 ? `${componentId}-option-${focusedIndex}` : undefined
+        }
         value={query}
         disabled={atMax}
         onChange={(e) => {
@@ -241,7 +256,7 @@ export function AutocompleteSelect({
           role="listbox"
           id={listboxId}
           aria-labelledby={labelId}
-          className="absolute z-10 w-full mt-1 bg-s2 border border-border rounded-md shadow-2 max-h-48 overflow-y-auto"
+          className="absolute z-10 w-full mt-1 bg-s2 border border-border rounded-md shadow-2 max-h-72 overflow-y-auto"
         >
           {loading ? (
             <div className="px-3 py-2 text-[0.875rem] text-fg-4">Loading...</div>
@@ -253,7 +268,9 @@ export function AutocompleteSelect({
             filtered.map((option, index) => (
               <button
                 key={option.id}
-                ref={(el) => { optionRefs.current[index] = el; }}
+                ref={(el) => {
+                  optionRefs.current[index] = el;
+                }}
                 id={`${componentId}-option-${index}`}
                 type="button"
                 role="option"

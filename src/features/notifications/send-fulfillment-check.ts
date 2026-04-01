@@ -36,8 +36,7 @@ export async function sendFulfillmentCheck(
   const fulfillYesUrl = `${APP_URL}/referrals/fulfill/${fulfillmentCheck.token}?fulfilled=true`;
   const fulfillNoUrl = `${APP_URL}/referrals/fulfill/${fulfillmentCheck.token}?fulfilled=false`;
 
-  const referrerName =
-    author.user.name ?? `${author.firstName} ${author.lastName}`;
+  const referrerName = author.user.name ?? `${author.firstName} ${author.lastName}`;
 
   const { error } = await resend.emails.send({
     from: FROM_EMAIL,
@@ -46,8 +45,8 @@ export async function sendFulfillmentCheck(
     react: FulfillmentCheckEmail({
       referrerName,
       presentingIssue: referralPost.presentingIssue,
-      city: referralPost.locationCity,
-      province: referralPost.locationProvince,
+      city: referralPost.city,
+      province: referralPost.province ?? "Unknown",
       fulfillYesUrl,
       fulfillNoUrl,
     }),

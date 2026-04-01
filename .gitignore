@@ -61,3 +61,9 @@ prisma/migrations/*.sql.bak
 /playwright/.cache/
 
 /src/generated/prisma
+
+# Moat task system
+.moat/
+
+# Claude Code configuration
+.claude/

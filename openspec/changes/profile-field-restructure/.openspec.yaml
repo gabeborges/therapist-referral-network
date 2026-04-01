@@ -1,0 +1,15 @@
+name: profile-field-restructure
+description: Restructure profile into 6 sections, rename DB columns, re-add gender/booleans, add payment methods grid, sync onboarding
+status: ready
+prd: openspec/prd-referral-network.md
+artifacts:
+  proposal:
+    status: done
+  design:
+    status: done
+    dependencies: [proposal]
+  tasks:
+    status: done
+    dependencies: [design]
+apply:
+  requires: [tasks]

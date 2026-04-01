@@ -1,9 +1,10 @@
 "use client";
 
 const STEPS = [
-  { label: "Bio", number: 1 },
-  { label: "Communities served", number: 2 },
-  { label: "Your services", number: 3 },
+  { label: "Country", number: 1 },
+  { label: "Bio", number: 2 },
+  { label: "Communities", number: 3 },
+  { label: "Services", number: 4 },
 ] as const;
 
 interface WizardProgressProps {
@@ -16,20 +17,20 @@ export function WizardProgress({
   onStepClick,
 }: WizardProgressProps): React.ReactElement {
   return (
-    <nav aria-label="Onboarding progress" className="mb-8">
-      <ol className="flex items-center gap-2">
+    <nav aria-label="Onboarding progress" className="mb-6">
+      <ol className="flex items-center justify-center gap-0 flex-wrap">
         {STEPS.map((step, index) => {
           const isCompleted = currentStep > step.number;
           const isCurrent = currentStep === step.number;
 
           return (
-            <li key={step.number} className="flex items-center gap-2 flex-1">
+            <li key={step.number} className="flex items-center shrink-0">
               <button
                 type="button"
                 onClick={() => isCompleted && onStepClick(step.number)}
                 disabled={!isCompleted}
                 aria-current={isCurrent ? "step" : undefined}
-                className={`flex items-center gap-2 text-[0.8125rem] font-medium transition-colors duration-150 ${
+                className={`flex items-center gap-2 text-[0.75rem] font-medium transition-colors duration-150 ${
                   isCompleted
                     ? "text-brand cursor-pointer hover:underline"
                     : isCurrent
@@ -43,7 +44,7 @@ export function WizardProgress({
                       ? "bg-brand text-white"
                       : isCurrent
                         ? "bg-fg text-bg"
-                        : "bg-inset text-fg-4 border border-border"
+                        : "bg-transparent text-fg-4 border border-border"
                   }`}
                 >
                   {isCompleted ? "✓" : step.number}
@@ -51,7 +52,9 @@ export function WizardProgress({
                 <span className="hidden sm:inline">{step.label}</span>
               </button>
               {index < STEPS.length - 1 && (
-                <div className={`flex-1 h-px ${isCompleted ? "bg-brand" : "bg-border"}`} />
+                <span className="mx-2 text-fg-4 text-[0.75rem] select-none" aria-hidden="true">
+                  ›
+                </span>
               )}
             </li>
           );

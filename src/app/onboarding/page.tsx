@@ -39,17 +39,7 @@ export default async function OnboardingPage(): Promise<React.ReactElement> {
           </span>
         </div>
 
-        {/* Welcome */}
-        <div className="text-center mb-8">
-          <h1 className="text-[1.5rem] font-semibold tracking-[-0.015em] leading-[1.3] text-fg mb-2">
-            Welcome to Therapist Referral Network
-          </h1>
-          <p className="text-[0.875rem] leading-[1.5] text-fg-2">
-            Complete your profile to start giving and receiving referrals from trusted colleagues.
-          </p>
-        </div>
-
-        {/* How it works + Country gate → Profile form */}
+        {/* Wizard (progress bar + step title rendered by OnboardingWizard) */}
         <OnboardingPageClient />
       </div>
     </div>

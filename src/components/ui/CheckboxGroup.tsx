@@ -13,6 +13,7 @@ interface CheckboxGroupProps {
   name: string;
   options: { value: string; label: string }[];
   itemMinWidth?: keyof typeof ITEM_MIN_WIDTH;
+  layout?: "grid" | "inline" | "column";
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: any;
   label: string;
@@ -25,6 +26,7 @@ export function CheckboxGroup({
   name,
   options,
   itemMinWidth = "standard",
+  layout = "grid",
   control,
   label,
   srOnlyLabel = false,
@@ -59,10 +61,18 @@ export function CheckboxGroup({
         control={control}
         render={({ field }) => (
           <div
-            className="grid gap-y-2 gap-x-4"
-            style={{
-              gridTemplateColumns: `repeat(auto-fill, minmax(${minWidth}, 1fr))`,
-            }}
+            className={
+              layout === "inline"
+                ? "flex gap-6 flex-wrap"
+                : layout === "column"
+                  ? "flex flex-col gap-2"
+                  : "grid gap-y-2 gap-x-4"
+            }
+            style={
+              layout === "grid"
+                ? { gridTemplateColumns: `repeat(auto-fill, minmax(${minWidth}, 1fr))` }
+                : undefined
+            }
             role="group"
             aria-labelledby={legendId}
             aria-describedby={describedBy}

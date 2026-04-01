@@ -3,7 +3,6 @@
 import { useFormContext, Controller } from "react-hook-form";
 import type { OnboardingFormData } from "@/lib/validations/onboarding";
 import { ProfileImageUpload } from "@/features/profile/components/ProfileImageUpload";
-import { FormGroup } from "@/components/ui/FormGroup";
 import { PRONOUNS_OPTIONS, PROVINCES } from "@/lib/validations/therapist-profile";
 import { inputClasses, selectClasses, selectStyle } from "@/lib/form-styles";
 
@@ -18,7 +17,7 @@ export function OnboardingStepBio(): React.ReactElement {
   const pronounsValue = watch("pronouns");
 
   return (
-    <FormGroup title="Bio">
+    <div className="space-y-5">
       {/* Profile photo */}
       <ProfileImageUpload
         currentImageUrl={watch("imageUrl") || null}
@@ -26,11 +25,11 @@ export function OnboardingStepBio(): React.ReactElement {
       />
 
       {/* Name fields */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-3 gap-3">
         <div>
           <label
             htmlFor="ob-firstName"
-            className="block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2"
+            className="block mb-1 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2"
           >
             First name
           </label>
@@ -52,9 +51,9 @@ export function OnboardingStepBio(): React.ReactElement {
         <div>
           <label
             htmlFor="ob-middleName"
-            className="block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2"
+            className="block mb-1 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2"
           >
-            Middle name
+            Middle name <span className="font-normal text-fg-4">(optional)</span>
           </label>
           <input
             id="ob-middleName"
@@ -66,7 +65,7 @@ export function OnboardingStepBio(): React.ReactElement {
         <div>
           <label
             htmlFor="ob-lastName"
-            className="block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2"
+            className="block mb-1 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2"
           >
             Last name
           </label>
@@ -87,72 +86,72 @@ export function OnboardingStepBio(): React.ReactElement {
         </div>
       </div>
 
-      {/* Pronouns */}
-      <div>
-        <label
-          htmlFor="ob-pronouns"
-          className="block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2"
-        >
-          Pronouns
-        </label>
-        <select
-          id="ob-pronouns"
-          {...register("pronouns")}
-          className={selectClasses(false)}
-          style={selectStyle}
-        >
-          <option value="">Select pronouns...</option>
-          {PRONOUNS_OPTIONS.map((p) => (
-            <option key={p} value={p}>
-              {p}
-            </option>
-          ))}
-        </select>
-        {pronounsValue === "other" && (
-          <Controller
-            name="pronouns"
-            render={({ field }) => (
-              <input
-                className={`${inputClasses(false)} mt-2`}
-                placeholder="Enter your pronouns (max 20 characters)"
-                maxLength={20}
-                value={field.value === "other" ? "" : (field.value ?? "")}
-                onChange={(e) => field.onChange(e.target.value || "other")}
-              />
-            )}
+      {/* Pronouns + Display name */}
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <label
+            htmlFor="ob-pronouns"
+            className="block mb-1 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2"
+          >
+            Pronouns <span className="font-normal text-fg-4">(optional)</span>
+          </label>
+          <select
+            id="ob-pronouns"
+            {...register("pronouns")}
+            className={selectClasses(false)}
+            style={selectStyle}
+          >
+            <option value="">Select pronouns...</option>
+            {PRONOUNS_OPTIONS.map((p) => (
+              <option key={p} value={p}>
+                {p}
+              </option>
+            ))}
+          </select>
+          {pronounsValue === "other" && (
+            <Controller
+              name="pronouns"
+              render={({ field }) => (
+                <input
+                  className={`${inputClasses(false)} mt-2`}
+                  placeholder="Enter your pronouns (max 20 characters)"
+                  maxLength={20}
+                  value={field.value === "other" ? "" : (field.value ?? "")}
+                  onChange={(e) => field.onChange(e.target.value || "other")}
+                />
+              )}
+            />
+          )}
+        </div>
+        <div>
+          <label
+            htmlFor="ob-displayName"
+            className="block mb-1 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2"
+          >
+            Display name <span className="font-normal text-fg-4">(optional)</span>
+          </label>
+          <input
+            id="ob-displayName"
+            {...register("displayName")}
+            className={inputClasses(!!errors.displayName)}
+            placeholder="How your name appears to colleagues"
           />
-        )}
-      </div>
-
-      {/* Display name */}
-      <div>
-        <label
-          htmlFor="ob-displayName"
-          className="block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2"
-        >
-          Display name
-        </label>
-        <input
-          id="ob-displayName"
-          {...register("displayName")}
-          className={inputClasses(!!errors.displayName)}
-          placeholder="How your name appears to colleagues"
-        />
-        {errors.displayName && (
-          <p className="mt-1 text-[0.75rem] text-err">{errors.displayName.message}</p>
-        )}
-        <p className="mt-1 text-[0.75rem] italic text-fg-3 tracking-[0.015em]">
-          This is how your name appears to other therapists in the network.
-        </p>
+          {errors.displayName && (
+            <p className="mt-1 text-[0.75rem] text-err">{errors.displayName.message}</p>
+          )}
+          <p className="mt-1 text-[0.75rem] italic text-fg-3 tracking-[0.015em]">
+            This is how your name appears to other therapists in the network.
+          </p>
+        </div>
       </div>
 
       {/* Contact email */}
       <div>
         <label
           htmlFor="ob-contactEmail"
-          className="block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2"
+          className="block mb-1 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2"
         >
-          Contact email
+          Contact email <span className="font-normal text-fg-4">(optional)</span>
         </label>
         <input
           id="ob-contactEmail"
@@ -171,11 +170,11 @@ export function OnboardingStepBio(): React.ReactElement {
       </div>
 
       {/* City + Province */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-3">
         <div>
           <label
             htmlFor="ob-city"
-            className="block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2"
+            className="block mb-1 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2"
           >
             City
           </label>
@@ -197,7 +196,7 @@ export function OnboardingStepBio(): React.ReactElement {
         <div>
           <label
             htmlFor="ob-province"
-            className="block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2"
+            className="block mb-1 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2"
           >
             Province
           </label>
@@ -224,6 +223,6 @@ export function OnboardingStepBio(): React.ReactElement {
           )}
         </div>
       </div>
-    </FormGroup>
+    </div>
   );
 }

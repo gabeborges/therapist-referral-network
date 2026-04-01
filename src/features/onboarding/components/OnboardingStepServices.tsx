@@ -3,7 +3,6 @@
 import { useFormContext, Controller } from "react-hook-form";
 import type { OnboardingFormData } from "@/lib/validations/onboarding";
 import { PARTICIPANT_RATE_MAP } from "@/lib/validations/therapist-profile";
-import { FormGroup } from "@/components/ui/FormGroup";
 import { BooleanCheckbox } from "@/components/ui/BooleanCheckbox";
 import { inputClasses } from "@/lib/form-styles";
 
@@ -13,11 +12,11 @@ export function OnboardingStepServices(): React.ReactElement {
   const selectedParticipants = watch("participants") ?? [];
 
   return (
-    <FormGroup title="Your services">
+    <div className="space-y-6">
       {/* Dynamic rate inputs */}
       <div>
         <label className="block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2">
-          Rate
+          Rate <span className="font-normal text-fg-4">(optional)</span>
         </label>
         <p className="text-[0.75rem] text-fg-3 mb-3">
           Set your rate per session type. Leave blank if you prefer not to share.
@@ -27,7 +26,7 @@ export function OnboardingStepServices(): React.ReactElement {
             Select participant types in the previous step to set rates.
           </p>
         ) : (
-          <div className="space-y-3">
+          <div className="grid grid-cols-2 gap-3">
             {selectedParticipants.map((participant) => {
               const config = PARTICIPANT_RATE_MAP[participant];
               if (!config) return null;
@@ -74,7 +73,7 @@ export function OnboardingStepServices(): React.ReactElement {
       {/* Therapy service options */}
       <div>
         <p className="block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2">
-          Therapy service options
+          Therapy service options <span className="font-normal text-fg-4">(optional)</span>
         </p>
         <div className="flex flex-col gap-2">
           <BooleanCheckbox name="acceptsInsurance" control={control} label="I accept insurance" />
@@ -127,6 +126,6 @@ export function OnboardingStepServices(): React.ReactElement {
           <p className="text-[0.875rem] text-fg-2">Visible to other therapists in the network</p>
         </div>
       </div>
-    </FormGroup>
+    </div>
   );
 }

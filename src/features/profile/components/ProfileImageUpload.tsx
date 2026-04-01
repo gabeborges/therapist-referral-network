@@ -68,17 +68,13 @@ export function ProfileImageUpload({
   return (
     <div>
       <label className="block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2">
-        Profile photo
+        Profile photo <span className="font-normal text-fg-4">(optional)</span>
       </label>
       <div className="flex items-center gap-4">
         {/* Avatar preview */}
         <div className="w-20 h-20 rounded-full bg-s1 border border-border overflow-hidden flex items-center justify-center shrink-0">
           {preview ? (
-            <img
-              src={preview}
-              alt="Profile"
-              className="w-full h-full object-cover"
-            />
+            <img src={preview} alt="Profile" className="w-full h-full object-cover" />
           ) : (
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" className="text-fg-4">
               <path
@@ -98,9 +94,7 @@ export function ProfileImageUpload({
           >
             {uploading ? "Uploading..." : preview ? "Change photo" : "Upload photo"}
           </button>
-          <p className="mt-1 text-[0.75rem] text-fg-4">
-            JPEG, PNG, or WebP. Max 5MB.
-          </p>
+          <p className="mt-1 text-[0.75rem] text-fg-4">JPEG, PNG, or WebP. Max 5MB.</p>
         </div>
 
         <input

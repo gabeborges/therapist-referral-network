@@ -14,20 +14,37 @@ import {
   type OnboardingFormData,
 } from "@/lib/validations/onboarding";
 import { WizardProgress } from "@/features/onboarding/components/WizardProgress";
+import { OnboardingStepCountry } from "@/features/onboarding/components/OnboardingStepCountry";
 import { OnboardingStepBio } from "@/features/onboarding/components/OnboardingStepBio";
 import { OnboardingStepCommunities } from "@/features/onboarding/components/OnboardingStepCommunities";
 import { OnboardingStepServices } from "@/features/onboarding/components/OnboardingStepServices";
 
-const STEP_SCHEMAS = [stepBioSchema, stepCommunitiesSchema, stepServicesSchema];
+const STEP_SCHEMAS = [null, stepBioSchema, stepCommunitiesSchema, stepServicesSchema];
 
-interface OnboardingWizardProps {
-  onBack?: () => void;
-}
+const STEP_INFO = [
+  {
+    title: "Where do you practice?",
+    description: "We're currently available in Canada and the United States.",
+  },
+  {
+    title: "Bio",
+    description: "Tell us a bit about yourself and your practice.",
+  },
+  {
+    title: "Communities served",
+    description: "Who are your clients and what do you specialize in?",
+  },
+  {
+    title: "Your services",
+    description: "Set your rates and service options.",
+  },
+];
 
-export function OnboardingWizard({ onBack }: OnboardingWizardProps): React.ReactElement {
+export function OnboardingWizard(): React.ReactElement {
   const router = useRouter();
   const trpc = useTRPC();
   const [currentStep, setCurrentStep] = useState(1);
+  const [country, setCountry] = useState("");
   const [serverError, setServerError] = useState<string | null>(null);
   const errorRef = useRef<HTMLDivElement>(null);
 
@@ -74,30 +91,38 @@ export function OnboardingWizard({ onBack }: OnboardingWizardProps): React.React
     }),
   );
 
-  async function handleNext(): Promise<void> {
-    const stepSchema = STEP_SCHEMAS[currentStep - 1]!;
-    const values = methods.getValues();
+  const stepInfo = STEP_INFO[currentStep - 1]!;
 
-    // Validate only the current step's fields
-    const result = stepSchema.safeParse(values);
-    if (!result.success) {
-      // Trigger validation on the form to show errors
-      const fieldNames = Object.keys(stepSchema.shape) as (keyof OnboardingFormData)[];
-      for (const name of fieldNames) {
-        await methods.trigger(name);
+  async function handleNext(): Promise<void> {
+    if (currentStep === 1) {
+      if (country === "US") {
+        router.push(`/onboarding/waitlist?country=US`);
+        return;
+      }
+      if (country === "CA") {
+        setCurrentStep(2);
       }
       return;
     }
 
-    setCurrentStep((prev) => Math.min(prev + 1, 3));
+    const stepSchema = STEP_SCHEMAS[currentStep - 1];
+    if (stepSchema) {
+      const values = methods.getValues();
+      const result = stepSchema.safeParse(values);
+      if (!result.success) {
+        const fieldNames = Object.keys(stepSchema.shape) as (keyof OnboardingFormData)[];
+        for (const name of fieldNames) {
+          await methods.trigger(name);
+        }
+        return;
+      }
+    }
+
+    setCurrentStep((prev) => Math.min(prev + 1, 4));
   }
 
   function handleBack(): void {
-    if (currentStep === 1 && onBack) {
-      onBack();
-    } else {
-      setCurrentStep((prev) => Math.max(prev - 1, 1));
-    }
+    setCurrentStep((prev) => Math.max(prev - 1, 1));
   }
 
   async function handleComplete(): Promise<void> {
@@ -107,10 +132,8 @@ export function OnboardingWizard({ onBack }: OnboardingWizardProps): React.React
 
     const data = methods.getValues();
 
-    // Build full profile data with defaults for fields not in onboarding
     createProfile.mutate({
       ...data,
-      // Fields not in onboarding — set defaults for the full profile schema
       displayName: data.displayName || `${data.firstName} ${data.lastName}`.trim(),
       bio: "",
       primaryCredential: "",
@@ -129,82 +152,107 @@ export function OnboardingWizard({ onBack }: OnboardingWizardProps): React.React
       therapistGender: "",
       insurers: [],
       paymentMethods: [],
-      // reducedFees, acceptsInsurance, proBono, freeConsultation come from form data
     });
   }
 
   return (
-    <div className="bg-s1 border border-border rounded-md p-6 shadow-1">
-      <h2 className="text-[1.25rem] font-semibold tracking-[-0.01em] leading-[1.35] text-fg mb-4">
-        Complete your profile
-      </h2>
-
+    <>
+      {/* Progress bar — outside the card */}
       <WizardProgress currentStep={currentStep} onStepClick={setCurrentStep} />
 
-      {serverError && (
-        <div
-          ref={errorRef}
-          role="alert"
-          tabIndex={-1}
-          className="p-4 rounded-md border border-err/20 bg-err-l flex gap-3 items-start mb-6"
-        >
-          <svg
-            aria-hidden="true"
-            className="w-5 h-5 shrink-0 mt-0.5 text-err"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+      {/* Step title + description */}
+      <div className="text-center mb-6">
+        <h1 className="text-[1.5rem] font-semibold tracking-[-0.015em] leading-[1.3] text-fg mb-2">
+          {stepInfo.title}
+        </h1>
+        <p className="text-[0.875rem] leading-[1.5] text-fg-2">{stepInfo.description}</p>
+      </div>
+
+      {/* Card */}
+      <div className="bg-s1 border border-border rounded-md p-6 shadow-1">
+        {serverError && (
+          <div
+            ref={errorRef}
+            role="alert"
+            tabIndex={-1}
+            className="p-4 rounded-md border border-err/20 bg-err-l flex gap-3 items-start mb-6"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"
-            />
-          </svg>
-          <p className="text-[0.9375rem] font-medium text-err">{serverError}</p>
-        </div>
-      )}
+            <svg
+              aria-hidden="true"
+              className="w-5 h-5 shrink-0 mt-0.5 text-err"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"
+              />
+            </svg>
+            <p className="text-[0.9375rem] font-medium text-err">{serverError}</p>
+          </div>
+        )}
 
-      <FormProvider {...methods}>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            if (currentStep === 3) {
-              handleComplete();
-            } else {
-              handleNext();
-            }
-          }}
-          className="space-y-6"
-        >
-          {currentStep === 1 && <OnboardingStepBio />}
-          {currentStep === 2 && <OnboardingStepCommunities />}
-          {currentStep === 3 && <OnboardingStepServices />}
+        {currentStep === 1 && <OnboardingStepCountry country={country} onSelect={setCountry} />}
 
-          {/* Navigation buttons */}
-          <div className="pt-4 border-t border-border-s flex justify-between gap-3">
+        {currentStep > 1 && (
+          <FormProvider {...methods}>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (currentStep === 4) {
+                  handleComplete();
+                } else {
+                  handleNext();
+                }
+              }}
+              className="space-y-6"
+            >
+              {currentStep === 2 && <OnboardingStepBio />}
+              {currentStep === 3 && <OnboardingStepCommunities />}
+              {currentStep === 4 && <OnboardingStepServices />}
+
+              {/* Navigation buttons */}
+              <div className="mt-6 pt-4 border-t border-border-s flex justify-between">
+                <button
+                  type="button"
+                  onClick={handleBack}
+                  className="inline-flex items-center justify-center h-11 px-6 bg-transparent text-fg border border-border rounded-sm text-[0.8125rem] font-semibold tracking-[0.01em] cursor-pointer transition-colors duration-150 font-sans hover:bg-inset focus-visible:outline-2 focus-visible:outline-border-f focus-visible:outline-offset-2"
+                >
+                  Back
+                </button>
+                <button
+                  type="submit"
+                  disabled={createProfile.isPending}
+                  className="inline-flex items-center justify-center h-11 px-6 bg-brand text-brand-on border-none rounded-sm text-[0.8125rem] font-semibold tracking-[0.01em] cursor-pointer transition-[background] duration-150 ease-out font-sans hover:bg-brand-h focus-visible:outline-2 focus-visible:outline-border-f focus-visible:outline-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {currentStep === 4
+                    ? createProfile.isPending
+                      ? "Creating profile..."
+                      : "Complete"
+                    : "Next"}
+                </button>
+              </div>
+            </form>
+          </FormProvider>
+        )}
+
+        {/* Step 1 button (outside form since Country has no form fields) */}
+        {currentStep === 1 && (
+          <div className="border-t border-border-s pt-4">
             <button
               type="button"
-              onClick={handleBack}
-              className="inline-flex items-center justify-center h-11 px-6 bg-transparent text-fg border border-border rounded-sm text-[0.8125rem] font-semibold tracking-[0.01em] cursor-pointer transition-colors duration-150 font-sans hover:bg-inset focus-visible:outline-2 focus-visible:outline-border-f focus-visible:outline-offset-2"
+              onClick={handleNext}
+              disabled={!country}
+              className="inline-flex items-center justify-center w-full h-11 px-6 bg-brand text-brand-on border-none rounded-sm text-[0.8125rem] font-semibold tracking-[0.01em] cursor-pointer transition-[background] duration-150 ease-out font-sans hover:bg-brand-h focus-visible:outline-2 focus-visible:outline-border-f focus-visible:outline-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Back
-            </button>
-            <button
-              type="submit"
-              disabled={createProfile.isPending}
-              className="inline-flex items-center justify-center h-11 px-6 bg-brand text-brand-on border-none rounded-sm text-[0.8125rem] font-semibold tracking-[0.01em] cursor-pointer transition-[background] duration-150 ease-out font-sans hover:bg-brand-h focus-visible:outline-2 focus-visible:outline-border-f focus-visible:outline-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {currentStep === 3
-                ? createProfile.isPending
-                  ? "Creating profile..."
-                  : "Complete"
-                : "Next"}
+              Next
             </button>
           </div>
-        </form>
-      </FormProvider>
-    </div>
+        )}
+      </div>
+    </>
   );
 }

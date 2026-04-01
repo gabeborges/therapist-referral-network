@@ -11,7 +11,6 @@ import {
   type AutocompleteOption,
 } from "@/features/onboarding/components/AutocompleteSelect";
 import { CheckboxGroup } from "@/components/ui/CheckboxGroup";
-import { FormGroup } from "@/components/ui/FormGroup";
 
 export function OnboardingStepCommunities(): React.ReactElement {
   const trpc = useTRPC();
@@ -44,7 +43,7 @@ export function OnboardingStepCommunities(): React.ReactElement {
   }
 
   return (
-    <FormGroup title="Communities served" description="Your clients">
+    <div className="space-y-8">
       {/* Specialties */}
       <Controller
         name="specialties"
@@ -62,35 +61,35 @@ export function OnboardingStepCommunities(): React.ReactElement {
         )}
       />
 
-      {/* Participants (checkboxes, side by side) */}
+      {/* Participants (inline) */}
       <CheckboxGroup
         name="participants"
         control={control}
         label="Participants"
         options={[...PARTICIPANT_OPTIONS].map((p) => ({ value: p, label: p }))}
-        itemMinWidth="compact"
+        layout="inline"
         error={errors.participants?.message}
       />
 
-      {/* Ages (checkboxes) */}
+      {/* Ages (column) */}
       <CheckboxGroup
         name="ages"
         control={control}
         label="Ages"
         options={[...AGE_OPTIONS].map((a) => ({ value: a, label: a }))}
-        itemMinWidth="compact"
+        layout="column"
         error={errors.ages?.message}
       />
 
-      {/* Modalities (checkboxes, side by side) */}
+      {/* Modalities (inline) */}
       <CheckboxGroup
         name="modalities"
         control={control}
         label="Modalities"
         options={MODALITIES.map((m) => ({ value: m, label: m }))}
-        itemMinWidth="compact"
+        layout="inline"
         error={errors.modalities?.message}
       />
-    </FormGroup>
+    </div>
   );
 }

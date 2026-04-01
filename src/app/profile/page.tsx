@@ -13,7 +13,12 @@ export default async function ProfilePage(): Promise<React.ReactElement> {
 
   const profile = await prisma.therapistProfile.findUnique({
     where: { userId: session.user.id },
-    include: { user: { select: { email: true } } },
+    include: {
+      user: { select: { email: true } },
+      specialtyRecords: { select: { id: true, name: true } },
+      therapyTypeRecords: { select: { id: true, name: true } },
+      languageRecords: { select: { id: true, name: true } },
+    },
   });
 
   if (!profile) {

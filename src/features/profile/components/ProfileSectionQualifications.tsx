@@ -35,7 +35,7 @@ export function ProfileSectionQualifications(): React.ReactElement {
           htmlFor="pf-primaryCredential"
           className="block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2"
         >
-          Primary credential
+          Primary credential <span className="font-normal text-fg-4">(optional)</span>
         </label>
         <input
           id="pf-primaryCredential"
@@ -48,7 +48,7 @@ export function ProfileSectionQualifications(): React.ReactElement {
       {/* 12. Additional credentials */}
       <div>
         <label className="block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2">
-          Additional credentials
+          Additional credentials <span className="font-normal text-fg-4">(optional)</span>
         </label>
         <div className="space-y-2">
           {credentials.map((_value, index) => (
@@ -97,7 +97,7 @@ export function ProfileSectionQualifications(): React.ReactElement {
           htmlFor="pf-licensingLevel"
           className="block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2"
         >
-          License level
+          License level <span className="font-normal text-fg-4">(optional)</span>
         </label>
         <select
           id="pf-licensingLevel"

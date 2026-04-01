@@ -26,7 +26,7 @@ export function ProfileSectionFinances(): React.ReactElement {
       {/* 27. Rate */}
       <div>
         <label className="block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2">
-          Rate
+          Rate <span className="font-normal text-fg-4">(optional)</span>
         </label>
         <p className="text-[0.75rem] text-fg-3 mb-3">
           Set your rate per session type. Leave blank if you prefer not to share.
@@ -84,7 +84,7 @@ export function ProfileSectionFinances(): React.ReactElement {
       <CheckboxGroup
         name="paymentMethods"
         control={control}
-        label="Payment methods"
+        label="Payment methods (optional)"
         options={PAYMENT_METHOD_OPTIONS.map((m) => ({ value: m, label: m }))}
         itemMinWidth="standard"
         error={errors.paymentMethods?.message}
@@ -95,7 +95,7 @@ export function ProfileSectionFinances(): React.ReactElement {
         <CheckboxGroup
           name="insurers"
           control={control}
-          label="Insurance"
+          label="Insurance (optional)"
           options={INSURERS.map((i) => ({ value: i, label: i }))}
           itemMinWidth="standard"
           error={errors.insurers?.message}

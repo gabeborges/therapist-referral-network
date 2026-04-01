@@ -81,7 +81,7 @@ export function ProfileSectionCommunities({
         control={control}
         render={({ field }) => (
           <AutocompleteSelect
-            label="Faith orientation"
+            label="Faith orientation (optional)"
             options={FAITH_ORIENTATIONS.map((f) => ({ id: f, name: f }))}
             selected={(field.value ?? []).map((f: string) => ({ id: f, name: f }))}
             onChange={(sel) => field.onChange(sel.map((s) => s.id))}
@@ -94,7 +94,7 @@ export function ProfileSectionCommunities({
       <CheckboxGroup
         name="ethnicity"
         control={control}
-        label="Ethnicity"
+        label="Ethnicity (optional)"
         options={[...CLIENT_ETHNICITY_OPTIONS].map((e) => ({ value: e, label: e }))}
         itemMinWidth="full"
         error={errors.ethnicity?.message}
@@ -106,7 +106,7 @@ export function ProfileSectionCommunities({
         control={control}
         render={({ field }) => (
           <AutocompleteSelect
-            label="Languages spoken"
+            label="Languages spoken (optional)"
             options={languageOptions}
             selected={idsToOptions(field.value ?? [], languageOptions)}
             onChange={(sel) => field.onChange(optionsToIds(sel))}
@@ -123,7 +123,7 @@ export function ProfileSectionCommunities({
         control={control}
         render={({ field }) => (
           <AutocompleteSelect
-            label="Groups"
+            label="Groups (optional)"
             options={alliedGroupOptions}
             selected={idsToOptions(field.value ?? [], alliedGroupOptions)}
             onChange={(sel) => field.onChange(optionsToIds(sel))}

@@ -2,8 +2,18 @@ import Link from "next/link";
 import type { TherapistProfile, User } from "@/generated/prisma/client";
 import { AvailabilityToggle } from "@/features/profile/components/AvailabilityToggle";
 
+interface TaxonomyRecord {
+  id: string;
+  name: string;
+}
+
 interface ProfileViewProps {
-  profile: TherapistProfile & { user: Pick<User, "email"> };
+  profile: TherapistProfile & {
+    user: Pick<User, "email">;
+    specialtyRecords: TaxonomyRecord[];
+    therapyTypeRecords: TaxonomyRecord[];
+    languageRecords: TaxonomyRecord[];
+  };
 }
 
 function getInitials(firstName: string, lastName: string): string {
@@ -34,7 +44,7 @@ export function ProfileView({ profile }: ProfileViewProps): React.ReactElement {
   const completeness = calculateCompleteness(profile);
 
   return (
-    <div className="px-4 sm:px-6 pt-12">
+    <div className="px-4 sm:px-6 pt-12 pb-24">
       <div className="max-w-[720px] mx-auto">
         {/* Profile Header */}
         <div className="bg-s1 border border-border rounded-md p-6 shadow-1 mb-6">
@@ -86,18 +96,18 @@ export function ProfileView({ profile }: ProfileViewProps): React.ReactElement {
           </h2>
 
           {/* Specialties */}
-          {profile.specialties.length > 0 && (
+          {profile.specialtyRecords.length > 0 && (
             <div className="mb-4">
               <p className="text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2 mb-2">
                 Specialties
               </p>
               <div className="flex flex-wrap gap-2">
-                {profile.specialties.map((specialty) => (
+                {profile.specialtyRecords.map((specialty) => (
                   <span
-                    key={specialty}
+                    key={specialty.id}
                     className="inline-flex items-center h-7 px-2.5 bg-brand-l text-brand rounded-full text-[0.8125rem] font-medium whitespace-nowrap"
                   >
-                    {specialty}
+                    {specialty.name}
                   </span>
                 ))}
               </div>
@@ -124,18 +134,18 @@ export function ProfileView({ profile }: ProfileViewProps): React.ReactElement {
           )}
 
           {/* Therapeutic Approaches */}
-          {profile.therapeuticApproach.length > 0 && (
+          {profile.therapyTypeRecords.length > 0 && (
             <div className="mb-4">
               <p className="text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2 mb-2">
                 Therapeutic approaches
               </p>
               <div className="flex flex-wrap gap-2">
-                {profile.therapeuticApproach.map((approach) => (
+                {profile.therapyTypeRecords.map((approach) => (
                   <span
-                    key={approach}
+                    key={approach.id}
                     className="inline-flex items-center h-7 px-2.5 bg-brand-l text-brand rounded-full text-[0.8125rem] font-medium whitespace-nowrap"
                   >
-                    {approach}
+                    {approach.name}
                   </span>
                 ))}
               </div>

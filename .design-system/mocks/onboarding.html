@@ -256,48 +256,60 @@
         align-items: center;
         gap: 8px;
         cursor: pointer;
-        font-size: 0.875rem;
+        font-size: 0.9375rem;
         color: var(--fg);
         user-select: none;
-      }
-      .cb-label.disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-      }
-      .cb-input {
-        position: absolute;
-        opacity: 0;
-        width: 0;
-        height: 0;
-        pointer-events: none;
-      }
-      .cb-box {
-        width: 18px;
-        height: 18px;
-        border-radius: 4px;
-        border: 1.5px solid var(--b-e);
-        background: var(--inset);
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-        transition: all 150ms ease-out;
-      }
-      .cb-box svg {
-        width: 12px;
-        height: 12px;
-        fill: none;
-        stroke: #fff;
-        stroke-width: 2;
-        stroke-linecap: round;
-        stroke-linejoin: round;
-        opacity: 0;
-        transform: scale(0.5);
-        transition: all 150ms ease-out;
+        line-height: 1.4;
       }
       .cb-label:hover .cb-box {
         border-color: var(--b-e);
         background: var(--bg);
+      }
+      .cb-label.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        pointer-events: none;
+      }
+      .cb-box {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+        background: var(--inset);
+        border: 1px solid var(--b);
+        border-radius: 4px;
+        transition:
+          background 150ms ease-out,
+          border-color 150ms ease-out,
+          box-shadow 150ms ease-out;
+      }
+      .cb-box svg {
+        width: 12px;
+        height: 12px;
+        stroke: var(--brand-on);
+        stroke-width: 3;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        fill: none;
+        opacity: 0;
+        transform: scale(0.6);
+        transition:
+          opacity 150ms ease-out,
+          transform 150ms ease-out;
+      }
+      .cb-input {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
       }
       .cb-input:checked + .cb-box {
         background: var(--brand);
@@ -311,11 +323,20 @@
         outline: 2px solid var(--b-f);
         outline-offset: 2px;
       }
+      .cb-input:checked:hover + .cb-box,
+      .cb-label:hover .cb-input:checked + .cb-box {
+        background: var(--brand-h);
+        border-color: var(--brand-h);
+      }
       .cb-box--error {
         border-color: var(--err);
       }
+      .cb-input:checked + .cb-box--error {
+        background: var(--brand);
+        border-color: var(--brand);
+      }
 
-      /* Checkbox group layouts (from components library) */
+      /* Checkbox group layouts */
       .cb-group-inline {
         display: flex;
         gap: 24px;
@@ -325,6 +346,16 @@
         display: flex;
         flex-direction: column;
         gap: 8px;
+      }
+      .cb-group-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px 24px;
+      }
+      @media (min-width: 640px) {
+        .cb-group-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
       }
 
       /* Country button */
@@ -1008,7 +1039,9 @@
           <div class="space-y-5">
             <!-- Profile photo -->
             <div>
-              <label class="t-label block mb-2" style="color: var(--fg-2)">Profile photo <span style="color:var(--fg-4);">(optional)</span></label>
+              <label class="t-label block mb-2" style="color: var(--fg-2)"
+                >Profile photo <span style="color: var(--fg-4)">(optional)</span></label
+              >
               <div class="flex items-center gap-4">
                 <div
                   style="
@@ -1050,7 +1083,8 @@
                 ><input class="input" value="Sarah" />
               </div>
               <div>
-                <label class="t-label block mb-1" style="color: var(--fg-2)">Middle <span style="color:var(--fg-4);">(optional)</span></label
+                <label class="t-label block mb-1" style="color: var(--fg-2)"
+                  >Middle <span style="color: var(--fg-4)">(optional)</span></label
                 ><input class="input" placeholder="" />
               </div>
               <div>
@@ -1061,7 +1095,8 @@
             <!-- Pronouns + Display name: 2 columns -->
             <div class="grid grid-cols-2 gap-3">
               <div>
-                <label class="t-label block mb-1" style="color: var(--fg-2)">Pronouns <span style="color:var(--fg-4);">(optional)</span></label
+                <label class="t-label block mb-1" style="color: var(--fg-2)"
+                  >Pronouns <span style="color: var(--fg-4)">(optional)</span></label
                 ><select class="input">
                   <option disabled>Select…</option>
                   <option selected>She/Her</option>
@@ -1071,13 +1106,15 @@
                 </select>
               </div>
               <div>
-                <label class="t-label block mb-1" style="color: var(--fg-2)">Display name <span style="color:var(--fg-4);">(optional)</span></label
+                <label class="t-label block mb-1" style="color: var(--fg-2)"
+                  >Display name <span style="color: var(--fg-4)">(optional)</span></label
                 ><input class="input" placeholder="e.g. Dr. Sarah Chen" />
               </div>
             </div>
             <!-- Contact email -->
             <div>
-              <label class="t-label block mb-1" style="color: var(--fg-2)">Contact email <span style="color:var(--fg-4);">(optional)</span></label
+              <label class="t-label block mb-1" style="color: var(--fg-2)"
+                >Contact email <span style="color: var(--fg-4)">(optional)</span></label
               ><input class="input" value="sarah.chen@practice.com" />
               <p class="t-caption mt-1">Where referral notifications are sent.</p>
             </div>
@@ -1164,7 +1201,7 @@
             </div>
           </nav>
           <h2 class="t-h2 mb-5">Communities served</h2>
-          <div class="space-y-6">
+          <div class="space-y-8">
             <!-- Specialties: autocomplete search input -->
             <div>
               <label class="t-label block mb-2" style="color: var(--fg-2)"
@@ -1210,7 +1247,7 @@
                   aria-expanded="false"
                 />
                 <!-- Dropdown hidden by default; visible on focus in real implementation -->
-                <div class="autocomplete-dropdown" style="display:none;"
+                <div class="autocomplete-dropdown" style="display: none">
                   <div class="autocomplete-option-cat">Common</div>
                   <button class="autocomplete-option">Depression</button>
                   <button class="autocomplete-option">Grief &amp; Loss</button>
@@ -1222,9 +1259,8 @@
               </div>
             </div>
             <!-- Participants: inline checkboxes -->
-            <fieldset style="border: none; padding: 0; margin: 0">
-              <legend class="t-label block mb-2" style="color: var(--fg-2)">
-                Participants              </legend>
+            <fieldset style="border: none; padding: 0">
+              <legend class="t-label block mb-2" style="color: var(--fg-2)">Participants</legend>
               <div class="cb-group-inline">
                 <label class="cb-label"
                   ><input type="checkbox" class="cb-input" checked /><span class="cb-box"
@@ -1249,7 +1285,7 @@
               </div>
             </fieldset>
             <!-- Ages: column checkboxes -->
-            <fieldset style="border: none; padding: 0; margin: 0">
+            <fieldset style="border: none; padding: 0">
               <legend class="t-label block mb-2" style="color: var(--fg-2)">Ages served</legend>
               <div class="cb-group-column">
                 <label class="cb-label"
@@ -1275,7 +1311,7 @@
               </div>
             </fieldset>
             <!-- Modalities: inline checkboxes -->
-            <fieldset style="border: none; padding: 0; margin: 0">
+            <fieldset style="border: none; padding: 0">
               <legend class="t-label block mb-2" style="color: var(--fg-2)">Modalities</legend>
               <div class="cb-group-inline">
                 <label class="cb-label"
@@ -1373,36 +1409,38 @@
           </nav>
           <h2 class="t-h2 mb-5">Your services</h2>
           <div class="space-y-6">
-            <!-- Rates: checkbox + input for each type. Uncheck to remove. -->
+            <!-- Rates: dynamic based on participants selected in step 3 -->
             <div>
-              <label class="t-label block mb-2" style="color: var(--fg-2)">Rate <span style="color:var(--fg-4);">(optional)</span></label>
-              <p class="t-caption mb-3">Select the session types you offer and set your rate.</p>
-              <div class="space-y-3">
-                <!-- Individual: checked, shows input -->
-                <div class="flex items-center gap-3">
-                  <label class="cb-label" style="min-width:120px;"><input type="checkbox" class="cb-input" checked><span class="cb-box"><svg viewBox="0 0 12 12"><polyline points="2.5 6 5 8.5 9.5 3.5"/></svg></span>Individual</label>
-                  <div class="rate-input-wrap flex-1"><span class="dollar">$</span><input class="input" type="number" value="180" style="padding-left:24px;"></div>
+              <label class="t-label block mb-2" style="color: var(--fg-2)"
+                >Rate <span style="color: var(--fg-4)">(optional)</span></label
+              >
+              <p class="t-caption mb-3">Set your rate per session type.</p>
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="t-label block mb-1" style="color: var(--fg-2); font-size: 0.75rem"
+                    >Individual session rate</label
+                  >
+                  <div class="rate-input-wrap">
+                    <span class="dollar">$</span
+                    ><input class="input" type="number" value="180" style="padding-left: 24px" />
+                  </div>
                 </div>
-                <!-- Couples: checked, shows input -->
-                <div class="flex items-center gap-3">
-                  <label class="cb-label" style="min-width:120px;"><input type="checkbox" class="cb-input" checked><span class="cb-box"><svg viewBox="0 0 12 12"><polyline points="2.5 6 5 8.5 9.5 3.5"/></svg></span>Couples</label>
-                  <div class="rate-input-wrap flex-1"><span class="dollar">$</span><input class="input" type="number" value="220" style="padding-left:24px;"></div>
-                </div>
-                <!-- Family: unchecked, no input -->
-                <div class="flex items-center gap-3">
-                  <label class="cb-label" style="min-width:120px;"><input type="checkbox" class="cb-input"><span class="cb-box"><svg viewBox="0 0 12 12"><polyline points="2.5 6 5 8.5 9.5 3.5"/></svg></span>Family</label>
-                  <div class="rate-input-wrap flex-1" style="opacity:0.35;pointer-events:none;"><span class="dollar">$</span><input class="input" type="number" placeholder="0" disabled style="padding-left:24px;"></div>
-                </div>
-                <!-- Group: unchecked, no input -->
-                <div class="flex items-center gap-3">
-                  <label class="cb-label" style="min-width:120px;"><input type="checkbox" class="cb-input"><span class="cb-box"><svg viewBox="0 0 12 12"><polyline points="2.5 6 5 8.5 9.5 3.5"/></svg></span>Group</label>
-                  <div class="rate-input-wrap flex-1" style="opacity:0.35;pointer-events:none;"><span class="dollar">$</span><input class="input" type="number" placeholder="0" disabled style="padding-left:24px;"></div>
+                <div>
+                  <label class="t-label block mb-1" style="color: var(--fg-2); font-size: 0.75rem"
+                    >Couples session rate</label
+                  >
+                  <div class="rate-input-wrap">
+                    <span class="dollar">$</span
+                    ><input class="input" type="number" value="220" style="padding-left: 24px" />
+                  </div>
                 </div>
               </div>
             </div>
             <!-- Therapy service options: boolean checkboxes -->
             <div>
-              <p class="t-label block mb-2" style="color: var(--fg-2)">Therapy service options <span style="color:var(--fg-4);">(optional)</span></p>
+              <p class="t-label block mb-2" style="color: var(--fg-2)">
+                Therapy service options <span style="color: var(--fg-4)">(optional)</span>
+              </p>
               <div class="cb-group-column">
                 <label class="cb-label"
                   ><input type="checkbox" class="cb-input" checked /><span class="cb-box"
@@ -1500,16 +1538,28 @@
           <h2 class="t-h2 mb-5">Your services</h2>
           <div class="space-y-6">
             <div>
-              <label class="t-label block mb-2" style="color: var(--fg-2)">Rate <span style="color:var(--fg-4);">(optional)</span></label>
-              <p class="t-caption mb-3">Select the session types you offer and set your rate.</p>
-              <div class="space-y-3">
-                <div class="flex items-center gap-3">
-                  <label class="cb-label" style="min-width:120px;"><input type="checkbox" class="cb-input" checked disabled><span class="cb-box"><svg viewBox="0 0 12 12"><polyline points="2.5 6 5 8.5 9.5 3.5"/></svg></span>Individual</label>
-                  <div class="rate-input-wrap flex-1"><span class="dollar">$</span><input class="input" value="180" disabled style="padding-left:24px;"></div>
+              <label class="t-label block mb-2" style="color: var(--fg-2)"
+                >Rate <span style="color: var(--fg-4)">(optional)</span></label
+              >
+              <p class="t-caption mb-3">Set your rate per session type.</p>
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="t-label block mb-1" style="color: var(--fg-2); font-size: 0.75rem"
+                    >Individual session rate</label
+                  >
+                  <div class="rate-input-wrap">
+                    <span class="dollar">$</span
+                    ><input class="input" value="180" disabled style="padding-left: 24px" />
+                  </div>
                 </div>
-                <div class="flex items-center gap-3">
-                  <label class="cb-label" style="min-width:120px;"><input type="checkbox" class="cb-input" checked disabled><span class="cb-box"><svg viewBox="0 0 12 12"><polyline points="2.5 6 5 8.5 9.5 3.5"/></svg></span>Couples</label>
-                  <div class="rate-input-wrap flex-1"><span class="dollar">$</span><input class="input" value="220" disabled style="padding-left:24px;"></div>
+                <div>
+                  <label class="t-label block mb-1" style="color: var(--fg-2); font-size: 0.75rem"
+                    >Couples session rate</label
+                  >
+                  <div class="rate-input-wrap">
+                    <span class="dollar">$</span
+                    ><input class="input" value="220" disabled style="padding-left: 24px" />
+                  </div>
                 </div>
               </div>
             </div>
@@ -1597,7 +1647,9 @@
           <h2 class="t-h2 mb-5">Bio</h2>
           <div class="space-y-5">
             <div>
-              <label class="t-label block mb-2" style="color: var(--fg-2)">Profile photo <span style="color:var(--fg-4);">(optional)</span></label>
+              <label class="t-label block mb-2" style="color: var(--fg-2)"
+                >Profile photo <span style="color: var(--fg-4)">(optional)</span></label
+              >
               <div class="flex items-center gap-4">
                 <div
                   style="
@@ -1639,7 +1691,8 @@
                 <p class="t-caption mt-1" style="color: var(--err)">Required</p>
               </div>
               <div>
-                <label class="t-label block mb-1" style="color: var(--fg-2)">Middle <span style="color:var(--fg-4);">(optional)</span></label
+                <label class="t-label block mb-1" style="color: var(--fg-2)"
+                  >Middle <span style="color: var(--fg-4)">(optional)</span></label
                 ><input class="input" placeholder="" />
               </div>
               <div>
@@ -1650,7 +1703,8 @@
             </div>
             <div class="grid grid-cols-2 gap-3">
               <div>
-                <label class="t-label block mb-1" style="color: var(--fg-2)">Pronouns <span style="color:var(--fg-4);">(optional)</span></label
+                <label class="t-label block mb-1" style="color: var(--fg-2)"
+                  >Pronouns <span style="color: var(--fg-4)">(optional)</span></label
                 ><select class="input">
                   <option disabled selected>Select…</option>
                   <option>She/Her</option>
@@ -1658,12 +1712,14 @@
                 </select>
               </div>
               <div>
-                <label class="t-label block mb-1" style="color: var(--fg-2)">Display name <span style="color:var(--fg-4);">(optional)</span></label
+                <label class="t-label block mb-1" style="color: var(--fg-2)"
+                  >Display name <span style="color: var(--fg-4)">(optional)</span></label
                 ><input class="input" placeholder="e.g. Dr. Sarah Chen" />
               </div>
             </div>
             <div>
-              <label class="t-label block mb-1" style="color: var(--fg-2)">Contact email <span style="color:var(--fg-4);">(optional)</span></label
+              <label class="t-label block mb-1" style="color: var(--fg-2)"
+                >Contact email <span style="color: var(--fg-4)">(optional)</span></label
               ><input class="input" value="sarah.chen@practice.com" />
               <p class="t-caption mt-1">Where referral notifications are sent.</p>
             </div>

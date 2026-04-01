@@ -52,7 +52,7 @@ export function ProfileSectionBio(): React.ReactElement {
             htmlFor="pf-middleName"
             className="block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2"
           >
-            Middle name
+            Middle name <span className="font-normal text-fg-4">(optional)</span>
           </label>
           <input
             id="pf-middleName"
@@ -92,7 +92,7 @@ export function ProfileSectionBio(): React.ReactElement {
             htmlFor="pf-pronouns"
             className="block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2"
           >
-            Pronouns
+            Pronouns <span className="font-normal text-fg-4">(optional)</span>
           </label>
           <select
             id="pf-pronouns"
@@ -113,7 +113,7 @@ export function ProfileSectionBio(): React.ReactElement {
             htmlFor="pf-therapistGender"
             className="block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2"
           >
-            Gender
+            Gender <span className="font-normal text-fg-4">(optional)</span>
           </label>
           <select
             id="pf-therapistGender"
@@ -137,7 +137,7 @@ export function ProfileSectionBio(): React.ReactElement {
           htmlFor="pf-displayName"
           className="block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2"
         >
-          Display name
+          Display name <span className="font-normal text-fg-4">(optional)</span>
         </label>
         <input
           id="pf-displayName"
@@ -163,7 +163,7 @@ export function ProfileSectionBio(): React.ReactElement {
           htmlFor="pf-bio"
           className="block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2"
         >
-          Short bio
+          Short bio <span className="font-normal text-fg-4">(optional)</span>
         </label>
         <textarea
           id="pf-bio"
@@ -189,7 +189,7 @@ export function ProfileSectionBio(): React.ReactElement {
           htmlFor="pf-contactEmail"
           className="block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2"
         >
-          Contact email
+          Contact email <span className="font-normal text-fg-4">(optional)</span>
         </label>
         <input
           id="pf-contactEmail"
@@ -214,7 +214,7 @@ export function ProfileSectionBio(): React.ReactElement {
             htmlFor="pf-websiteUrl"
             className="block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2"
           >
-            Website URL
+            Website URL <span className="font-normal text-fg-4">(optional)</span>
           </label>
           <input
             id="pf-websiteUrl"
@@ -236,7 +236,7 @@ export function ProfileSectionBio(): React.ReactElement {
             htmlFor="pf-psychologyTodayUrl"
             className="block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2"
           >
-            Psychology Today URL
+            Psychology Today URL <span className="font-normal text-fg-4">(optional)</span>
           </label>
           <input
             id="pf-psychologyTodayUrl"

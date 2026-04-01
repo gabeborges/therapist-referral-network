@@ -7,6 +7,7 @@ import { useState, useRef, useEffect } from "react";
 import { useTRPC } from "@/lib/trpc/client";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { referralPostSchema, type ReferralPostFormData } from "@/lib/validations/referral-post";
+import { AGE_OPTIONS } from "@/lib/validations/therapist-profile";
 import {
   AutocompleteSelect,
   type AutocompleteOption,
@@ -15,14 +16,6 @@ import { FormGroup } from "@/components/ui/FormGroup";
 import { BooleanCheckbox } from "@/components/ui/BooleanCheckbox";
 import { CheckboxGroup } from "@/components/ui/CheckboxGroup";
 import { inputClasses, selectClasses, selectStyle } from "@/lib/form-styles";
-
-const AGE_GROUPS = [
-  "Children (6-12)",
-  "Adolescents (13-17)",
-  "Young Adults (18-25)",
-  "Adults (26-64)",
-  "Seniors (65+)",
-];
 
 const PROVINCES = [
   { value: "AB", label: "Alberta" },
@@ -334,7 +327,7 @@ export function ReferralPostForm(): React.ReactElement {
               <option value="" disabled>
                 Select age group...
               </option>
-              {AGE_GROUPS.map((group) => (
+              {AGE_OPTIONS.map((group) => (
                 <option key={group} value={group}>
                   {group}
                 </option>

@@ -56,7 +56,7 @@ export function ProfileSectionPractice({
         control={control}
         render={({ field }) => (
           <AutocompleteSelect
-            label="Therapeutic approaches"
+            label="Therapeutic approaches (optional)"
             options={therapyTypeOptions}
             selected={idsToOptions(field.value ?? [], therapyTypeOptions)}
             onChange={(sel) => field.onChange(optionsToIds(sel))}
@@ -92,7 +92,7 @@ export function ProfileSectionPractice({
         control={control}
         render={({ field }) => (
           <AutocompleteSelect
-            label="Top specialties"
+            label="Top specialties (optional)"
             options={topSpecialtyOptions}
             selected={idsToOptions(field.value ?? [], specialtyOptions)}
             onChange={(sel) => field.onChange(optionsToIds(sel))}
@@ -110,7 +110,7 @@ export function ProfileSectionPractice({
       <CheckboxGroup
         name="therapyStyle"
         control={control}
-        label="Therapy style"
+        label="Therapy style (optional)"
         options={STYLE_DESCRIPTORS.map((s) => ({ value: s, label: s }))}
         itemMinWidth="standard"
         error={errors.therapyStyle?.message}

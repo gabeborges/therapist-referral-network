@@ -100,7 +100,7 @@ export function ProfileForm({ defaultValues }: ProfileFormProps): React.ReactEle
 
   if (isLoadingTaxonomies) {
     return (
-      <div className="px-4 sm:px-6 pt-12">
+      <div className="px-4 sm:px-6 pt-12 pb-24">
         <div className="max-w-[720px] mx-auto">
           <div className="bg-s1 border border-border rounded-md p-6 shadow-1 flex flex-col items-center gap-2">
             <span
@@ -115,7 +115,7 @@ export function ProfileForm({ defaultValues }: ProfileFormProps): React.ReactEle
   }
 
   return (
-    <div className="px-4 sm:px-6 pt-12">
+    <div className="px-4 sm:px-6 pt-12 pb-24">
       <div className="max-w-[720px] mx-auto">
         <div className="bg-s1 border border-border rounded-md p-6 shadow-1">
           <h2 className="text-[1.25rem] font-semibold tracking-[-0.01em] leading-[1.35] text-fg mb-4">

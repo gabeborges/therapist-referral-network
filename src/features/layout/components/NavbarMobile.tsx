@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SignOutButton } from "@/features/layout/components/SignOutButton";
+import { ThemeToggle } from "@/features/layout/components/ThemeToggle";
 
 interface NavbarMobileProps {
   initials: string;
@@ -136,8 +137,7 @@ export function NavbarMobile({ initials }: NavbarMobileProps): React.ReactElemen
             {/* Links */}
             <nav aria-label="Mobile navigation" className="flex flex-col px-2 gap-1">
               {links.map((link) => {
-                const isActive =
-                  pathname === link.href || pathname.startsWith(link.href + "/");
+                const isActive = pathname === link.href || pathname.startsWith(link.href + "/");
                 return (
                   <Link
                     key={link.href}
@@ -154,40 +154,27 @@ export function NavbarMobile({ initials }: NavbarMobileProps): React.ReactElemen
               })}
             </nav>
 
-            {/* New Referral button */}
+            {/* Post a referral button */}
             <div className="px-4 mt-4">
               <Link
                 href="/referrals/new"
-                className="flex items-center justify-center gap-2 w-full h-10 rounded-sm text-[0.8125rem] font-semibold tracking-[0.01em] no-underline transition-[background] duration-150 ease-out"
-                style={{
-                  background: "var(--brand)",
-                  color: "var(--brand-on)",
-                }}
+                className="flex items-center justify-center w-full h-10 rounded-sm bg-brand text-brand-on hover:bg-brand-h text-[0.8125rem] font-semibold tracking-[0.01em] no-underline transition-[background] duration-150 ease-out"
               >
-                <svg
-                  aria-hidden="true"
-                  width="16"
-                  height="16"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M12 4v16m8-8H4"
-                  />
-                </svg>
-                New Referral
+                Post a referral
               </Link>
             </div>
 
-            {/* Sign out at bottom */}
-            <div
-              className="mt-auto pb-6 pt-4"
-              style={{ borderTop: "1px solid var(--border-s)" }}
-            >
+            {/* Theme + Sign out at bottom */}
+            <div className="mt-auto pb-6 pt-4" style={{ borderTop: "1px solid var(--border-s)" }}>
+              <div className="px-4 mb-3">
+                <p
+                  className="text-[0.6875rem] font-semibold tracking-[0.06em] uppercase mb-1.5"
+                  style={{ color: "var(--fg-3)" }}
+                >
+                  Theme
+                </p>
+                <ThemeToggle />
+              </div>
               <SignOutButton />
             </div>
           </div>

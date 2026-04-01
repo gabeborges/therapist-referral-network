@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { SignOutButton } from "@/features/layout/components/SignOutButton";
+import { ThemeToggle } from "@/features/layout/components/ThemeToggle";
 
 interface UserAvatarProps {
   initials: string;
@@ -13,10 +14,7 @@ export function UserAvatar({ initials }: UserAvatarProps): React.ReactElement {
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent): void {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
     }
@@ -41,13 +39,23 @@ export function UserAvatar({ initials }: UserAvatarProps): React.ReactElement {
 
       {isOpen && (
         <div
-          className="absolute right-0 top-full mt-2 w-40 rounded-md py-1 z-50"
+          className="absolute right-0 top-full mt-2 w-48 rounded-md py-1 z-50"
           style={{
             background: "var(--s2)",
             border: "1px solid var(--border)",
             boxShadow: "var(--shadow-2)",
           }}
         >
+          <div className="px-3 py-2">
+            <p
+              className="text-[0.6875rem] font-semibold tracking-[0.06em] uppercase mb-1.5"
+              style={{ color: "var(--fg-3)" }}
+            >
+              Theme
+            </p>
+            <ThemeToggle />
+          </div>
+          <div className="my-1" style={{ borderTop: "1px solid var(--border-s)" }} />
           <SignOutButton />
         </div>
       )}

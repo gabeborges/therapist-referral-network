@@ -816,6 +816,102 @@
         outline-offset: 2px;
         border-radius: 4px;
       }
+
+      /* --- Custom Radio --- */
+      .rb-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        font-size: 0.9375rem;
+        color: var(--fg);
+        user-select: none;
+        line-height: 1.4;
+      }
+      .rb-label:hover .rb-dot {
+        border-color: var(--b-e);
+        background: var(--bg);
+      }
+      .rb-label.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        pointer-events: none;
+      }
+      .rb-dot {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+        background: var(--inset);
+        border: 1px solid var(--b);
+        border-radius: 50%;
+        transition:
+          background 150ms ease-out,
+          border-color 150ms ease-out,
+          box-shadow 150ms ease-out;
+      }
+      .rb-dot::after {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: white;
+        opacity: 0;
+        transform: scale(0.4);
+        transition:
+          opacity 150ms ease-out,
+          transform 150ms ease-out;
+      }
+      .rb-input {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+      .rb-input:checked + .rb-dot {
+        background: var(--brand);
+        border-color: var(--brand);
+      }
+      .rb-input:checked + .rb-dot::after {
+        opacity: 1;
+        transform: scale(1);
+      }
+      .rb-input:focus-visible + .rb-dot {
+        outline: 2px solid var(--b-f);
+        outline-offset: 2px;
+      }
+      .rb-input:checked:hover + .rb-dot,
+      .rb-label:hover .rb-input:checked + .rb-dot {
+        background: var(--brand-h);
+        border-color: var(--brand-h);
+      }
+      /* Error state */
+      .rb-dot--error {
+        border-color: var(--err);
+      }
+      .rb-input:checked + .rb-dot--error {
+        background: var(--brand);
+        border-color: var(--brand);
+      }
+      /* Radio group layouts */
+      .rb-group-inline {
+        display: flex;
+        gap: 24px;
+        flex-wrap: wrap;
+      }
+      .rb-group-column {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
     </style>
   </head>
   <body>
@@ -1426,17 +1522,7 @@
                 <div class="flex items-center gap-5">
                   <a href="#" class="nav-link active">Referrals</a>
                   <a href="#" class="nav-link">Profile</a>
-                  <button class="btn-primary btn-sm">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M12 4v16m8-8H4"
-                      />
-                    </svg>
-                    New Referral
-                  </button>
+                  <button class="btn-primary btn-sm">Post a referral</button>
                   <div
                     class="w-8 h-8 rounded-full flex items-center justify-center t-caption font-medium"
                     style="background: var(--inset); color: var(--fg-2)"
@@ -2034,6 +2120,263 @@
           </div>
         </section>
 
+        <!-- ============ RADIO GROUP ============ -->
+        <section class="mb-16">
+          <h2 class="t-section mb-6">Radio Group</h2>
+          <p class="t-sm mb-6">
+            Custom-styled radio buttons replacing browser defaults. Uses
+            <code
+              style="
+                font-size: 0.8125rem;
+                background: var(--inset);
+                padding: 2px 6px;
+                border-radius: 4px;
+              "
+              >appearance: none</code
+            >
+            with a visually hidden input and styled
+            <code
+              style="
+                font-size: 0.8125rem;
+                background: var(--inset);
+                padding: 2px 6px;
+                border-radius: 4px;
+              "
+              >.rb-dot</code
+            >
+            sibling. 18px circle with inset background, brand teal fill when selected, white dot
+            indicator. Radios support click-to-deselect (unlike native HTML radios) via a small JS
+            snippet that tracks checked state.
+          </p>
+
+          <!-- States -->
+          <div class="p-6 card mb-6" style="max-width: 600px">
+            <p class="t-caption mb-4">States</p>
+            <div class="flex flex-wrap gap-6 items-start">
+              <!-- Unchecked -->
+              <div class="text-center">
+                <label class="rb-label">
+                  <input type="radio" class="rb-input" name="rb-states-demo" />
+                  <span class="rb-dot"></span>
+                  Unchecked
+                </label>
+                <p class="t-caption mt-1">Default</p>
+              </div>
+              <!-- Selected -->
+              <div class="text-center">
+                <label class="rb-label">
+                  <input
+                    type="radio"
+                    class="rb-input"
+                    name="rb-states-selected"
+                    checked
+                    data-was-checked="true"
+                  />
+                  <span class="rb-dot"></span>
+                  Selected
+                </label>
+                <p class="t-caption mt-1">Brand fill + dot</p>
+              </div>
+              <!-- Hover -->
+              <div class="text-center">
+                <label class="rb-label">
+                  <input type="radio" class="rb-input" name="rb-states-hover" />
+                  <span
+                    class="rb-dot"
+                    style="border-color: var(--b-e); background: var(--bg)"
+                  ></span>
+                  Hover
+                </label>
+                <p class="t-caption mt-1">Stronger border</p>
+              </div>
+              <!-- Focus -->
+              <div class="text-center">
+                <label class="rb-label">
+                  <input type="radio" class="rb-input" name="rb-states-focus" />
+                  <span
+                    class="rb-dot"
+                    style="outline: 2px solid var(--b-f); outline-offset: 2px"
+                  ></span>
+                  Focus
+                </label>
+                <p class="t-caption mt-1">2px brand ring</p>
+              </div>
+              <!-- Disabled unchecked -->
+              <div class="text-center">
+                <label class="rb-label disabled">
+                  <input type="radio" class="rb-input" name="rb-states-disabled" disabled />
+                  <span class="rb-dot"></span>
+                  Disabled
+                </label>
+                <p class="t-caption mt-1">50% opacity</p>
+              </div>
+              <!-- Disabled selected -->
+              <div class="text-center">
+                <label class="rb-label disabled">
+                  <input
+                    type="radio"
+                    class="rb-input"
+                    name="rb-states-disabled-sel"
+                    checked
+                    disabled
+                    data-was-checked="true"
+                  />
+                  <span class="rb-dot"></span>
+                  Disabled
+                </label>
+                <p class="t-caption mt-1">Selected + disabled</p>
+              </div>
+              <!-- Error -->
+              <div class="text-center">
+                <label class="rb-label">
+                  <input type="radio" class="rb-input" name="rb-states-error" />
+                  <span class="rb-dot rb-dot--error"></span>
+                  Error
+                </label>
+                <p class="t-caption mt-1" style="color: var(--err)">Error border</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Layout: Inline -->
+          <div class="p-6 card mb-6" style="max-width: 600px">
+            <fieldset style="border: none; padding: 0; margin: 0">
+              <legend class="t-label block mb-2" style="color: var(--fg-2)">Session format</legend>
+              <div class="rb-group-inline">
+                <label class="rb-label">
+                  <input
+                    type="radio"
+                    class="rb-input"
+                    name="session-format"
+                    checked
+                    data-was-checked="true"
+                  />
+                  <span class="rb-dot"></span>
+                  Individual
+                </label>
+                <label class="rb-label">
+                  <input type="radio" class="rb-input" name="session-format" />
+                  <span class="rb-dot"></span>
+                  Couples
+                </label>
+                <label class="rb-label">
+                  <input type="radio" class="rb-input" name="session-format" />
+                  <span class="rb-dot"></span>
+                  Family
+                </label>
+                <label class="rb-label">
+                  <input type="radio" class="rb-input" name="session-format" />
+                  <span class="rb-dot"></span>
+                  Group
+                </label>
+              </div>
+            </fieldset>
+            <p class="t-caption mt-3">
+              Inline layout (
+              <code
+                style="
+                  font-size: 0.75rem;
+                  background: var(--inset);
+                  padding: 1px 4px;
+                  border-radius: 3px;
+                "
+                >.rb-group-inline</code
+              >) — 3-4 options side by side, wraps on mobile
+            </p>
+          </div>
+
+          <!-- Layout: Column -->
+          <div class="p-6 card mb-6" style="max-width: 600px">
+            <fieldset style="border: none; padding: 0; margin: 0">
+              <legend class="t-label block mb-2" style="color: var(--fg-2)">
+                Preferred contact method
+              </legend>
+              <div class="rb-group-column">
+                <label class="rb-label">
+                  <input
+                    type="radio"
+                    class="rb-input"
+                    name="contact-method"
+                    checked
+                    data-was-checked="true"
+                  />
+                  <span class="rb-dot"></span>
+                  Email
+                </label>
+                <label class="rb-label">
+                  <input type="radio" class="rb-input" name="contact-method" />
+                  <span class="rb-dot"></span>
+                  Phone
+                </label>
+                <label class="rb-label">
+                  <input type="radio" class="rb-input" name="contact-method" />
+                  <span class="rb-dot"></span>
+                  Secure message
+                </label>
+              </div>
+            </fieldset>
+            <p class="t-caption mt-3">
+              Column layout (
+              <code
+                style="
+                  font-size: 0.75rem;
+                  background: var(--inset);
+                  padding: 1px 4px;
+                  border-radius: 3px;
+                "
+                >.rb-group-column</code
+              >) — stacked list for medium sets
+            </p>
+          </div>
+
+          <!-- Error state example -->
+          <div class="p-6 card" style="max-width: 600px">
+            <fieldset style="border: none; padding: 0; margin: 0">
+              <legend class="t-label block mb-2" style="color: var(--fg-2)">Urgency</legend>
+              <div class="rb-group-inline">
+                <label class="rb-label">
+                  <input type="radio" class="rb-input" name="urgency" />
+                  <span class="rb-dot rb-dot--error"></span>
+                  Routine
+                </label>
+                <label class="rb-label">
+                  <input type="radio" class="rb-input" name="urgency" />
+                  <span class="rb-dot rb-dot--error"></span>
+                  Urgent
+                </label>
+                <label class="rb-label">
+                  <input type="radio" class="rb-input" name="urgency" />
+                  <span class="rb-dot rb-dot--error"></span>
+                  Crisis
+                </label>
+              </div>
+              <p class="t-caption mt-2" style="color: var(--err)">Please select an urgency level</p>
+            </fieldset>
+            <p class="t-caption mt-3">
+              Error state — red border on dots + error message below. Class
+              <code
+                style="
+                  font-size: 0.75rem;
+                  background: var(--inset);
+                  padding: 1px 4px;
+                  border-radius: 3px;
+                "
+                >.rb-dot--error</code
+              >
+              on each
+              <code
+                style="
+                  font-size: 0.75rem;
+                  background: var(--inset);
+                  padding: 1px 4px;
+                  border-radius: 3px;
+                "
+                >.rb-dot</code
+              >
+            </p>
+          </div>
+        </section>
+
         <!-- ============ PROGRESS BAR ============ -->
         <section class="mb-16">
           <h2 class="t-section mb-6">Progress Bar</h2>
@@ -2313,6 +2656,23 @@
             btn.classList.toggle("active", btn.textContent.toLowerCase() === theme),
           );
       }
+    </script>
+
+    <!-- Radio deselection: allows click-to-deselect on radio buttons -->
+    <script>
+      document.querySelectorAll(".rb-input").forEach(function (radio) {
+        radio.addEventListener("click", function () {
+          if (this.dataset.wasChecked === "true") {
+            this.checked = false;
+            this.dataset.wasChecked = "false";
+          } else {
+            document.querySelectorAll('.rb-input[name="' + this.name + '"]').forEach(function (r) {
+              r.dataset.wasChecked = "false";
+            });
+            this.dataset.wasChecked = "true";
+          }
+        });
+      });
     </script>
   </body>
 </html>

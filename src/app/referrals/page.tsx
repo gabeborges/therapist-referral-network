@@ -42,13 +42,13 @@ export default async function ReferralsPage(): Promise<React.ReactElement> {
       <div className="max-w-[640px] mx-auto">
         <div className="flex items-center justify-between flex-wrap gap-3 mb-8">
           <h1 className="text-[1.5rem] font-semibold tracking-[-0.015em] leading-[1.3] text-fg m-0">
-            My Referrals
+            My referrals
           </h1>
           <Link
             href="/referrals/new"
             className="inline-flex items-center justify-center h-10 px-5 bg-brand text-brand-on border-none rounded-sm text-[0.8125rem] font-semibold tracking-[0.01em] no-underline transition-[background] duration-150 ease-out hover:bg-brand-h focus-visible:outline-2 focus-visible:outline-border-f focus-visible:outline-offset-2"
           >
-            Post a Referral
+            Post a referral
           </Link>
         </div>
 
@@ -60,7 +60,7 @@ export default async function ReferralsPage(): Promise<React.ReactElement> {
               href="/referrals/new"
               className="inline-flex items-center justify-center h-10 px-5 bg-brand text-brand-on border-none rounded-sm text-[0.8125rem] font-semibold tracking-[0.01em] no-underline transition-[background] duration-150 ease-out hover:bg-brand-h focus-visible:outline-2 focus-visible:outline-border-f focus-visible:outline-offset-2"
             >
-              Post Your First Referral
+              Post your first referral
             </Link>
           </div>
         )}

@@ -3,34 +3,34 @@
 
 /* ── Light-mode tokens (default) ── */
 :root {
-  --fg: #3D3836;
-  --fg-2: #6B5E57;
-  --fg-3: #776B63;
-  --fg-4: #B5A99E;
+  --fg: #3d3836;
+  --fg-2: #6b5e57;
+  --fg-3: #776b63;
+  --fg-4: #b5a99e;
 
-  --bg: #F7F4EF;
-  --s1: #FDFBF8;
-  --s2: #FFFFFF;
-  --inset: #EFE9E0;
+  --bg: #f7f4ef;
+  --s1: #fdfbf8;
+  --s2: #ffffff;
+  --inset: #efe9e0;
 
-  --brand: #2A7C7C;
-  --brand-h: #1F6363;
+  --brand: #2a7c7c;
+  --brand-h: #1f6363;
   --brand-on: #fff;
   --brand-l: rgba(42, 124, 124, 0.08);
 
-  --ok: #5A8A5A;
+  --ok: #5a8a5a;
   --ok-l: rgba(90, 138, 90, 0.1);
 
-  --warn: #B8704F;
+  --warn: #b8704f;
   --warn-l: rgba(184, 112, 79, 0.06);
 
-  --err: #B85454;
+  --err: #b85454;
   --err-l: rgba(184, 84, 84, 0.08);
 
   --border: rgba(61, 56, 54, 0.12);
   --border-s: rgba(61, 56, 54, 0.06);
   --border-e: rgba(61, 56, 54, 0.22);
-  --border-f: #2A7C7C;
+  --border-f: #2a7c7c;
 
   --shadow-1: 0 1px 3px rgba(61, 56, 54, 0.06), 0 1px 2px rgba(61, 56, 54, 0.04);
   --shadow-2: 0 4px 12px rgba(61, 56, 54, 0.08), 0 2px 4px rgba(61, 56, 54, 0.04);
@@ -59,35 +59,66 @@
 }
 
 /* ── Dark-mode tokens ── */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --fg: #EDEBE8;
-    --fg-2: #B5AFA8;
-    --fg-3: #918880;
-    --fg-4: #5C5650;
+/* Explicit dark: user chose dark */
+[data-theme="dark"] {
+  --fg: #edebe8;
+  --fg-2: #b5afa8;
+  --fg-3: #918880;
+  --fg-4: #5c5650;
 
-    --bg: #1A1816;
+  --bg: #1a1816;
+  --s1: #242120;
+  --s2: #2e2a28;
+  --inset: #141210;
+
+  --brand: #3a9c9c;
+  --brand-h: #2a8585;
+  --brand-l: rgba(58, 156, 156, 0.12);
+
+  --ok: #6ba06b;
+  --ok-l: rgba(107, 160, 107, 0.15);
+
+  --warn: #d4886b;
+  --warn-l: rgba(212, 136, 107, 0.1);
+
+  --err: #d46b6b;
+  --err-l: rgba(212, 107, 107, 0.12);
+
+  --border: rgba(237, 235, 232, 0.1);
+  --border-s: rgba(237, 235, 232, 0.05);
+  --border-e: rgba(237, 235, 232, 0.18);
+  --border-f: #3a9c9c;
+}
+/* System dark: user chose system (or no preference set) and OS is dark */
+@media (prefers-color-scheme: dark) {
+  [data-theme="system"] {
+    --fg: #edebe8;
+    --fg-2: #b5afa8;
+    --fg-3: #918880;
+    --fg-4: #5c5650;
+
+    --bg: #1a1816;
     --s1: #242120;
-    --s2: #2E2A28;
+    --s2: #2e2a28;
     --inset: #141210;
 
-    --brand: #3A9C9C;
-    --brand-h: #2A8585;
+    --brand: #3a9c9c;
+    --brand-h: #2a8585;
     --brand-l: rgba(58, 156, 156, 0.12);
 
-    --ok: #6BA06B;
+    --ok: #6ba06b;
     --ok-l: rgba(107, 160, 107, 0.15);
 
-    --warn: #D4886B;
+    --warn: #d4886b;
     --warn-l: rgba(212, 136, 107, 0.1);
 
-    --err: #D46B6B;
+    --err: #d46b6b;
     --err-l: rgba(212, 107, 107, 0.12);
 
-    --border: rgba(237, 235, 232, 0.10);
+    --border: rgba(237, 235, 232, 0.1);
     --border-s: rgba(237, 235, 232, 0.05);
     --border-e: rgba(237, 235, 232, 0.18);
-    --border-f: #3A9C9C;
+    --border-f: #3a9c9c;
   }
 }
 

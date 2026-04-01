@@ -42,12 +42,7 @@ export async function Navbar(): Promise<React.ReactElement> {
           className="flex items-center gap-2 no-underline text-[1rem] font-semibold tracking-[-0.005em] leading-[1.4]"
           style={{ color: "var(--fg)" }}
         >
-          <svg
-            width="26"
-            height="26"
-            viewBox="0 0 48 48"
-            style={{ color: "var(--brand)" }}
-          >
+          <svg width="26" height="26" viewBox="0 0 48 48" style={{ color: "var(--brand)" }}>
             <circle cx="24" cy="24" r="21" fill="none" stroke="currentColor" strokeWidth="3.5" />
             <circle cx="24" cy="24" r="16" fill="none" stroke="currentColor" strokeWidth="3.5" />
             <circle cx="24" cy="24" r="11" fill="none" stroke="currentColor" strokeWidth="3.5" />
@@ -62,28 +57,9 @@ export async function Navbar(): Promise<React.ReactElement> {
           <NavLink href="/profile">Profile</NavLink>
           <Link
             href="/referrals/new"
-            className="inline-flex items-center justify-center gap-2 h-9 px-4 rounded-sm text-[0.8125rem] font-semibold tracking-[0.01em] no-underline transition-[background] duration-150 ease-out focus-visible:outline-2 focus-visible:outline-offset-2"
-            style={{
-              background: "var(--brand)",
-              color: "var(--brand-on)",
-              border: "none",
-            }}
+            className="inline-flex items-center justify-center h-9 px-4 border-none rounded-sm bg-brand text-brand-on hover:bg-brand-h text-[0.8125rem] font-semibold tracking-[0.01em] no-underline transition-[background] duration-150 ease-out focus-visible:outline-2 focus-visible:outline-offset-2"
           >
-            <svg
-              width="16"
-              height="16"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M12 4v16m8-8H4"
-              />
-            </svg>
-            New Referral
+            Post a referral
           </Link>
           <UserAvatar initials={initials} />
         </div>
@@ -92,28 +68,9 @@ export async function Navbar(): Promise<React.ReactElement> {
         <div className="flex sm:hidden items-center gap-3">
           <Link
             href="/referrals/new"
-            className="inline-flex items-center justify-center gap-1.5 h-8 px-3 rounded-sm text-[0.75rem] font-semibold no-underline transition-[background] duration-150 ease-out"
-            style={{
-              background: "var(--brand)",
-              color: "var(--brand-on)",
-              border: "none",
-            }}
+            className="inline-flex items-center justify-center h-8 px-3 border-none rounded-sm bg-brand text-brand-on hover:bg-brand-h text-[0.75rem] font-semibold no-underline transition-[background] duration-150 ease-out"
           >
-            <svg
-              width="14"
-              height="14"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M12 4v16m8-8H4"
-              />
-            </svg>
-            New
+            Post
           </Link>
           <NavbarMobile initials={initials} />
         </div>

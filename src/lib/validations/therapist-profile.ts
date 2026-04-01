@@ -100,3 +100,83 @@ export const therapistProfileSchema = z.object({
 });
 
 export type TherapistProfileFormData = z.infer<typeof therapistProfileSchema>;
+
+export const PROVINCES = [
+  { value: "AB", label: "Alberta" },
+  { value: "BC", label: "British Columbia" },
+  { value: "MB", label: "Manitoba" },
+  { value: "NB", label: "New Brunswick" },
+  { value: "NL", label: "Newfoundland and Labrador" },
+  { value: "NS", label: "Nova Scotia" },
+  { value: "NT", label: "Northwest Territories" },
+  { value: "NU", label: "Nunavut" },
+  { value: "ON", label: "Ontario" },
+  { value: "PE", label: "Prince Edward Island" },
+  { value: "QC", label: "Quebec" },
+  { value: "SK", label: "Saskatchewan" },
+  { value: "YT", label: "Yukon" },
+] as const;
+
+export const MODALITIES = ["In-Person", "Virtual", "Phone"] as const;
+
+export const INSURERS = [
+  "Blue Cross",
+  "Sun Life",
+  "Manulife",
+  "Green Shield",
+  "Canada Life",
+  "Desjardins",
+  "Industrial Alliance",
+  "SSQ Insurance",
+  "Equitable Life",
+  "Medavie Blue Cross",
+  "TELUS Health",
+] as const;
+
+export const STYLE_DESCRIPTORS = [
+  "Structured",
+  "Direct",
+  "Relational",
+  "Anti-oppressive",
+  "Skills-based",
+  "Warm",
+  "Gentle",
+] as const;
+
+export const CLIENT_ETHNICITY_OPTIONS = [
+  "Asian",
+  "Black",
+  "Hispanic and Latino",
+  "Indigenous Peoples",
+  "Other Racial or Ethnic Background",
+  "Pacific Islander",
+] as const;
+
+export const FAITH_ORIENTATIONS = [
+  "Any",
+  "Buddhist",
+  "Christian",
+  "Hindu",
+  "Jewish",
+  "Muslim",
+  "Other Spiritual or Religious Affiliations",
+  "Secular and Non-Religious",
+  "Sikh",
+  "The Church of Jesus Christ of Latter-day Saints",
+] as const;
+
+export const LICENSING_LEVELS = [
+  "Fully Licensed",
+  "Supervised Practice",
+  "Practicum Student",
+] as const;
+
+export const PARTICIPANT_RATE_MAP: Record<
+  string,
+  { field: "rateIndividual" | "rateGroup" | "rateFamily" | "rateCouples"; label: string }
+> = {
+  Individual: { field: "rateIndividual", label: "Individual session rate" },
+  Group: { field: "rateGroup", label: "Group session rate" },
+  Family: { field: "rateFamily", label: "Family session rate" },
+  Couples: { field: "rateCouples", label: "Couples session rate" },
+};

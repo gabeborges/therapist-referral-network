@@ -12,6 +12,7 @@ import {
   type AutocompleteOption,
 } from "@/features/onboarding/components/AutocompleteSelect";
 import { FormGroup } from "@/components/ui/FormGroup";
+import { selectStyle } from "@/lib/form-styles";
 
 const AGE_GROUPS = [
   "Children (6-12)",
@@ -48,12 +49,6 @@ const PARTICIPANTS = ["Individual", "Couples", "Family", "Group"] as const;
 const RATE_OPTIONS = ["Full fee", "Sliding scale", "Pro-bono"] as const;
 
 const THERAPIST_GENDER_PREF_OPTIONS = ["Any", "Female", "Male", "Non-binary"] as const;
-
-const selectStyle = {
-  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%238F8279' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E")`,
-  backgroundRepeat: "no-repeat",
-  backgroundPosition: "right 12px center",
-};
 
 const inputBaseClass =
   "w-full h-11 px-3 bg-inset text-fg border rounded-sm text-[0.9375rem] font-sans transition-[border-color,background,box-shadow] duration-150 ease-out focus:border-border-f focus:bg-bg focus:outline-2 focus:outline-border-f focus:outline-offset-2 placeholder:text-fg-4";

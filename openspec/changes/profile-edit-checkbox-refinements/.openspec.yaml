@@ -1,0 +1,15 @@
+name: profile-edit-checkbox-refinements
+description: Shared CheckboxGroup component, convert ChipSelect/select fields to checkboxes, row-pair fields, credential UX polish, schema consistency
+status: done
+prd: openspec/prd-referral-network.md
+artifacts:
+  proposal:
+    status: done
+  design:
+    status: done
+    dependencies: [proposal]
+  tasks:
+    status: done
+    dependencies: [design]
+apply:
+  requires: [tasks]

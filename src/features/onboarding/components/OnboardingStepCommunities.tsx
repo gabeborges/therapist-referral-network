@@ -5,15 +5,13 @@ import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useTRPC } from "@/lib/trpc/client";
 import type { OnboardingFormData } from "@/lib/validations/onboarding";
-import { AGE_OPTIONS, PARTICIPANT_OPTIONS } from "@/lib/validations/therapist-profile";
+import { AGE_OPTIONS, PARTICIPANT_OPTIONS, MODALITIES } from "@/lib/validations/therapist-profile";
 import {
   AutocompleteSelect,
   type AutocompleteOption,
 } from "@/features/onboarding/components/AutocompleteSelect";
 import { CheckboxGroup } from "@/components/ui/CheckboxGroup";
 import { FormGroup } from "@/components/ui/FormGroup";
-
-const MODALITIES = ["In-Person", "Virtual", "Phone"];
 
 export function OnboardingStepCommunities(): React.ReactElement {
   const trpc = useTRPC();

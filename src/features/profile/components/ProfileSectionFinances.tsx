@@ -1,20 +1,29 @@
 "use client";
 
 import { useFormContext, Controller } from "react-hook-form";
-import type { OnboardingFormData } from "@/lib/validations/onboarding";
-import { PARTICIPANT_RATE_MAP } from "@/lib/validations/therapist-profile";
-import { FormGroup } from "@/components/ui/FormGroup";
-import { BooleanCheckbox } from "@/components/ui/BooleanCheckbox";
+import type { TherapistProfileFormData } from "@/lib/validations/therapist-profile";
+import {
+  PARTICIPANT_RATE_MAP,
+  PAYMENT_METHOD_OPTIONS,
+  INSURERS,
+} from "@/lib/validations/therapist-profile";
 import { inputClasses } from "@/lib/form-styles";
+import { CheckboxGroup } from "@/components/ui/CheckboxGroup";
+import { FormGroup } from "@/components/ui/FormGroup";
 
-export function OnboardingStepServices(): React.ReactElement {
-  const { watch, control } = useFormContext<OnboardingFormData>();
+export function ProfileSectionFinances(): React.ReactElement {
+  const {
+    watch,
+    control,
+    formState: { errors },
+  } = useFormContext<TherapistProfileFormData>();
 
   const selectedParticipants = watch("participants") ?? [];
+  const acceptsInsurance = watch("acceptsInsurance");
 
   return (
-    <FormGroup title="Your services">
-      {/* Dynamic rate inputs */}
+    <FormGroup title="Finances">
+      {/* 27. Rate */}
       <div>
         <label className="block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2">
           Rate
@@ -24,11 +33,11 @@ export function OnboardingStepServices(): React.ReactElement {
         </p>
         {selectedParticipants.length === 0 ? (
           <p className="text-[0.8125rem] text-fg-4 italic">
-            Select participant types in the previous step to set rates.
+            Select participant types above to set rates.
           </p>
         ) : (
           <div className="space-y-3">
-            {selectedParticipants.map((participant) => {
+            {selectedParticipants.map((participant: string) => {
               const config = PARTICIPANT_RATE_MAP[participant];
               if (!config) return null;
               return (
@@ -39,7 +48,7 @@ export function OnboardingStepServices(): React.ReactElement {
                   render={({ field }) => (
                     <div>
                       <label
-                        htmlFor={`ob-${config.field}`}
+                        htmlFor={`pf-${config.field}`}
                         className="block mb-1 text-[0.75rem] text-fg-3"
                       >
                         {config.label}
@@ -49,7 +58,7 @@ export function OnboardingStepServices(): React.ReactElement {
                           $
                         </span>
                         <input
-                          id={`ob-${config.field}`}
+                          id={`pf-${config.field}`}
                           type="number"
                           min="0"
                           step="1"
@@ -71,28 +80,29 @@ export function OnboardingStepServices(): React.ReactElement {
         )}
       </div>
 
-      {/* Therapy service options */}
-      <div>
-        <p className="block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2">
-          Therapy service options
-        </p>
-        <div className="flex flex-col gap-2">
-          <BooleanCheckbox name="acceptsInsurance" control={control} label="I accept insurance" />
-          <BooleanCheckbox
-            name="reducedFees"
-            control={control}
-            label="I offer reduced fees / sliding scale"
-          />
-          <BooleanCheckbox name="proBono" control={control} label="I offer pro bono sessions" />
-          <BooleanCheckbox
-            name="freeConsultation"
-            control={control}
-            label="I offer a free initial consultation"
-          />
-        </div>
-      </div>
+      {/* 28. Payment methods */}
+      <CheckboxGroup
+        name="paymentMethods"
+        control={control}
+        label="Payment methods"
+        options={PAYMENT_METHOD_OPTIONS.map((m) => ({ value: m, label: m }))}
+        itemMinWidth="standard"
+        error={errors.paymentMethods?.message}
+      />
 
-      {/* Accepting referrals toggle */}
+      {/* 29. Insurance */}
+      {acceptsInsurance && (
+        <CheckboxGroup
+          name="insurers"
+          control={control}
+          label="Insurance"
+          options={INSURERS.map((i) => ({ value: i, label: i }))}
+          itemMinWidth="standard"
+          error={errors.insurers?.message}
+        />
+      )}
+
+      {/* 30. Accepting referrals */}
       <div className="flex items-center gap-3">
         <Controller
           name="acceptingClients"

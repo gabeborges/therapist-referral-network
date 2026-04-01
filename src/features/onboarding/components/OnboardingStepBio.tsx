@@ -4,39 +4,8 @@ import { useFormContext, Controller } from "react-hook-form";
 import type { OnboardingFormData } from "@/lib/validations/onboarding";
 import { ProfileImageUpload } from "@/features/profile/components/ProfileImageUpload";
 import { FormGroup } from "@/components/ui/FormGroup";
-import { PRONOUNS_OPTIONS } from "@/lib/validations/therapist-profile";
-
-const PROVINCES = [
-  { value: "AB", label: "Alberta" },
-  { value: "BC", label: "British Columbia" },
-  { value: "MB", label: "Manitoba" },
-  { value: "NB", label: "New Brunswick" },
-  { value: "NL", label: "Newfoundland and Labrador" },
-  { value: "NS", label: "Nova Scotia" },
-  { value: "NT", label: "Northwest Territories" },
-  { value: "NU", label: "Nunavut" },
-  { value: "ON", label: "Ontario" },
-  { value: "PE", label: "Prince Edward Island" },
-  { value: "QC", label: "Quebec" },
-  { value: "SK", label: "Saskatchewan" },
-  { value: "YT", label: "Yukon" },
-];
-
-const selectStyle = {
-  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%238F8279' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E")`,
-  backgroundRepeat: "no-repeat",
-  backgroundPosition: "right 12px center",
-};
-
-const inputClasses = (hasError: boolean): string =>
-  `w-full h-11 px-3 bg-inset text-fg border rounded-sm text-[0.9375rem] font-sans transition-[border-color,background,box-shadow] duration-150 ease-out focus:border-border-f focus:bg-bg focus:outline-2 focus:outline-border-f focus:outline-offset-2 placeholder:text-fg-4 ${
-    hasError ? "border-err" : "border-border"
-  }`;
-
-const selectClasses = (hasError: boolean): string =>
-  `w-full h-11 px-3 bg-inset text-fg border rounded-sm text-[0.9375rem] font-sans cursor-pointer transition-[border-color,background,box-shadow] duration-150 ease-out pr-9 appearance-none focus:border-border-f focus:bg-bg focus:outline-2 focus:outline-border-f focus:outline-offset-2 ${
-    hasError ? "border-err" : "border-border"
-  }`;
+import { PRONOUNS_OPTIONS, PROVINCES } from "@/lib/validations/therapist-profile";
+import { inputClasses, selectClasses, selectStyle } from "@/lib/form-styles";
 
 export function OnboardingStepBio(): React.ReactElement {
   const {

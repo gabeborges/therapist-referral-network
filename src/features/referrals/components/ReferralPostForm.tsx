@@ -12,7 +12,9 @@ import {
   type AutocompleteOption,
 } from "@/features/onboarding/components/AutocompleteSelect";
 import { FormGroup } from "@/components/ui/FormGroup";
-import { selectStyle } from "@/lib/form-styles";
+import { BooleanCheckbox } from "@/components/ui/BooleanCheckbox";
+import { CheckboxGroup } from "@/components/ui/CheckboxGroup";
+import { inputClasses, selectClasses, selectStyle } from "@/lib/form-styles";
 
 const AGE_GROUPS = [
   "Children (6-12)",
@@ -49,9 +51,6 @@ const PARTICIPANTS = ["Individual", "Couples", "Family", "Group"] as const;
 const RATE_OPTIONS = ["Full fee", "Sliding scale", "Pro-bono"] as const;
 
 const THERAPIST_GENDER_PREF_OPTIONS = ["Any", "Female", "Male", "Non-binary"] as const;
-
-const inputBaseClass =
-  "w-full h-11 px-3 bg-inset text-fg border rounded-sm text-[0.9375rem] font-sans transition-[border-color,background,box-shadow] duration-150 ease-out focus:border-border-f focus:bg-bg focus:outline-2 focus:outline-border-f focus:outline-offset-2 placeholder:text-fg-4";
 
 const labelClass = "block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2";
 
@@ -91,10 +90,11 @@ export function ReferralPostForm(): React.ReactElement {
       details: "",
       participants: undefined,
       ageGroup: "",
-      modalities: ["in-person"],
+      modalities: [],
       city: "",
       province: "",
       rate: "",
+      insuranceRequired: false,
       therapistGenderPref: "",
       therapyTypes: [],
       languages: [],
@@ -156,8 +156,8 @@ export function ReferralPostForm(): React.ReactElement {
       )}
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-        <FormGroup title="Client need">
-          {/* 1. Presenting issue */}
+        <FormGroup title="Client needs">
+          {/* Presenting issue */}
           <div>
             <label htmlFor="presentingIssue" className={labelClass}>
               Presenting issue
@@ -168,7 +168,7 @@ export function ReferralPostForm(): React.ReactElement {
               aria-required="true"
               aria-invalid={!!errors.presentingIssue}
               aria-describedby={errors.presentingIssue ? "presentingIssue-error" : undefined}
-              className={`${inputBaseClass} ${errors.presentingIssue ? "border-err" : "border-border"}`}
+              className={inputClasses(!!errors.presentingIssue)}
               placeholder="e.g., Anxiety, Depression, Trauma"
             />
             {errors.presentingIssue && (
@@ -178,7 +178,7 @@ export function ReferralPostForm(): React.ReactElement {
             )}
           </div>
 
-          {/* 2. Details (renamed from "Additional notes") */}
+          {/* Details */}
           <div>
             <label htmlFor="details" className={labelClass}>
               Details
@@ -191,6 +191,7 @@ export function ReferralPostForm(): React.ReactElement {
             <textarea
               id="details"
               {...register("details")}
+              aria-required="true"
               aria-invalid={!!errors.details}
               aria-describedby={errors.details ? "details-error" : undefined}
               className={`w-full min-h-[100px] p-3 bg-inset text-fg border rounded-sm text-[0.9375rem] font-sans resize-y transition-[border-color] duration-150 ease-out focus:border-border-f focus:bg-bg focus:outline-2 focus:outline-border-f focus:outline-offset-2 placeholder:text-fg-4 ${
@@ -210,8 +211,91 @@ export function ReferralPostForm(): React.ReactElement {
               <span className="text-[0.75rem] text-fg-4">{details.length}/1000</span>
             </div>
           </div>
+        </FormGroup>
 
-          {/* 3. Participants (dropdown) */}
+        <FormGroup title="Service preferences">
+          {/* Modalities (checkboxes) */}
+          <CheckboxGroup
+            name="modalities"
+            control={control}
+            label="Modalities"
+            options={[...MODALITY_OPTIONS]}
+            itemMinWidth="full"
+            error={errors.modalities?.message}
+          />
+
+          {/* Rate (radio buttons) */}
+          <fieldset className="border-none p-0">
+            <legend className={labelClass}>
+              Rate <span className="font-normal text-fg-4">(optional)</span>
+            </legend>
+            <div className="flex flex-wrap gap-4">
+              {RATE_OPTIONS.map((option) => (
+                <label
+                  key={option}
+                  className="inline-flex items-center gap-2 cursor-pointer text-[0.9375rem] text-fg select-none leading-[1.4]"
+                >
+                  <input
+                    type="radio"
+                    value={option}
+                    {...register("rate")}
+                    className="w-4 h-4 accent-brand cursor-pointer"
+                  />
+                  {option}
+                </label>
+              ))}
+            </div>
+          </fieldset>
+
+          {/* Insurance */}
+          <div>
+            <span className={labelClass}>
+              Insurance <span className="font-normal text-fg-4">(optional)</span>
+            </span>
+            <BooleanCheckbox
+              name="insuranceRequired"
+              control={control}
+              label="Insurance required"
+            />
+          </div>
+        </FormGroup>
+
+        <FormGroup title="Other preferences">
+          {/* City + Province */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="city" className={labelClass}>
+                City <span className="font-normal text-fg-4">(optional)</span>
+              </label>
+              <input
+                id="city"
+                {...register("city")}
+                className={inputClasses(false)}
+                placeholder="e.g., Toronto"
+              />
+            </div>
+            <div>
+              <label htmlFor="province" className={labelClass}>
+                Province <span className="font-normal text-fg-4">(optional)</span>
+              </label>
+              <select
+                id="province"
+                {...register("province")}
+                className={selectClasses(false)}
+                style={selectStyle}
+                defaultValue=""
+              >
+                <option value="">Select province...</option>
+                {PROVINCES.map((p) => (
+                  <option key={p.value} value={p.value}>
+                    {p.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/* Participants (dropdown) */}
           <div>
             <label htmlFor="participants" className={labelClass}>
               Participants <span className="font-normal text-fg-4">(optional)</span>
@@ -219,7 +303,7 @@ export function ReferralPostForm(): React.ReactElement {
             <select
               id="participants"
               {...register("participants")}
-              className={`${inputBaseClass} cursor-pointer pr-9 appearance-none border-border`}
+              className={selectClasses(false)}
               style={selectStyle}
               defaultValue=""
             >
@@ -232,10 +316,10 @@ export function ReferralPostForm(): React.ReactElement {
             </select>
           </div>
 
-          {/* 4. Age group */}
+          {/* Ages */}
           <div>
             <label htmlFor="ageGroup" className={labelClass}>
-              Age group
+              Ages
             </label>
             <select
               id="ageGroup"
@@ -243,9 +327,7 @@ export function ReferralPostForm(): React.ReactElement {
               aria-required="true"
               aria-invalid={!!errors.ageGroup}
               aria-describedby={errors.ageGroup ? "ageGroup-error" : undefined}
-              className={`${inputBaseClass} cursor-pointer pr-9 appearance-none ${
-                errors.ageGroup ? "border-err" : "border-border"
-              }`}
+              className={selectClasses(!!errors.ageGroup)}
               style={selectStyle}
               defaultValue=""
             >
@@ -264,123 +346,6 @@ export function ReferralPostForm(): React.ReactElement {
               </p>
             )}
           </div>
-        </FormGroup>
-
-        <FormGroup title="Matching preferences">
-          {/* 5. Modalities (checkboxes, "In-person" pre-selected) */}
-          <fieldset
-            className="border-none p-0 m-0"
-            aria-required="true"
-            aria-invalid={!!errors.modalities}
-            aria-describedby={errors.modalities ? "modalities-error" : undefined}
-          >
-            <legend className={labelClass}>Modalities</legend>
-            <Controller
-              name="modalities"
-              control={control}
-              render={({ field }) => (
-                <div className="flex flex-wrap gap-4">
-                  {MODALITY_OPTIONS.map((m) => {
-                    const checked = (field.value ?? []).includes(m.value);
-                    return (
-                      <label
-                        key={m.value}
-                        className="inline-flex items-center gap-2 cursor-pointer text-[0.9375rem] text-fg select-none leading-[1.4] hover:[&>.cb-box]:border-border-e hover:[&>.cb-box]:bg-bg hover:[&_input:checked+.cb-box]:bg-brand-h hover:[&_input:checked+.cb-box]:border-brand-h"
-                      >
-                        <input
-                          type="checkbox"
-                          checked={checked}
-                          onChange={(e) => {
-                            const current = field.value ?? [];
-                            if (e.target.checked) {
-                              field.onChange([...current, m.value]);
-                            } else {
-                              field.onChange(current.filter((v: string) => v !== m.value));
-                            }
-                          }}
-                          className="sr-only peer"
-                        />
-                        <span className="cb-box w-[18px] h-[18px] shrink-0 rounded-[4px] border border-border bg-inset inline-flex items-center justify-center transition-[background,border-color,box-shadow] duration-150 ease-out peer-checked:bg-brand peer-checked:border-brand peer-checked:[&>svg]:opacity-100 peer-checked:[&>svg]:scale-100 peer-focus-visible:outline-2 peer-focus-visible:outline-border-f peer-focus-visible:outline-offset-2">
-                          <svg
-                            className="w-3 h-3 opacity-0 scale-[0.6] transition-[opacity,transform] duration-150 ease-out"
-                            viewBox="0 0 12 12"
-                            fill="none"
-                            stroke="white"
-                            strokeWidth={3}
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            aria-hidden="true"
-                          >
-                            <polyline points="2.5,6 5,8.5 9.5,3.5" />
-                          </svg>
-                        </span>
-                        {m.label}
-                      </label>
-                    );
-                  })}
-                </div>
-              )}
-            />
-            {errors.modalities && (
-              <p id="modalities-error" className="mt-1 text-[0.75rem] text-err">
-                {errors.modalities.message}
-              </p>
-            )}
-          </fieldset>
-
-          {/* 6. City + Province (both optional) */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label htmlFor="city" className={labelClass}>
-                City <span className="font-normal text-fg-4">(optional)</span>
-              </label>
-              <input
-                id="city"
-                {...register("city")}
-                className={`${inputBaseClass} border-border`}
-                placeholder="e.g., Toronto"
-              />
-            </div>
-            <div>
-              <label htmlFor="province" className={labelClass}>
-                Province <span className="font-normal text-fg-4">(optional)</span>
-              </label>
-              <select
-                id="province"
-                {...register("province")}
-                className={`${inputBaseClass} cursor-pointer pr-9 appearance-none border-border`}
-                style={selectStyle}
-                defaultValue=""
-              >
-                <option value="">Select province...</option>
-                {PROVINCES.map((p) => (
-                  <option key={p.value} value={p.value}>
-                    {p.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          {/* 7. Rate (radio buttons, optional) */}
-          <fieldset>
-            <legend className={labelClass}>
-              Rate <span className="font-normal text-fg-4">(optional)</span>
-            </legend>
-            <div className="flex flex-wrap gap-4">
-              {RATE_OPTIONS.map((option) => (
-                <label key={option} className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="radio"
-                    value={option}
-                    {...register("rate")}
-                    className="w-4 h-4 accent-brand"
-                  />
-                  <span className="text-[0.9375rem] text-fg">{option}</span>
-                </label>
-              ))}
-            </div>
-          </fieldset>
         </FormGroup>
 
         {/* Collapsible additional details */}
@@ -425,7 +390,7 @@ export function ReferralPostForm(): React.ReactElement {
                 <select
                   id="therapistGenderPref"
                   {...register("therapistGenderPref")}
-                  className={`${inputBaseClass} cursor-pointer pr-9 appearance-none border-border`}
+                  className={selectClasses(false)}
                   style={selectStyle}
                   defaultValue=""
                 >
@@ -438,13 +403,13 @@ export function ReferralPostForm(): React.ReactElement {
                 </select>
               </div>
 
-              {/* Therapeutic approaches (renamed from "Therapy types") */}
+              {/* Therapy types */}
               <Controller
                 name="therapyTypes"
                 control={control}
                 render={({ field }) => (
                   <AutocompleteSelect
-                    label="Therapeutic approaches"
+                    label="Therapy types (optional)"
                     options={therapyTypeOptions}
                     selected={
                       (field.value ?? [])
@@ -452,7 +417,7 @@ export function ReferralPostForm(): React.ReactElement {
                         .filter(Boolean) as AutocompleteOption[]
                     }
                     onChange={(selected) => field.onChange(selected.map((s) => s.name))}
-                    placeholder="Search therapeutic approaches..."
+                    placeholder="Search therapy types..."
                     loading={!therapyTypesData}
                   />
                 )}
@@ -464,7 +429,7 @@ export function ReferralPostForm(): React.ReactElement {
                 control={control}
                 render={({ field }) => (
                   <AutocompleteSelect
-                    label="Languages"
+                    label="Languages (optional)"
                     options={languageOptions}
                     selected={
                       (field.value ?? [])
@@ -512,7 +477,7 @@ export function ReferralPostForm(): React.ReactElement {
         </div>
 
         {/* Actions */}
-        <div className="flex items-center justify-end gap-3 pt-4 border-t border-border-s">
+        <div className="flex items-center justify-between pt-4 border-t border-border-s">
           <button
             type="button"
             onClick={() => router.push("/referrals")}

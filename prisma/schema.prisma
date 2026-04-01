@@ -217,6 +217,7 @@ model ReferralPost {
   details         String?
 
   // Expanded referral fields
+  insuranceRequired   Boolean  @default(false) // Match therapists with acceptsInsurance
   participants        String?  // "Individual" | "Couples" | "Family" | "Group"
   rate                String?  // "Full fee" | "Sliding scale" | "Pro-bono"
   therapistGenderPref String?  // "Any" | "Female" | "Male" | "Non-binary"

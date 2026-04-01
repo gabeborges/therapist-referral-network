@@ -51,7 +51,7 @@ export function ProfileSectionCommunities({
         control={control}
         label="Participants"
         options={[...PARTICIPANT_OPTIONS].map((p) => ({ value: p, label: p }))}
-        itemMinWidth="compact"
+        itemMinWidth="full"
         error={errors.participants?.message}
       />
 
@@ -61,7 +61,7 @@ export function ProfileSectionCommunities({
         control={control}
         label="Ages"
         options={[...AGE_OPTIONS].map((a) => ({ value: a, label: a }))}
-        itemMinWidth="compact"
+        itemMinWidth="full"
         error={errors.ages?.message}
       />
 
@@ -71,7 +71,7 @@ export function ProfileSectionCommunities({
         control={control}
         label="Modalities"
         options={[...MODALITIES].map((m) => ({ value: m, label: m }))}
-        itemMinWidth="compact"
+        itemMinWidth="full"
         error={errors.modalities?.message}
       />
 
@@ -96,7 +96,7 @@ export function ProfileSectionCommunities({
         control={control}
         label="Ethnicity"
         options={[...CLIENT_ETHNICITY_OPTIONS].map((e) => ({ value: e, label: e }))}
-        itemMinWidth="wide"
+        itemMinWidth="full"
         error={errors.ethnicity?.message}
       />
 

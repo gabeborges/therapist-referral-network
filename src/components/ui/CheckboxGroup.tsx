@@ -6,6 +6,7 @@ const ITEM_MIN_WIDTH = {
   compact: "140px",
   standard: "180px",
   wide: "240px",
+  full: "100%",
 } as const;
 
 interface CheckboxGroupProps {
@@ -89,7 +90,9 @@ export function CheckboxGroup({
                     }}
                     className="sr-only peer"
                   />
-                  <span className="cb-box w-[18px] h-[18px] shrink-0 rounded-[4px] border border-border bg-inset inline-flex items-center justify-center transition-[background,border-color,box-shadow] duration-150 ease-out peer-checked:bg-brand peer-checked:border-brand peer-checked:[&>svg]:opacity-100 peer-checked:[&>svg]:scale-100 peer-focus-visible:outline-2 peer-focus-visible:outline-border-f peer-focus-visible:outline-offset-2">
+                  <span
+                    className={`cb-box w-[18px] h-[18px] shrink-0 rounded-[4px] border ${error ? "border-err" : "border-border"} bg-inset inline-flex items-center justify-center transition-[background,border-color,box-shadow] duration-150 ease-out peer-checked:bg-brand peer-checked:border-brand peer-checked:[&>svg]:opacity-100 peer-checked:[&>svg]:scale-100 peer-focus-visible:outline-2 peer-focus-visible:outline-border-f peer-focus-visible:outline-offset-2`}
+                  >
                     <svg
                       className="w-3 h-3 opacity-0 scale-[0.6] transition-[opacity,transform] duration-150 ease-out"
                       viewBox="0 0 12 12"

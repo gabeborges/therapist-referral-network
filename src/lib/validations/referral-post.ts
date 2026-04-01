@@ -3,7 +3,7 @@ import { z } from "zod";
 export const referralPostSchema = z.object({
   // Core fields
   presentingIssue: z.string().min(1, "Presenting issue is required"),
-  details: z.string().max(1000).optional(),
+  details: z.string().min(1, "Details are required").max(1000),
   participants: z.string().optional(),
   ageGroup: z.string().min(1, "Age group is required"),
   modalities: z
@@ -12,6 +12,7 @@ export const referralPostSchema = z.object({
   city: z.string().optional(),
   province: z.string().optional(),
   rate: z.string().optional(),
+  insuranceRequired: z.boolean().optional(),
 
   // Additional details (expandable section)
   therapistGenderPref: z.string().optional(),

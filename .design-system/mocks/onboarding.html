@@ -1,0 +1,1729 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Onboarding — Therapist Referral Network</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      /* ============================================================
+       THERAPIST REFERRAL NETWORK — DESIGN SYSTEM TOKENS
+       Source: .interface-design/system.md
+       ============================================================ */
+      :root {
+        --fg: #3d3836;
+        --fg-2: #6b5e57;
+        --fg-3: #8f8279;
+        --fg-4: #b5a99e;
+        --bg: #f7f4ef;
+        --s1: #fdfbf8;
+        --s2: #ffffff;
+        --inset: #efe9e0;
+        --brand: #2a7c7c;
+        --brand-h: #1f6363;
+        --brand-on: #fff;
+        --brand-l: rgba(42, 124, 124, 0.08);
+        --ok: #5a8a5a;
+        --ok-l: rgba(90, 138, 90, 0.1);
+        --warn: #b8704f;
+        --warn-l: rgba(184, 112, 79, 0.06);
+        --err: #b85454;
+        --err-l: rgba(184, 84, 84, 0.08);
+        --b: rgba(61, 56, 54, 0.12);
+        --b-s: rgba(61, 56, 54, 0.06);
+        --b-e: rgba(61, 56, 54, 0.22);
+        --b-f: #2a7c7c;
+        --sh1: 0 1px 3px rgba(61, 56, 54, 0.06), 0 1px 2px rgba(61, 56, 54, 0.04);
+        --sh2: 0 4px 12px rgba(61, 56, 54, 0.08), 0 2px 4px rgba(61, 56, 54, 0.04);
+        --brand-tint: rgba(42, 124, 124, 0.04);
+      }
+      [data-theme="dark"] {
+        --fg: #edebe8;
+        --fg-2: #b5afa8;
+        --fg-3: #857d76;
+        --fg-4: #5c5650;
+        --bg: #1a1816;
+        --s1: #242120;
+        --s2: #2e2a28;
+        --inset: #141210;
+        --brand: #3a9c9c;
+        --brand-h: #2a8585;
+        --brand-l: rgba(58, 156, 156, 0.12);
+        --ok: #6ba06b;
+        --ok-l: rgba(107, 160, 107, 0.15);
+        --warn: #d4886b;
+        --warn-l: rgba(212, 136, 107, 0.1);
+        --err: #d46b6b;
+        --err-l: rgba(212, 107, 107, 0.12);
+        --b: rgba(237, 235, 232, 0.1);
+        --b-s: rgba(237, 235, 232, 0.05);
+        --b-e: rgba(237, 235, 232, 0.18);
+        --b-f: #3a9c9c;
+        --sh1: 0 1px 2px rgba(0, 0, 0, 0.3);
+        --sh2: 0 4px 12px rgba(0, 0, 0, 0.4);
+        --brand-tint: rgba(58, 156, 156, 0.06);
+      }
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--bg);
+        color: var(--fg);
+        font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+        margin: 0;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* Typography */
+      .t-h1 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        letter-spacing: -0.015em;
+        line-height: 1.3;
+        color: var(--fg);
+      }
+      .t-h2 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        line-height: 1.35;
+        color: var(--fg);
+      }
+      .t-h3 {
+        font-size: 1rem;
+        font-weight: 600;
+        letter-spacing: -0.005em;
+        line-height: 1.4;
+        color: var(--fg);
+      }
+      .t-body {
+        font-size: 0.9375rem;
+        line-height: 1.5;
+      }
+      .t-sm {
+        font-size: 0.875rem;
+        line-height: 1.5;
+        color: var(--fg-2);
+      }
+      .t-label {
+        font-size: 0.8125rem;
+        font-weight: 500;
+        letter-spacing: 0.01em;
+        line-height: 1.4;
+      }
+      .t-caption {
+        font-size: 0.75rem;
+        letter-spacing: 0.015em;
+        line-height: 1.4;
+        color: var(--fg-3);
+      }
+      .t-section {
+        font-size: 0.8125rem;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--fg-3);
+      }
+
+      .card {
+        background: var(--s1);
+        border: 1px solid var(--b);
+        border-radius: 10px;
+        box-shadow: var(--sh1);
+      }
+
+      /* Inputs */
+      .input {
+        width: 100%;
+        height: 44px;
+        padding: 0 12px;
+        background: var(--inset);
+        color: var(--fg);
+        border: 1px solid var(--b);
+        border-radius: 6px;
+        font-size: 0.9375rem;
+        font-family: inherit;
+        transition:
+          border-color 150ms ease-out,
+          background 150ms ease-out;
+      }
+      .input:focus {
+        border-color: var(--b-f);
+        background: var(--bg);
+        outline: 2px solid var(--b-f);
+        outline-offset: 2px;
+      }
+      .input::placeholder {
+        color: var(--fg-4);
+      }
+      .input.input-error {
+        border-color: var(--err);
+      }
+      .input:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      select.input {
+        appearance: none;
+        cursor: pointer;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%238F8279' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        padding-right: 36px;
+      }
+
+      /* Buttons */
+      .btn-primary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        height: 44px;
+        padding: 0 24px;
+        background: var(--brand);
+        color: var(--brand-on);
+        border: none;
+        border-radius: 6px;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        letter-spacing: 0.01em;
+        cursor: pointer;
+        transition: background 150ms ease-out;
+        font-family: inherit;
+      }
+      .btn-primary:hover {
+        background: var(--brand-h);
+      }
+      .btn-primary:focus-visible {
+        outline: 2px solid var(--b-f);
+        outline-offset: 2px;
+      }
+      .btn-primary:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      .btn-ghost {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        height: 44px;
+        padding: 0 24px;
+        background: transparent;
+        color: var(--fg);
+        border: 1px solid var(--b);
+        border-radius: 6px;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        letter-spacing: 0.01em;
+        cursor: pointer;
+        transition: all 150ms ease-out;
+        font-family: inherit;
+      }
+      .btn-ghost:hover {
+        background: var(--inset);
+      }
+      .btn-ghost:focus-visible {
+        outline: 2px solid var(--b-f);
+        outline-offset: 2px;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      .spinner {
+        width: 18px;
+        height: 18px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-top-color: #fff;
+        border-radius: 50%;
+        animation: spin 0.6s linear infinite;
+      }
+
+      /* Checkbox (from components library) */
+      .cb-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        font-size: 0.875rem;
+        color: var(--fg);
+        user-select: none;
+      }
+      .cb-label.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      .cb-input {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+        pointer-events: none;
+      }
+      .cb-box {
+        width: 18px;
+        height: 18px;
+        border-radius: 4px;
+        border: 1.5px solid var(--b-e);
+        background: var(--inset);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        transition: all 150ms ease-out;
+      }
+      .cb-box svg {
+        width: 12px;
+        height: 12px;
+        fill: none;
+        stroke: #fff;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        opacity: 0;
+        transform: scale(0.5);
+        transition: all 150ms ease-out;
+      }
+      .cb-label:hover .cb-box {
+        border-color: var(--b-e);
+        background: var(--bg);
+      }
+      .cb-input:checked + .cb-box {
+        background: var(--brand);
+        border-color: var(--brand);
+      }
+      .cb-input:checked + .cb-box svg {
+        opacity: 1;
+        transform: scale(1);
+      }
+      .cb-input:focus-visible + .cb-box {
+        outline: 2px solid var(--b-f);
+        outline-offset: 2px;
+      }
+      .cb-box--error {
+        border-color: var(--err);
+      }
+
+      /* Checkbox group layouts (from components library) */
+      .cb-group-inline {
+        display: flex;
+        gap: 24px;
+        flex-wrap: wrap;
+      }
+      .cb-group-column {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      /* Country button */
+      .country-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        width: 100%;
+        height: 72px;
+        padding: 0 20px;
+        background: var(--s1);
+        border: 1px solid var(--b);
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 150ms ease-out;
+        font-family: inherit;
+        position: relative;
+      }
+      .country-btn:hover {
+        border-color: var(--b-e);
+        background: var(--inset);
+      }
+      .country-btn:focus-visible {
+        outline: 2px solid var(--b-f);
+        outline-offset: 2px;
+      }
+      .country-btn.selected {
+        border: 2px solid var(--brand);
+        background: var(--brand-tint);
+      }
+      .country-btn .name {
+        font-size: 1rem;
+        font-weight: 600;
+        letter-spacing: -0.005em;
+        color: var(--fg);
+      }
+      .country-btn .checkmark {
+        position: absolute;
+        right: 20px;
+        width: 20px;
+        height: 20px;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        color: var(--brand);
+      }
+      .country-btn.selected .checkmark {
+        display: flex;
+      }
+
+      /* Wizard progress */
+      .wizard-progress {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        margin-bottom: 24px;
+      }
+      .wizard-step {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-shrink: 0;
+      }
+      .wizard-step-circle {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+        font-weight: 600;
+        flex-shrink: 0;
+        transition: all 150ms ease-out;
+        border: none;
+        font-family: inherit;
+        padding: 0;
+      }
+      .wizard-step-circle.completed {
+        background: var(--brand);
+        color: var(--brand-on);
+        cursor: pointer;
+      }
+      .wizard-step-circle.completed:hover {
+        background: var(--brand-h);
+      }
+      .wizard-step-circle.completed:focus-visible {
+        outline: 2px solid var(--b-f);
+        outline-offset: 2px;
+      }
+      .wizard-step-circle.current {
+        background: var(--fg);
+        color: var(--bg);
+        cursor: default;
+      }
+      .wizard-step-circle.upcoming {
+        background: transparent;
+        border: 1px solid var(--b);
+        color: var(--fg-4);
+        cursor: default;
+      }
+      .wizard-step-label {
+        font-size: 0.75rem;
+        white-space: nowrap;
+      }
+      .wizard-step-label.completed {
+        color: var(--brand);
+      }
+      .wizard-step-label.current {
+        color: var(--fg);
+      }
+      .wizard-step-label.upcoming {
+        color: var(--fg-4);
+      }
+      .wizard-line {
+        flex: 1;
+        height: 1px;
+        min-width: 12px;
+        margin: 0 4px;
+      }
+      .wizard-line.filled {
+        background: var(--brand);
+      }
+      .wizard-line.empty {
+        background: var(--b);
+      }
+      @media (max-width: 639px) {
+        .wizard-step-label {
+          display: none;
+        }
+      }
+
+      .hiw-circle {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--brand);
+        color: var(--brand-on);
+        font-size: 0.8125rem;
+        font-weight: 700;
+        flex-shrink: 0;
+      }
+
+      /* Toggle switch */
+      .toggle-switch {
+        position: relative;
+        width: 44px;
+        height: 24px;
+        border-radius: 12px;
+        cursor: pointer;
+        border: none;
+        padding: 0;
+        transition: background 150ms ease-out;
+        flex-shrink: 0;
+      }
+      .toggle-switch::after {
+        content: "";
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #fff;
+        transition: transform 150ms ease-out;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+      }
+      .toggle-switch.on {
+        background: var(--ok);
+      }
+      .toggle-switch.on::after {
+        transform: translateX(20px);
+      }
+      .toggle-switch.off {
+        background: var(--fg-4);
+      }
+      .toggle-switch:focus-visible {
+        outline: 2px solid var(--b-f);
+        outline-offset: 2px;
+      }
+
+      /* Autocomplete / search select */
+      .autocomplete-wrap {
+        position: relative;
+      }
+      .autocomplete-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-bottom: 8px;
+      }
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        height: 28px;
+        padding: 0 10px;
+        background: var(--brand-l);
+        color: var(--brand);
+        border-radius: 9999px;
+        font-size: 0.8125rem;
+        font-weight: 500;
+        white-space: nowrap;
+      }
+      .chip .x {
+        background: none;
+        border: none;
+        color: inherit;
+        cursor: pointer;
+        padding: 0;
+        margin-left: 2px;
+        opacity: 0.6;
+        width: 14px;
+        height: 14px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .chip .x:hover {
+        opacity: 1;
+      }
+      .autocomplete-dropdown {
+        position: absolute;
+        top: calc(100% + 4px);
+        left: 0;
+        right: 0;
+        background: var(--s2);
+        border: 1px solid var(--b);
+        border-radius: 6px;
+        box-shadow: var(--sh2);
+        max-height: 200px;
+        overflow-y: auto;
+        z-index: 10;
+      }
+      .autocomplete-option {
+        display: block;
+        width: 100%;
+        padding: 10px 12px;
+        background: none;
+        border: none;
+        text-align: left;
+        font-size: 0.875rem;
+        color: var(--fg);
+        cursor: pointer;
+        font-family: inherit;
+        transition: background 100ms;
+      }
+      .autocomplete-option:hover {
+        background: var(--inset);
+      }
+      .autocomplete-option-cat {
+        font-size: 0.6875rem;
+        color: var(--fg-3);
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        padding: 8px 12px 4px;
+      }
+
+      /* Error banner */
+      .error-banner {
+        padding: 16px;
+        border-radius: 10px;
+        border: 1px solid color-mix(in srgb, var(--err) 20%, transparent);
+        background: var(--err-l);
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+      }
+
+      /* Rate input */
+      .rate-input-wrap {
+        position: relative;
+      }
+      .rate-input-wrap .dollar {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--fg-3);
+        font-size: 0.9375rem;
+        pointer-events: none;
+      }
+
+      /* Controls */
+      #controls {
+        position: fixed;
+        bottom: 16px;
+        right: 16px;
+        z-index: 1000;
+        background: var(--s2);
+        border: 1px solid var(--b);
+        border-radius: 10px;
+        padding: 10px 14px;
+        box-shadow: var(--sh2);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-wrap: wrap;
+        max-width: 520px;
+      }
+      .ctrl-label {
+        font-size: 0.6875rem;
+        font-weight: 600;
+        color: var(--fg-3);
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        margin-right: 4px;
+      }
+      .ctrl-btn {
+        font-size: 0.6875rem;
+        font-weight: 500;
+        padding: 3px 8px;
+        border-radius: 4px;
+        border: 1px solid var(--b);
+        background: transparent;
+        color: var(--fg-2);
+        cursor: pointer;
+        transition: all 150ms ease-out;
+        font-family: inherit;
+        white-space: nowrap;
+      }
+      .ctrl-btn:hover {
+        border-color: var(--b-e);
+        color: var(--fg);
+      }
+      .ctrl-btn.active {
+        background: var(--brand);
+        color: var(--brand-on);
+        border-color: var(--brand);
+      }
+      .ctrl-sep {
+        width: 1px;
+        height: 16px;
+        background: var(--b);
+        margin: 0 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- === Reusable fragments stored as JS template to avoid duplication === -->
+
+    <!-- ============ STEP 1 — No Selection ============ -->
+    <div id="state-step1" class="px-4 sm:px-6 pt-12 pb-24">
+      <div class="max-w-[560px] mx-auto">
+        <div class="text-center mb-8">
+          <span
+            class="font-semibold text-sm inline-flex items-center gap-2"
+            style="color: var(--fg)"
+            ><svg width="26" height="26" viewBox="0 0 48 48" style="color: var(--brand)">
+              <circle cx="24" cy="24" r="21" fill="none" stroke="currentColor" stroke-width="3.5" />
+              <circle cx="24" cy="24" r="16" fill="none" stroke="currentColor" stroke-width="3.5" />
+              <circle cx="24" cy="24" r="11" fill="none" stroke="currentColor" stroke-width="3.5" />
+              <circle
+                cx="24"
+                cy="24"
+                r="6"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3.5"
+              /></svg
+            >Therapist Referral Network</span
+          >
+        </div>
+        <div class="text-center mb-6">
+          <h1 class="t-h1 mb-2">Welcome to Therapist Referral Network</h1>
+          <p class="t-sm">
+            Complete your profile to start giving and receiving referrals from trusted colleagues.
+          </p>
+        </div>
+
+        <div class="card p-6">
+          <nav aria-label="Onboarding progress" class="wizard-progress">
+            <div class="wizard-step">
+              <span class="wizard-step-circle current" aria-current="step">1</span
+              ><span class="wizard-step-label current">Country</span>
+            </div>
+            <div class="wizard-line empty"></div>
+            <div class="wizard-step">
+              <span class="wizard-step-circle upcoming">2</span
+              ><span class="wizard-step-label upcoming">Bio</span>
+            </div>
+            <div class="wizard-line empty"></div>
+            <div class="wizard-step">
+              <span class="wizard-step-circle upcoming">3</span
+              ><span class="wizard-step-label upcoming">Communities</span>
+            </div>
+            <div class="wizard-line empty"></div>
+            <div class="wizard-step">
+              <span class="wizard-step-circle upcoming">4</span
+              ><span class="wizard-step-label upcoming">Services</span>
+            </div>
+          </nav>
+          <h2 class="t-h2 mb-2">Where do you practice?</h2>
+          <p class="t-sm mb-5">We're currently available in Canada and the United States.</p>
+          <div role="radiogroup" aria-label="Country selection" class="space-y-3 mb-6">
+            <button class="country-btn" role="radio" aria-checked="false">
+              <span class="name">Canada</span
+              ><span class="checkmark"
+                ><svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="20 6 9 17 4 12" /></svg
+              ></span>
+            </button>
+            <button class="country-btn" role="radio" aria-checked="false">
+              <span class="name">United States</span
+              ><span class="checkmark"
+                ><svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="20 6 9 17 4 12" /></svg
+              ></span>
+            </button>
+          </div>
+          <div style="border-top: 1px solid var(--b-s); padding-top: 16px">
+            <button class="btn-primary w-full" disabled>Next</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ STEP 1 — Canada Selected ============ -->
+    <div id="state-step1-ca" style="display: none" class="px-4 sm:px-6 pt-12 pb-24">
+      <div class="max-w-[560px] mx-auto">
+        <div class="text-center mb-8">
+          <span
+            class="font-semibold text-sm inline-flex items-center gap-2"
+            style="color: var(--fg)"
+            ><svg width="26" height="26" viewBox="0 0 48 48" style="color: var(--brand)">
+              <circle cx="24" cy="24" r="21" fill="none" stroke="currentColor" stroke-width="3.5" />
+              <circle cx="24" cy="24" r="16" fill="none" stroke="currentColor" stroke-width="3.5" />
+              <circle cx="24" cy="24" r="11" fill="none" stroke="currentColor" stroke-width="3.5" />
+              <circle
+                cx="24"
+                cy="24"
+                r="6"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3.5"
+              /></svg
+            >Therapist Referral Network</span
+          >
+        </div>
+        <div class="text-center mb-6">
+          <h1 class="t-h1 mb-2">Welcome to Therapist Referral Network</h1>
+          <p class="t-sm">
+            Complete your profile to start giving and receiving referrals from trusted colleagues.
+          </p>
+        </div>
+        <div class="card p-6">
+          <nav aria-label="Onboarding progress" class="wizard-progress">
+            <div class="wizard-step">
+              <span class="wizard-step-circle current" aria-current="step">1</span
+              ><span class="wizard-step-label current">Country</span>
+            </div>
+            <div class="wizard-line empty"></div>
+            <div class="wizard-step">
+              <span class="wizard-step-circle upcoming">2</span
+              ><span class="wizard-step-label upcoming">Bio</span>
+            </div>
+            <div class="wizard-line empty"></div>
+            <div class="wizard-step">
+              <span class="wizard-step-circle upcoming">3</span
+              ><span class="wizard-step-label upcoming">Communities</span>
+            </div>
+            <div class="wizard-line empty"></div>
+            <div class="wizard-step">
+              <span class="wizard-step-circle upcoming">4</span
+              ><span class="wizard-step-label upcoming">Services</span>
+            </div>
+          </nav>
+          <h2 class="t-h2 mb-2">Where do you practice?</h2>
+          <p class="t-sm mb-5">We're currently available in Canada and the United States.</p>
+          <div role="radiogroup" aria-label="Country selection" class="space-y-3 mb-6">
+            <button class="country-btn selected" role="radio" aria-checked="true">
+              <span class="name">Canada</span
+              ><span class="checkmark"
+                ><svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="20 6 9 17 4 12" /></svg
+              ></span>
+            </button>
+            <button class="country-btn" role="radio" aria-checked="false">
+              <span class="name">United States</span
+              ><span class="checkmark"
+                ><svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="20 6 9 17 4 12" /></svg
+              ></span>
+            </button>
+          </div>
+          <div style="border-top: 1px solid var(--b-s); padding-top: 16px">
+            <button class="btn-primary w-full">Next</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ STEP 1 — US Selected (Waitlist) ============ -->
+    <div id="state-step1-us" style="display: none" class="px-4 sm:px-6 pt-12 pb-24">
+      <div class="max-w-[560px] mx-auto">
+        <div class="text-center mb-8">
+          <span
+            class="font-semibold text-sm inline-flex items-center gap-2"
+            style="color: var(--fg)"
+            ><svg width="26" height="26" viewBox="0 0 48 48" style="color: var(--brand)">
+              <circle cx="24" cy="24" r="21" fill="none" stroke="currentColor" stroke-width="3.5" />
+              <circle cx="24" cy="24" r="16" fill="none" stroke="currentColor" stroke-width="3.5" />
+              <circle cx="24" cy="24" r="11" fill="none" stroke="currentColor" stroke-width="3.5" />
+              <circle
+                cx="24"
+                cy="24"
+                r="6"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3.5"
+              /></svg
+            >Therapist Referral Network</span
+          >
+        </div>
+        <div class="text-center mb-6">
+          <h1 class="t-h1 mb-2">Welcome to Therapist Referral Network</h1>
+          <p class="t-sm">
+            Complete your profile to start giving and receiving referrals from trusted colleagues.
+          </p>
+        </div>
+        <div class="card p-6">
+          <nav aria-label="Onboarding progress" class="wizard-progress">
+            <div class="wizard-step">
+              <span class="wizard-step-circle current" aria-current="step">1</span
+              ><span class="wizard-step-label current">Country</span>
+            </div>
+            <div class="wizard-line empty"></div>
+            <div class="wizard-step">
+              <span class="wizard-step-circle upcoming">2</span
+              ><span class="wizard-step-label upcoming">Bio</span>
+            </div>
+            <div class="wizard-line empty"></div>
+            <div class="wizard-step">
+              <span class="wizard-step-circle upcoming">3</span
+              ><span class="wizard-step-label upcoming">Communities</span>
+            </div>
+            <div class="wizard-line empty"></div>
+            <div class="wizard-step">
+              <span class="wizard-step-circle upcoming">4</span
+              ><span class="wizard-step-label upcoming">Services</span>
+            </div>
+          </nav>
+          <h2 class="t-h2 mb-2">Where do you practice?</h2>
+          <p class="t-sm mb-5">We're currently available in Canada and the United States.</p>
+          <div role="radiogroup" aria-label="Country selection" class="space-y-3 mb-5">
+            <button class="country-btn" role="radio" aria-checked="false">
+              <span class="name">Canada</span
+              ><span class="checkmark"
+                ><svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="20 6 9 17 4 12" /></svg
+              ></span>
+            </button>
+            <button class="country-btn selected" role="radio" aria-checked="true">
+              <span class="name">United States</span
+              ><span class="checkmark"
+                ><svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="20 6 9 17 4 12" /></svg
+              ></span>
+            </button>
+          </div>
+          <p class="t-sm mb-4">
+            We're launching in the United States soon. Join the waitlist to be notified when we're
+            available in your area.
+          </p>
+          <div style="border-top: 1px solid var(--b-s); padding-top: 16px">
+            <button class="btn-primary w-full">Join Waitlist</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ STEP 2 — Bio ============ -->
+    <div id="state-step2" style="display: none" class="px-4 sm:px-6 pt-12 pb-24">
+      <div class="max-w-[560px] mx-auto">
+        <div class="text-center mb-8">
+          <span
+            class="font-semibold text-sm inline-flex items-center gap-2"
+            style="color: var(--fg)"
+            ><svg width="26" height="26" viewBox="0 0 48 48" style="color: var(--brand)">
+              <circle cx="24" cy="24" r="21" fill="none" stroke="currentColor" stroke-width="3.5" />
+              <circle cx="24" cy="24" r="16" fill="none" stroke="currentColor" stroke-width="3.5" />
+              <circle cx="24" cy="24" r="11" fill="none" stroke="currentColor" stroke-width="3.5" />
+              <circle
+                cx="24"
+                cy="24"
+                r="6"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3.5"
+              /></svg
+            >Therapist Referral Network</span
+          >
+        </div>
+        <div class="text-center mb-6">
+          <h1 class="t-h1 mb-2">Welcome to Therapist Referral Network</h1>
+          <p class="t-sm">
+            Complete your profile to start giving and receiving referrals from trusted colleagues.
+          </p>
+        </div>
+        <div class="card p-6">
+          <nav aria-label="Onboarding progress" class="wizard-progress">
+            <div class="wizard-step">
+              <button class="wizard-step-circle completed">&#10003;</button
+              ><span class="wizard-step-label completed">Country</span>
+            </div>
+            <div class="wizard-line filled"></div>
+            <div class="wizard-step">
+              <span class="wizard-step-circle current" aria-current="step">2</span
+              ><span class="wizard-step-label current">Bio</span>
+            </div>
+            <div class="wizard-line empty"></div>
+            <div class="wizard-step">
+              <span class="wizard-step-circle upcoming">3</span
+              ><span class="wizard-step-label upcoming">Communities</span>
+            </div>
+            <div class="wizard-line empty"></div>
+            <div class="wizard-step">
+              <span class="wizard-step-circle upcoming">4</span
+              ><span class="wizard-step-label upcoming">Services</span>
+            </div>
+          </nav>
+          <h2 class="t-h2 mb-5">Bio</h2>
+          <div class="space-y-5">
+            <!-- Profile photo -->
+            <div>
+              <label class="t-label block mb-2" style="color: var(--fg-2)">Profile photo <span style="color:var(--fg-4);">(optional)</span></label>
+              <div class="flex items-center gap-4">
+                <div
+                  style="
+                    width: 56px;
+                    height: 56px;
+                    border-radius: 50%;
+                    background: var(--inset);
+                    border: 1px solid var(--b);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  "
+                >
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    style="color: var(--fg-4)"
+                  >
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                  </svg>
+                </div>
+                <button
+                  class="btn-ghost"
+                  style="height: 36px; padding: 0 16px; font-size: 0.8125rem"
+                >
+                  Upload photo
+                </button>
+              </div>
+            </div>
+            <!-- Names: 3 columns -->
+            <div class="grid grid-cols-3 gap-3">
+              <div>
+                <label class="t-label block mb-1" style="color: var(--fg-2)">First name</label
+                ><input class="input" value="Sarah" />
+              </div>
+              <div>
+                <label class="t-label block mb-1" style="color: var(--fg-2)">Middle <span style="color:var(--fg-4);">(optional)</span></label
+                ><input class="input" placeholder="" />
+              </div>
+              <div>
+                <label class="t-label block mb-1" style="color: var(--fg-2)">Last name</label
+                ><input class="input" value="Chen" />
+              </div>
+            </div>
+            <!-- Pronouns + Display name: 2 columns -->
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="t-label block mb-1" style="color: var(--fg-2)">Pronouns <span style="color:var(--fg-4);">(optional)</span></label
+                ><select class="input">
+                  <option disabled>Select…</option>
+                  <option selected>She/Her</option>
+                  <option>He/Him</option>
+                  <option>They/Them</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <div>
+                <label class="t-label block mb-1" style="color: var(--fg-2)">Display name <span style="color:var(--fg-4);">(optional)</span></label
+                ><input class="input" placeholder="e.g. Dr. Sarah Chen" />
+              </div>
+            </div>
+            <!-- Contact email -->
+            <div>
+              <label class="t-label block mb-1" style="color: var(--fg-2)">Contact email <span style="color:var(--fg-4);">(optional)</span></label
+              ><input class="input" value="sarah.chen@practice.com" />
+              <p class="t-caption mt-1">Where referral notifications are sent.</p>
+            </div>
+            <!-- City + Province: 2 columns -->
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="t-label block mb-1" style="color: var(--fg-2)"
+                  >City <span style="color: var(--err)">*</span></label
+                ><input class="input" value="Toronto" />
+              </div>
+              <div>
+                <label class="t-label block mb-1" style="color: var(--fg-2)"
+                  >Province <span style="color: var(--err)">*</span></label
+                ><select class="input">
+                  <option disabled>Select province…</option>
+                  <option>Alberta</option>
+                  <option>British Columbia</option>
+                  <option>Manitoba</option>
+                  <option selected>Ontario</option>
+                  <option>Quebec</option>
+                  <option>Saskatchewan</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div
+            style="border-top: 1px solid var(--b-s); padding-top: 16px; margin-top: 24px"
+            class="flex justify-between"
+          >
+            <button class="btn-ghost">Back</button><button class="btn-primary">Next</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ STEP 3 — Communities Served ============ -->
+    <div id="state-step3" style="display: none" class="px-4 sm:px-6 pt-12 pb-24">
+      <div class="max-w-[560px] mx-auto">
+        <div class="text-center mb-8">
+          <span
+            class="font-semibold text-sm inline-flex items-center gap-2"
+            style="color: var(--fg)"
+            ><svg width="26" height="26" viewBox="0 0 48 48" style="color: var(--brand)">
+              <circle cx="24" cy="24" r="21" fill="none" stroke="currentColor" stroke-width="3.5" />
+              <circle cx="24" cy="24" r="16" fill="none" stroke="currentColor" stroke-width="3.5" />
+              <circle cx="24" cy="24" r="11" fill="none" stroke="currentColor" stroke-width="3.5" />
+              <circle
+                cx="24"
+                cy="24"
+                r="6"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3.5"
+              /></svg
+            >Therapist Referral Network</span
+          >
+        </div>
+        <div class="text-center mb-6">
+          <h1 class="t-h1 mb-2">Welcome to Therapist Referral Network</h1>
+          <p class="t-sm">
+            Complete your profile to start giving and receiving referrals from trusted colleagues.
+          </p>
+        </div>
+        <div class="card p-6">
+          <nav aria-label="Onboarding progress" class="wizard-progress">
+            <div class="wizard-step">
+              <button class="wizard-step-circle completed">&#10003;</button
+              ><span class="wizard-step-label completed">Country</span>
+            </div>
+            <div class="wizard-line filled"></div>
+            <div class="wizard-step">
+              <button class="wizard-step-circle completed">&#10003;</button
+              ><span class="wizard-step-label completed">Bio</span>
+            </div>
+            <div class="wizard-line filled"></div>
+            <div class="wizard-step">
+              <span class="wizard-step-circle current" aria-current="step">3</span
+              ><span class="wizard-step-label current">Communities</span>
+            </div>
+            <div class="wizard-line empty"></div>
+            <div class="wizard-step">
+              <span class="wizard-step-circle upcoming">4</span
+              ><span class="wizard-step-label upcoming">Services</span>
+            </div>
+          </nav>
+          <h2 class="t-h2 mb-5">Communities served</h2>
+          <div class="space-y-6">
+            <!-- Specialties: autocomplete search input -->
+            <div>
+              <label class="t-label block mb-2" style="color: var(--fg-2)"
+                >Specialties <span style="color: var(--err)">*</span></label
+              >
+              <div class="autocomplete-wrap">
+                <div class="autocomplete-chips">
+                  <span class="chip"
+                    >Anxiety
+                    <button class="x">
+                      <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="3"
+                        stroke-linecap="round"
+                      >
+                        <path d="M18 6L6 18M6 6l12 12" />
+                      </svg></button
+                  ></span>
+                  <span class="chip"
+                    >Trauma / PTSD
+                    <button class="x">
+                      <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="3"
+                        stroke-linecap="round"
+                      >
+                        <path d="M18 6L6 18M6 6l12 12" />
+                      </svg></button
+                  ></span>
+                </div>
+                <input
+                  class="input"
+                  placeholder="Type to search specialties..."
+                  role="combobox"
+                  aria-expanded="false"
+                />
+                <!-- Dropdown hidden by default; visible on focus in real implementation -->
+                <div class="autocomplete-dropdown" style="display:none;"
+                  <div class="autocomplete-option-cat">Common</div>
+                  <button class="autocomplete-option">Depression</button>
+                  <button class="autocomplete-option">Grief &amp; Loss</button>
+                  <button class="autocomplete-option">Relationship Issues</button>
+                  <div class="autocomplete-option-cat">Neurodevelopmental</div>
+                  <button class="autocomplete-option">ADHD</button>
+                  <button class="autocomplete-option">Autism Spectrum</button>
+                </div>
+              </div>
+            </div>
+            <!-- Participants: inline checkboxes -->
+            <fieldset style="border: none; padding: 0; margin: 0">
+              <legend class="t-label block mb-2" style="color: var(--fg-2)">
+                Participants              </legend>
+              <div class="cb-group-inline">
+                <label class="cb-label"
+                  ><input type="checkbox" class="cb-input" checked /><span class="cb-box"
+                    ><svg viewBox="0 0 12 12"><polyline points="2.5 6 5 8.5 9.5 3.5" /></svg></span
+                  >Individual</label
+                >
+                <label class="cb-label"
+                  ><input type="checkbox" class="cb-input" checked /><span class="cb-box"
+                    ><svg viewBox="0 0 12 12"><polyline points="2.5 6 5 8.5 9.5 3.5" /></svg></span
+                  >Couples</label
+                >
+                <label class="cb-label"
+                  ><input type="checkbox" class="cb-input" /><span class="cb-box"
+                    ><svg viewBox="0 0 12 12"><polyline points="2.5 6 5 8.5 9.5 3.5" /></svg></span
+                  >Family</label
+                >
+                <label class="cb-label"
+                  ><input type="checkbox" class="cb-input" /><span class="cb-box"
+                    ><svg viewBox="0 0 12 12"><polyline points="2.5 6 5 8.5 9.5 3.5" /></svg></span
+                  >Group</label
+                >
+              </div>
+            </fieldset>
+            <!-- Ages: column checkboxes -->
+            <fieldset style="border: none; padding: 0; margin: 0">
+              <legend class="t-label block mb-2" style="color: var(--fg-2)">Ages served</legend>
+              <div class="cb-group-column">
+                <label class="cb-label"
+                  ><input type="checkbox" class="cb-input" /><span class="cb-box"
+                    ><svg viewBox="0 0 12 12"><polyline points="2.5 6 5 8.5 9.5 3.5" /></svg></span
+                  >Children (0-12)</label
+                >
+                <label class="cb-label"
+                  ><input type="checkbox" class="cb-input" /><span class="cb-box"
+                    ><svg viewBox="0 0 12 12"><polyline points="2.5 6 5 8.5 9.5 3.5" /></svg></span
+                  >Adolescents (13-17)</label
+                >
+                <label class="cb-label"
+                  ><input type="checkbox" class="cb-input" checked /><span class="cb-box"
+                    ><svg viewBox="0 0 12 12"><polyline points="2.5 6 5 8.5 9.5 3.5" /></svg></span
+                  >Adults (18-64)</label
+                >
+                <label class="cb-label"
+                  ><input type="checkbox" class="cb-input" /><span class="cb-box"
+                    ><svg viewBox="0 0 12 12"><polyline points="2.5 6 5 8.5 9.5 3.5" /></svg></span
+                  >Seniors (65+)</label
+                >
+              </div>
+            </fieldset>
+            <!-- Modalities: inline checkboxes -->
+            <fieldset style="border: none; padding: 0; margin: 0">
+              <legend class="t-label block mb-2" style="color: var(--fg-2)">Modalities</legend>
+              <div class="cb-group-inline">
+                <label class="cb-label"
+                  ><input type="checkbox" class="cb-input" checked /><span class="cb-box"
+                    ><svg viewBox="0 0 12 12"><polyline points="2.5 6 5 8.5 9.5 3.5" /></svg></span
+                  >CBT</label
+                >
+                <label class="cb-label"
+                  ><input type="checkbox" class="cb-input" checked /><span class="cb-box"
+                    ><svg viewBox="0 0 12 12"><polyline points="2.5 6 5 8.5 9.5 3.5" /></svg></span
+                  >EMDR</label
+                >
+                <label class="cb-label"
+                  ><input type="checkbox" class="cb-input" /><span class="cb-box"
+                    ><svg viewBox="0 0 12 12"><polyline points="2.5 6 5 8.5 9.5 3.5" /></svg></span
+                  >Psychodynamic</label
+                >
+                <label class="cb-label"
+                  ><input type="checkbox" class="cb-input" /><span class="cb-box"
+                    ><svg viewBox="0 0 12 12"><polyline points="2.5 6 5 8.5 9.5 3.5" /></svg></span
+                  >DBT</label
+                >
+                <label class="cb-label"
+                  ><input type="checkbox" class="cb-input" /><span class="cb-box"
+                    ><svg viewBox="0 0 12 12"><polyline points="2.5 6 5 8.5 9.5 3.5" /></svg></span
+                  >Somatic</label
+                >
+                <label class="cb-label"
+                  ><input type="checkbox" class="cb-input" /><span class="cb-box"
+                    ><svg viewBox="0 0 12 12"><polyline points="2.5 6 5 8.5 9.5 3.5" /></svg></span
+                  >ACT</label
+                >
+              </div>
+            </fieldset>
+          </div>
+          <div
+            style="border-top: 1px solid var(--b-s); padding-top: 16px; margin-top: 24px"
+            class="flex justify-between"
+          >
+            <button class="btn-ghost">Back</button><button class="btn-primary">Next</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ STEP 4 — Your Services ============ -->
+    <div id="state-step4" style="display: none" class="px-4 sm:px-6 pt-12 pb-24">
+      <div class="max-w-[560px] mx-auto">
+        <div class="text-center mb-8">
+          <span
+            class="font-semibold text-sm inline-flex items-center gap-2"
+            style="color: var(--fg)"
+            ><svg width="26" height="26" viewBox="0 0 48 48" style="color: var(--brand)">
+              <circle cx="24" cy="24" r="21" fill="none" stroke="currentColor" stroke-width="3.5" />
+              <circle cx="24" cy="24" r="16" fill="none" stroke="currentColor" stroke-width="3.5" />
+              <circle cx="24" cy="24" r="11" fill="none" stroke="currentColor" stroke-width="3.5" />
+              <circle
+                cx="24"
+                cy="24"
+                r="6"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3.5"
+              /></svg
+            >Therapist Referral Network</span
+          >
+        </div>
+        <div class="text-center mb-6">
+          <h1 class="t-h1 mb-2">Welcome to Therapist Referral Network</h1>
+          <p class="t-sm">
+            Complete your profile to start giving and receiving referrals from trusted colleagues.
+          </p>
+        </div>
+        <div class="card p-6">
+          <nav aria-label="Onboarding progress" class="wizard-progress">
+            <div class="wizard-step">
+              <button class="wizard-step-circle completed">&#10003;</button
+              ><span class="wizard-step-label completed">Country</span>
+            </div>
+            <div class="wizard-line filled"></div>
+            <div class="wizard-step">
+              <button class="wizard-step-circle completed">&#10003;</button
+              ><span class="wizard-step-label completed">Bio</span>
+            </div>
+            <div class="wizard-line filled"></div>
+            <div class="wizard-step">
+              <button class="wizard-step-circle completed">&#10003;</button
+              ><span class="wizard-step-label completed">Communities</span>
+            </div>
+            <div class="wizard-line filled"></div>
+            <div class="wizard-step">
+              <span class="wizard-step-circle current" aria-current="step">4</span
+              ><span class="wizard-step-label current">Services</span>
+            </div>
+          </nav>
+          <h2 class="t-h2 mb-5">Your services</h2>
+          <div class="space-y-6">
+            <!-- Rates: checkbox + input for each type. Uncheck to remove. -->
+            <div>
+              <label class="t-label block mb-2" style="color: var(--fg-2)">Rate <span style="color:var(--fg-4);">(optional)</span></label>
+              <p class="t-caption mb-3">Select the session types you offer and set your rate.</p>
+              <div class="space-y-3">
+                <!-- Individual: checked, shows input -->
+                <div class="flex items-center gap-3">
+                  <label class="cb-label" style="min-width:120px;"><input type="checkbox" class="cb-input" checked><span class="cb-box"><svg viewBox="0 0 12 12"><polyline points="2.5 6 5 8.5 9.5 3.5"/></svg></span>Individual</label>
+                  <div class="rate-input-wrap flex-1"><span class="dollar">$</span><input class="input" type="number" value="180" style="padding-left:24px;"></div>
+                </div>
+                <!-- Couples: checked, shows input -->
+                <div class="flex items-center gap-3">
+                  <label class="cb-label" style="min-width:120px;"><input type="checkbox" class="cb-input" checked><span class="cb-box"><svg viewBox="0 0 12 12"><polyline points="2.5 6 5 8.5 9.5 3.5"/></svg></span>Couples</label>
+                  <div class="rate-input-wrap flex-1"><span class="dollar">$</span><input class="input" type="number" value="220" style="padding-left:24px;"></div>
+                </div>
+                <!-- Family: unchecked, no input -->
+                <div class="flex items-center gap-3">
+                  <label class="cb-label" style="min-width:120px;"><input type="checkbox" class="cb-input"><span class="cb-box"><svg viewBox="0 0 12 12"><polyline points="2.5 6 5 8.5 9.5 3.5"/></svg></span>Family</label>
+                  <div class="rate-input-wrap flex-1" style="opacity:0.35;pointer-events:none;"><span class="dollar">$</span><input class="input" type="number" placeholder="0" disabled style="padding-left:24px;"></div>
+                </div>
+                <!-- Group: unchecked, no input -->
+                <div class="flex items-center gap-3">
+                  <label class="cb-label" style="min-width:120px;"><input type="checkbox" class="cb-input"><span class="cb-box"><svg viewBox="0 0 12 12"><polyline points="2.5 6 5 8.5 9.5 3.5"/></svg></span>Group</label>
+                  <div class="rate-input-wrap flex-1" style="opacity:0.35;pointer-events:none;"><span class="dollar">$</span><input class="input" type="number" placeholder="0" disabled style="padding-left:24px;"></div>
+                </div>
+              </div>
+            </div>
+            <!-- Therapy service options: boolean checkboxes -->
+            <div>
+              <p class="t-label block mb-2" style="color: var(--fg-2)">Therapy service options <span style="color:var(--fg-4);">(optional)</span></p>
+              <div class="cb-group-column">
+                <label class="cb-label"
+                  ><input type="checkbox" class="cb-input" checked /><span class="cb-box"
+                    ><svg viewBox="0 0 12 12"><polyline points="2.5 6 5 8.5 9.5 3.5" /></svg></span
+                  >I accept insurance</label
+                >
+                <label class="cb-label"
+                  ><input type="checkbox" class="cb-input" checked /><span class="cb-box"
+                    ><svg viewBox="0 0 12 12"><polyline points="2.5 6 5 8.5 9.5 3.5" /></svg></span
+                  >I offer reduced fees / sliding scale</label
+                >
+                <label class="cb-label"
+                  ><input type="checkbox" class="cb-input" /><span class="cb-box"
+                    ><svg viewBox="0 0 12 12"><polyline points="2.5 6 5 8.5 9.5 3.5" /></svg></span
+                  >I offer pro bono sessions</label
+                >
+                <label class="cb-label"
+                  ><input type="checkbox" class="cb-input" checked /><span class="cb-box"
+                    ><svg viewBox="0 0 12 12"><polyline points="2.5 6 5 8.5 9.5 3.5" /></svg></span
+                  >I offer a free initial consultation</label
+                >
+              </div>
+            </div>
+            <!-- Accepting referrals: toggle on LEFT -->
+            <div class="flex items-center gap-3">
+              <button class="toggle-switch on" role="switch" aria-checked="true"></button>
+              <div>
+                <p class="t-body font-medium" style="color: var(--fg)">Accepting referrals</p>
+                <p class="t-sm" style="margin-top: 2px">
+                  Visible to other therapists in the network
+                </p>
+              </div>
+            </div>
+          </div>
+          <div
+            style="border-top: 1px solid var(--b-s); padding-top: 16px; margin-top: 24px"
+            class="flex justify-between"
+          >
+            <button class="btn-ghost">Back</button><button class="btn-primary">Complete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ STEP 4 — Submitting ============ -->
+    <div id="state-submitting" style="display: none" class="px-4 sm:px-6 pt-12 pb-24">
+      <div class="max-w-[560px] mx-auto">
+        <div class="text-center mb-8">
+          <span
+            class="font-semibold text-sm inline-flex items-center gap-2"
+            style="color: var(--fg)"
+            ><svg width="26" height="26" viewBox="0 0 48 48" style="color: var(--brand)">
+              <circle cx="24" cy="24" r="21" fill="none" stroke="currentColor" stroke-width="3.5" />
+              <circle cx="24" cy="24" r="16" fill="none" stroke="currentColor" stroke-width="3.5" />
+              <circle cx="24" cy="24" r="11" fill="none" stroke="currentColor" stroke-width="3.5" />
+              <circle
+                cx="24"
+                cy="24"
+                r="6"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3.5"
+              /></svg
+            >Therapist Referral Network</span
+          >
+        </div>
+        <div class="text-center mb-6">
+          <h1 class="t-h1 mb-2">Welcome to Therapist Referral Network</h1>
+          <p class="t-sm">
+            Complete your profile to start giving and receiving referrals from trusted colleagues.
+          </p>
+        </div>
+        <div class="card p-6" style="opacity: 0.5; pointer-events: none">
+          <nav aria-label="Onboarding progress" class="wizard-progress">
+            <div class="wizard-step">
+              <button class="wizard-step-circle completed">&#10003;</button
+              ><span class="wizard-step-label completed">Country</span>
+            </div>
+            <div class="wizard-line filled"></div>
+            <div class="wizard-step">
+              <button class="wizard-step-circle completed">&#10003;</button
+              ><span class="wizard-step-label completed">Bio</span>
+            </div>
+            <div class="wizard-line filled"></div>
+            <div class="wizard-step">
+              <button class="wizard-step-circle completed">&#10003;</button
+              ><span class="wizard-step-label completed">Communities</span>
+            </div>
+            <div class="wizard-line filled"></div>
+            <div class="wizard-step">
+              <span class="wizard-step-circle current" aria-current="step">4</span
+              ><span class="wizard-step-label current">Services</span>
+            </div>
+          </nav>
+          <h2 class="t-h2 mb-5">Your services</h2>
+          <div class="space-y-6">
+            <div>
+              <label class="t-label block mb-2" style="color: var(--fg-2)">Rate <span style="color:var(--fg-4);">(optional)</span></label>
+              <p class="t-caption mb-3">Select the session types you offer and set your rate.</p>
+              <div class="space-y-3">
+                <div class="flex items-center gap-3">
+                  <label class="cb-label" style="min-width:120px;"><input type="checkbox" class="cb-input" checked disabled><span class="cb-box"><svg viewBox="0 0 12 12"><polyline points="2.5 6 5 8.5 9.5 3.5"/></svg></span>Individual</label>
+                  <div class="rate-input-wrap flex-1"><span class="dollar">$</span><input class="input" value="180" disabled style="padding-left:24px;"></div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <label class="cb-label" style="min-width:120px;"><input type="checkbox" class="cb-input" checked disabled><span class="cb-box"><svg viewBox="0 0 12 12"><polyline points="2.5 6 5 8.5 9.5 3.5"/></svg></span>Couples</label>
+                  <div class="rate-input-wrap flex-1"><span class="dollar">$</span><input class="input" value="220" disabled style="padding-left:24px;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            style="border-top: 1px solid var(--b-s); padding-top: 16px; margin-top: 24px"
+            class="flex justify-between"
+          >
+            <button class="btn-ghost" disabled>Back</button
+            ><button class="btn-primary" disabled>
+              <span class="spinner"></span>Creating profile…
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ STEP 2 — Validation Error ============ -->
+    <div id="state-error" style="display: none" class="px-4 sm:px-6 pt-12 pb-24">
+      <div class="max-w-[560px] mx-auto">
+        <div class="text-center mb-8">
+          <span
+            class="font-semibold text-sm inline-flex items-center gap-2"
+            style="color: var(--fg)"
+            ><svg width="26" height="26" viewBox="0 0 48 48" style="color: var(--brand)">
+              <circle cx="24" cy="24" r="21" fill="none" stroke="currentColor" stroke-width="3.5" />
+              <circle cx="24" cy="24" r="16" fill="none" stroke="currentColor" stroke-width="3.5" />
+              <circle cx="24" cy="24" r="11" fill="none" stroke="currentColor" stroke-width="3.5" />
+              <circle
+                cx="24"
+                cy="24"
+                r="6"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3.5"
+              /></svg
+            >Therapist Referral Network</span
+          >
+        </div>
+        <div class="text-center mb-6">
+          <h1 class="t-h1 mb-2">Welcome to Therapist Referral Network</h1>
+          <p class="t-sm">
+            Complete your profile to start giving and receiving referrals from trusted colleagues.
+          </p>
+        </div>
+        <div class="card p-6">
+          <nav aria-label="Onboarding progress" class="wizard-progress">
+            <div class="wizard-step">
+              <button class="wizard-step-circle completed">&#10003;</button
+              ><span class="wizard-step-label completed">Country</span>
+            </div>
+            <div class="wizard-line filled"></div>
+            <div class="wizard-step">
+              <span class="wizard-step-circle current" aria-current="step">2</span
+              ><span class="wizard-step-label current">Bio</span>
+            </div>
+            <div class="wizard-line empty"></div>
+            <div class="wizard-step">
+              <span class="wizard-step-circle upcoming">3</span
+              ><span class="wizard-step-label upcoming">Communities</span>
+            </div>
+            <div class="wizard-line empty"></div>
+            <div class="wizard-step">
+              <span class="wizard-step-circle upcoming">4</span
+              ><span class="wizard-step-label upcoming">Services</span>
+            </div>
+          </nav>
+          <div class="error-banner mb-5" role="alert">
+            <svg
+              class="w-5 h-5 flex-shrink-0 mt-0.5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              style="color: var(--err)"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"
+              />
+            </svg>
+            <p class="t-body font-medium" style="color: var(--err)">Please fix the errors below</p>
+          </div>
+          <h2 class="t-h2 mb-5">Bio</h2>
+          <div class="space-y-5">
+            <div>
+              <label class="t-label block mb-2" style="color: var(--fg-2)">Profile photo <span style="color:var(--fg-4);">(optional)</span></label>
+              <div class="flex items-center gap-4">
+                <div
+                  style="
+                    width: 56px;
+                    height: 56px;
+                    border-radius: 50%;
+                    background: var(--inset);
+                    border: 1px solid var(--b);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  "
+                >
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    style="color: var(--fg-4)"
+                  >
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                  </svg>
+                </div>
+                <button
+                  class="btn-ghost"
+                  style="height: 36px; padding: 0 16px; font-size: 0.8125rem"
+                >
+                  Upload photo
+                </button>
+              </div>
+            </div>
+            <div class="grid grid-cols-3 gap-3">
+              <div>
+                <label class="t-label block mb-1" style="color: var(--fg-2)">First name</label
+                ><input class="input input-error" placeholder="First name" />
+                <p class="t-caption mt-1" style="color: var(--err)">Required</p>
+              </div>
+              <div>
+                <label class="t-label block mb-1" style="color: var(--fg-2)">Middle <span style="color:var(--fg-4);">(optional)</span></label
+                ><input class="input" placeholder="" />
+              </div>
+              <div>
+                <label class="t-label block mb-1" style="color: var(--fg-2)">Last name</label
+                ><input class="input input-error" placeholder="Last name" />
+                <p class="t-caption mt-1" style="color: var(--err)">Required</p>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="t-label block mb-1" style="color: var(--fg-2)">Pronouns <span style="color:var(--fg-4);">(optional)</span></label
+                ><select class="input">
+                  <option disabled selected>Select…</option>
+                  <option>She/Her</option>
+                  <option>He/Him</option>
+                </select>
+              </div>
+              <div>
+                <label class="t-label block mb-1" style="color: var(--fg-2)">Display name <span style="color:var(--fg-4);">(optional)</span></label
+                ><input class="input" placeholder="e.g. Dr. Sarah Chen" />
+              </div>
+            </div>
+            <div>
+              <label class="t-label block mb-1" style="color: var(--fg-2)">Contact email <span style="color:var(--fg-4);">(optional)</span></label
+              ><input class="input" value="sarah.chen@practice.com" />
+              <p class="t-caption mt-1">Where referral notifications are sent.</p>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="t-label block mb-1" style="color: var(--fg-2)">City</label
+                ><input class="input input-error" placeholder="City" />
+                <p class="t-caption mt-1" style="color: var(--err)">Required</p>
+              </div>
+              <div>
+                <label class="t-label block mb-1" style="color: var(--fg-2)">Province</label
+                ><select class="input input-error">
+                  <option disabled selected>Select…</option>
+                  <option>Ontario</option>
+                </select>
+                <p class="t-caption mt-1" style="color: var(--err)">Required</p>
+              </div>
+            </div>
+          </div>
+          <div
+            style="border-top: 1px solid var(--b-s); padding-top: 16px; margin-top: 24px"
+            class="flex justify-between"
+          >
+            <button class="btn-ghost">Back</button><button class="btn-primary">Next</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ CONTROLS ============ -->
+    <div id="controls">
+      <span class="ctrl-label">Step</span>
+      <button class="ctrl-btn active" data-state="step1">1: Empty</button>
+      <button class="ctrl-btn" data-state="step1-ca">1: CA</button>
+      <button class="ctrl-btn" data-state="step1-us">1: US</button>
+      <button class="ctrl-btn" data-state="step2">2: Bio</button>
+      <button class="ctrl-btn" data-state="step3">3: Communities</button>
+      <button class="ctrl-btn" data-state="step4">4: Services</button>
+      <button class="ctrl-btn" data-state="submitting">Submitting</button>
+      <button class="ctrl-btn" data-state="error">Error</button>
+      <span class="ctrl-sep"></span>
+      <button class="ctrl-btn" id="theme-toggle"><span id="theme-icon">🌙</span></button>
+    </div>
+    <script>
+      document.querySelectorAll("#controls .ctrl-btn[data-state]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll('[id^="state-"]').forEach((el) => (el.style.display = "none"));
+          document.getElementById("state-" + btn.dataset.state).style.display = "block";
+          document
+            .querySelectorAll("#controls .ctrl-btn[data-state]")
+            .forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+        });
+      });
+      document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.documentElement;
+        const isDark = html.getAttribute("data-theme") === "dark";
+        html.setAttribute("data-theme", isDark ? "light" : "dark");
+        document.getElementById("theme-icon").textContent = isDark ? "🌙" : "☀️";
+      });
+    </script>
+  </body>
+</html>

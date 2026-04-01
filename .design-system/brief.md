@@ -1,119 +1,130 @@
-# Design Brief — FormGroup Component
+# Design Brief
 
 ---
 
 ## 1. Overview
 
-**Project name:** FormGroup
+**Project name:** Therapist Referral Network
 
-**One-sentence description:** A reusable component that visually groups related form fields under a section title, making long forms scannable.
+**One-sentence description:** A tool that lets solo therapists create referrals by describing client needs, then automatically matches and notifies the best-fit therapists in their network via email.
 
-**Type:** Component (reusable across forms)
+**Type:** SaaS app
 
-**Scope:** New component
+**Scope:** New product
 
 ---
 
 ## 2. Problem
 
-**What problem does this solve?** Forms in the app (Profile, Onboarding) have logical sections but no visual hierarchy separating them — fields run together and it's hard to tell where one section ends and another begins.
+**What problem does this solve?** Solo therapists have no structured way to find the right colleague for a client referral. They rely on memory, personal contacts, and Facebook groups — which means clients get referred to whoever comes to mind first, not the therapist who best fits their needs.
 
-**What happens today without this?** Therapists filling out their profile scan a flat wall of fields. Finding the right field to edit requires reading top-to-bottom instead of jumping to the relevant section.
+**What happens today without this?** A therapist finishes a session, realizes the client needs someone with a different specialty (e.g., EMDR for trauma, or someone who accepts a specific insurance). They scroll through phone contacts, post in a Facebook group, or text a few colleagues. The process takes days, depends entirely on who they already know, and there's no way to know if the match was good.
 
-**What does success look like?** A therapist opens their profile form and immediately sees distinct, labeled sections. They jump straight to the section they need.
+**What does success look like?** Clients consistently end up with therapists who actually fit their needs — right specialty, right availability, right insurance, right location. The referring therapist trusts the match quality.
 
-**What's the hypothesis?** We believe that adding clear visual grouping to form sections will reduce the cognitive load of editing a profile, making therapists more likely to complete and maintain accurate profiles.
+**What's the hypothesis?** We believe that if therapists can describe what a client needs and receive system-matched suggestions (instead of relying on memory), referral quality will improve — clients will connect with better-fit therapists more consistently.
 
 ---
 
 ## 3. Audience
 
-**Who is the primary user?** Licensed therapists managing their profile and referral preferences on the platform.
+**Who is the primary user?** A solo therapist in private practice. They manage their own caseload, have a small informal network of colleagues, and handle referrals themselves.
 
-**Where are they when they use this?** Desktop or mobile, between sessions or after hours. Context varies — not a fixed scenario.
+**Where are they when they use this?** At their desk or on their laptop/phone after a therapy session. They're in a reflective, thoughtful state — processing what happened in the session and deciding next steps for the client.
 
-**What did they do 5 minutes before?** Received a referral notification, or decided to update their availability/specialties.
+**What did they do 5 minutes before?** Finished a therapy session. They're writing session notes, thinking about the client's progress, and may have just realized this client would benefit from a different specialist.
 
-**What will they do 5 minutes after?** Save changes and return to referral tracking or close the app.
+**What will they do 5 minutes after?** Move on to their next session, take a break, or handle practice admin. The referral is one task among many — it shouldn't take long.
 
-**What's their relationship with the domain?** Domain experts (therapy) but not necessarily tech-savvy. They expect forms to be clear and self-explanatory.
+**What's their relationship with the domain?** Expert in therapy, but not in technology. They want something that works without a learning curve. They're used to simple tools — email, basic scheduling software, maybe a simple EHR.
 
 ---
 
 ## 4. Goals
 
-**Primary goal:** Quickly find and edit the right field in a multi-section form.
+**Primary goal:** Send a well-matched referral — describe what the client needs and trust the system to find the right therapists.
 
 **Secondary goals:**
 
-1. Communicate form structure at a glance (what sections exist)
-2. Maintain visual consistency across all forms in the app
-3. Support accessible form grouping semantics
+1. Track referral outcomes — know whether matched therapists responded and if the client connected
+2. Maintain an accurate profile — keep their own specialties, availability, and insurance info current so they receive relevant referrals
+3. Review incoming referrals — see referrals from other therapists where they've been matched
 
 **Non-goals:**
 
-- Does not handle validation or field state (react-hook-form owns that)
-- Does not dictate form layout (single-column vs multi-column is the parent's job)
-- Not a stepper or wizard — purely visual grouping within a single form view
+- Direct messaging or chat between therapists (email handles this)
+- Client-facing features (clients don't use this platform)
+- Practice management (scheduling, billing, EHR — out of scope)
+- Storing Protected Health Information (PHI is never stored in the system)
 
 ---
 
 ## 5. Scope
 
-**Screens/views needed:**
+**Screens/views needed (P0):**
 
-1. `FormGroup` component — section wrapper with title, optional description, and children slot
+1. **Create referral** — Form to describe client needs (specialty needed, insurance, location preferences, urgency) without capturing PHI
+2. **Referral tracker** — List of outgoing and incoming referrals with status (sent, responded, connected, closed)
+3. **Therapist profile** — Own profile with specialties, availability status, insurance accepted, location, practice details
+4. **Auth screens** — Sign up, sign in, forgot password
+
+**Screens/views (P1 — future):**
+
+5. Network directory — Browse/search therapists manually
+6. Dashboard — Overview of referral activity and network stats
+7. Notification preferences — Control email frequency and types
 
 **Key user flows:**
 
-1. Therapist opens Profile Edit → sees grouped sections → jumps to relevant group → edits fields
-2. Developer wraps a set of fields in `<FormGroup title="...">` to create a visual section
+1. **Send a referral:** Open app -> Create referral -> Describe needs -> System matches top 5 therapists -> Emails sent -> Track responses
+2. **Respond to a referral:** Receive email notification -> Reply via email to accept/decline -> Status updates in tracker
+3. **Update profile:** Open profile -> Edit specialties/availability/insurance -> Save (keeps match quality high)
 
-**Data sources:** None — purely presentational.
+**Data sources:** Supabase (Postgres) for therapist profiles, referral records, match data. No external APIs in V1.
 
-**Integration points:** react-hook-form (children are form fields), Tailwind CSS v4 tokens from `.interface-design/system.md`.
+**Integration points:** Email service for referral notifications. Auth.js for authentication.
 
 ---
 
 ## 6. Constraints
 
 **Technical constraints:**
-
-- React + TypeScript (strict mode)
-- Tailwind CSS v4 for styling, using existing design tokens
-- `<fieldset>` + `<legend>` for accessible section semantics
-- Must work within 720px form containers
-- WCAG AA minimum
+- Next.js 15 (App Router, RSC), TypeScript, Supabase, Prisma 7, tRPC, Auth.js, Tailwind CSS v4
+- No PHI stored — referral descriptions must be structured around needs (specialty, insurance, location), not client identity
+- Responsive design — must work well on both mobile and desktop
+- WCAG AA accessibility minimum
+- Supabase RLS for data isolation between therapists
 
 **Business constraints:**
-
-- Solo developer, ship fast
-- Must be drop-in for existing Profile and Onboarding forms
+- Solo developer project
+- No external design team — design system must be self-documenting
+- MVP-first approach — ship P0 screens, validate, then expand
 
 **Design constraints:**
-
-- Follow `.interface-design/system.md` — spacing (`--space-lg`, `--space-xl`), typography (Heading 2 for section titles, Body small for descriptions), colors (`--fg-primary`, `--border-default`), radius (`--radius-md`)
-- Calm, spacious feel — generous whitespace between groups
+- No existing design system — this process creates it
+- No brand guidelines yet — brand emerges from the design foundation
+- Must feel trustworthy and professional — therapists are handling sensitive referral decisions
 
 ---
 
 ## 7. Deliverables
 
-**What gets built:** Production-ready React component with Tailwind styling.
+**What gets built:** Screen specifications, then HTML/Tailwind interactive mocks (full DSG pipeline)
 
-**Fidelity:** Production code — no intermediate mocks needed.
+**Fidelity:** Lo-fi specs (Phase 4) -> Hi-fi HTML mocks (Phase 5) -> Production Next.js code (post-DSG)
 
-**Handoff:** Self (solo developer). Component is used directly in Profile and Onboarding forms.
+**Handoff:** Solo developer implements — specs and mocks serve as the reference during build
 
 **Success criteria:**
 
-- Form sections are visually distinct at a glance
-- Component uses semantic HTML (`fieldset`/`legend`) for accessibility
-- Component is reusable — works with any children content (text inputs, checkboxes, selects, etc.)
-- Uses only existing design system tokens (no ad-hoc values)
+- A therapist can create a referral in under 2 minutes
+- The referral form captures enough to produce meaningful matches without collecting PHI
+- The interface feels trustworthy — a therapist would feel comfortable using this for professional referrals
+- Responsive and usable on both phone and laptop
+- All interactive elements meet WCAG AA
 
 ---
 
 ## Sign-off
 
-All sections filled. Ready for implementation.
+All 7 sections filled with specific, concrete answers. Ready for `/dsg:foundation`.

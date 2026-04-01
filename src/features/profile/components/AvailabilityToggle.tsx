@@ -8,9 +8,7 @@ interface AvailabilityToggleProps {
   initialValue: boolean;
 }
 
-export function AvailabilityToggle({
-  initialValue,
-}: AvailabilityToggleProps): React.ReactElement {
+export function AvailabilityToggle({ initialValue }: AvailabilityToggleProps): React.ReactElement {
   const [accepting, setAccepting] = useState(initialValue);
   const trpc = useTRPC();
 
@@ -30,22 +28,12 @@ export function AvailabilityToggle({
   }
 
   return (
-    <div className="flex items-center justify-between mt-6 pt-4 border-t border-border-s">
-      <div>
-        <p className="text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2">
-          {accepting ? "Accepting referrals" : "Not accepting referrals"}
-        </p>
-        <p className="text-[0.75rem] tracking-[0.015em] text-fg-3">
-          {accepting
-            ? "You'll appear in matching results"
-            : "You won't appear in matching results"}
-        </p>
-      </div>
+    <div className="flex items-center gap-3 mt-6 pt-4 border-t border-border-s">
       <button
         type="button"
         role="switch"
         aria-checked={accepting}
-        aria-label={accepting ? "Accepting referrals" : "Not accepting referrals"}
+        aria-label="Accepting referrals"
         onClick={handleToggle}
         onKeyDown={(e) => {
           if (e.key === " " || e.key === "Enter") {
@@ -54,7 +42,7 @@ export function AvailabilityToggle({
           }
         }}
         disabled={toggleMutation.isPending}
-        className={`relative w-11 h-6 rounded-xl cursor-pointer border-none p-0 transition-[background] duration-150 ease-out focus-visible:outline-2 focus-visible:outline-border-f focus-visible:outline-offset-2 disabled:opacity-50 disabled:cursor-not-allowed ${
+        className={`relative w-11 h-6 shrink-0 rounded-xl cursor-pointer border-none p-0 transition-[background] duration-150 ease-out focus-visible:outline-2 focus-visible:outline-border-f focus-visible:outline-offset-2 disabled:opacity-50 disabled:cursor-not-allowed ${
           accepting ? "bg-ok" : "bg-fg-4"
         }`}
       >
@@ -64,6 +52,10 @@ export function AvailabilityToggle({
           }`}
         />
       </button>
+      <div>
+        <p className="text-[0.9375rem] text-fg font-medium">Accepting referrals</p>
+        <p className="text-[0.875rem] text-fg-2">Visible to other therapists in the network</p>
+      </div>
     </div>
   );
 }

@@ -6,6 +6,7 @@ import { referralPostSchema } from "@/lib/validations/referral-post";
 function validReferral(overrides: Record<string, unknown> = {}) {
   return {
     presentingIssue: "anxiety",
+    details: "Client experiencing ongoing anxiety symptoms",
     ageGroup: "adults",
     province: "ON",
     modalities: ["virtual"],

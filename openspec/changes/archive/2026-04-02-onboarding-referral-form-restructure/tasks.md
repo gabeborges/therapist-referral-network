@@ -9,12 +9,12 @@ Backend-only changes. No UI changes. App stays working throughout.
 - **Files**: `prisma/schema.prisma`
 - **What**:
   1. Add `middleName String?` after `firstName`
-  2. Remove `therapistGender` field
-  3. Remove `hourlyRate Float?` — replace with four per-participant rate fields:
-     - `rateIndividual Float?`
-     - `rateGroup Float?`
-     - `rateFamily Float?`
-     - `rateCouples Float?`
+  2. Keep `therapistGender String?` (reintroduced for identity context)
+  3. Remove `hourlyRate Float?` — replace with four per-participant rate fields stored as cents:
+     - `rateIndividual Int?`
+     - `rateGroup Int?`
+     - `rateFamily Int?`
+     - `rateCouples Int?`
   4. Remove boolean fields: `acceptsInsurance`, `directBilling`, `reducedFees`, `proBono`
      - `paymentMethods String[]` already exists and replaces them
   5. Rename `ageGroups String[]` → `ages String[]`
@@ -41,8 +41,8 @@ Backend-only changes. No UI changes. App stays working throughout.
 - **Files**: `src/lib/validations/therapist-profile.ts`
 - **What**:
   1. Add `middleName: z.string().optional()`
-  2. Remove `therapistGender`
-  3. Replace `hourlyRate` with `rateIndividual`, `rateGroup`, `rateFamily`, `rateCouples` (all `z.number().optional()`)
+  2. Keep `therapistGender` (reintroduced)
+  3. Replace `hourlyRate` with `rateIndividual`, `rateGroup`, `rateFamily`, `rateCouples` (all `z.number().optional()`, stored as Int cents)
   4. Remove `acceptsInsurance`, `directBilling`, `reducedFees`, `proBono` booleans
   5. Rename `ageGroups` → `ages`
   6. Update pronouns to enum: `z.enum(["she/her", "he/him", "they/them", "ze/hir", "ze/zir", "ey/em", "other"]).optional()` with a separate `pronounsOther: z.string().max(20).optional()` field, or store the custom value directly in `pronouns`
@@ -118,8 +118,8 @@ Backend-only changes. No UI changes. App stays working throughout.
 
 - **Files**: `src/features/onboarding/components/WizardProgress.tsx` (new)
 - **What**:
-  1. Step indicator showing current step (1/3, 2/3, 3/3)
-  2. Step labels: "Bio", "Communities served", "Your services"
+  1. Step indicator showing current step (1/4 … 4/4)
+  2. Step labels: "Country", "Bio", "Communities", "Services"
   3. Visual states: completed, current, upcoming
   4. Clickable completed steps to navigate back
 - **Dependencies**: None
@@ -217,11 +217,11 @@ Backend-only changes. No UI changes. App stays working throughout.
 - **Files**: `src/features/profile/components/ProfileForm.tsx`
 - **What**:
   1. Add `middleName` text input between first name and last name
-  2. Remove `therapistGender` field
+  2. Keep `therapistGender` field (reintroduced for identity context)
   3. Rename "Age groups" label → "Ages", update field registration from `ageGroups` to `ages`
   4. Replace single `hourlyRate` input with per-participant rate inputs (same dynamic pattern as onboarding step 3)
   5. Remove individual boolean fields (acceptsInsurance, directBilling, reducedFees, proBono) — replace with `paymentMethods` checkboxes
-  6. Rename "About you" section header → "Bio"
+  6. Keep "About you" section header (not renamed)
   7. Sentence case all labels
 - **Dependencies**: Tasks 2.1, 5.1
 - **Acceptance**: Profile form saves correctly with new field structure

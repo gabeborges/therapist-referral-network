@@ -9,8 +9,8 @@ However, the referral form does not consistently use these shared components for
 **Goals:**
 
 - Ensure the referral form uses `FormGroup` to wrap all sections (matching profile edit pattern)
-- Ensure all checkboxes use `CheckboxGroup` component and all radio buttons use the `.cb-box` / `accent-brand` pattern
-- Move `participants` (dropdown) and `ageGroup` (select, relabeled "Ages") into a collapsible "Matching Preferences" section
+- Ensure all checkboxes use `CheckboxGroup` component and radio buttons use native `accent-brand` styling
+- Group fields into logical sections: Client needs, Service preferences, Other preferences, Additional details (collapsible)
 - Remove `modalities` default value while keeping required validation
 - Audit labels for schema naming consistency
 
@@ -36,24 +36,24 @@ However, the referral form does not consistently use these shared components for
 
 **Decision**: Group related fields under `FormGroup` components with descriptive titles, matching the profile edit's section pattern (`border-t border-border-s pt-6` + `space-y-6`).
 
-**Sections**:
+**Sections** (as implemented):
 
-- Core Details (presentingIssue, city, province, details)
-- Session Format (modalities, rate)
-- Matching Preferences (participants, ageGroup) — collapsible
-- Additional Details (therapistGenderPref, therapyTypes, languages, additionalContext) — collapsible, already exists
+- Client needs (presentingIssue, details)
+- Service preferences (modalities, rate, insuranceRequired)
+- Other preferences (city, province, participants, ageGroup)
+- Additional details (therapistGenderPref, therapyTypes, languages, additionalContext) — collapsible
 
-### 3. Radio buttons: use shared `.cb-box` pattern from `CheckboxGroup`
+### 3. Radio buttons: use native `accent-brand` styling
 
-**Decision**: Extract the checkbox styling pattern from `CheckboxGroup` into a reusable radio variant, or apply the same `accent-brand` + sizing pattern inline.
+**Decision**: Radio buttons use native browser styling with `w-4 h-4 accent-brand cursor-pointer`, matching label alignment and spacing with CheckboxGroup items.
 
-**Rationale**: Radio buttons currently use `w-4 h-4 accent-brand` which is close but not wrapped in a component. For consistency, apply the same visual treatment (sizing, spacing, label alignment) as `CheckboxGroup` items.
+**Rationale**: Native radio styling is visually consistent enough and avoids the complexity of a custom radio component. The `.cb-box` pattern was considered but not needed — native `accent-brand` provides sufficient visual alignment.
 
-### 4. Collapsible "Matching Preferences" section
+### 4. "Other preferences" section (non-collapsible)
 
-**Decision**: Reuse the existing `<details>/<summary>` or disclosure pattern already used for "Additional Details" in the referral form. Move `participants` and `ageGroup` into this section.
+**Decision**: Group city, province, participants, and ageGroup in a regular `FormGroup` titled "Other preferences" rather than a collapsible section.
 
-**Rationale**: Keeps the main form focused on the most essential fields while still making matching preferences easily accessible.
+**Rationale**: These fields are common enough that hiding them behind a collapsible reduces discoverability. Only "Additional details" (therapistGenderPref, therapyTypes, languages, additionalContext) uses the collapsible pattern.
 
 ## Risks / Trade-offs
 

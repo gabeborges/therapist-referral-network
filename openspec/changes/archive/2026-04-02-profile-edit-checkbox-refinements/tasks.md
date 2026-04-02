@@ -68,14 +68,14 @@
   5. Map option constants to `{ value, label }` format
 - **Acceptance**: All 4 fields render as checkbox groups with correct layouts, values persist through form submission
 
-### ~~Task 3.4: Convert faithOrientation select → CheckboxGroup~~ [x]
+### ~~Task 3.4: Convert faithOrientation to multi-select~~ [x]
 
-- **Files**: `src/features/profile/components/ProfileForm.tsx`
+- **Files**: `src/features/profile/components/ProfileSectionCommunities.tsx`
 - **What**:
-  1. Replace `<select>` dropdown with `<CheckboxGroup layout="grid-3">`
-  2. Use faith orientation options mapped to `{ value, label }` format
-  3. Field now accepts multiple selections (array)
-- **Acceptance**: Faith orientation renders as 3-column checkbox grid, supports multi-select
+  1. ~~Originally planned CheckboxGroup~~ — kept as `<AutocompleteSelect>` for searchability
+  2. Field now accepts multiple selections (array) via AutocompleteSelect multi-select
+  3. Schema updated to `String[]` across Prisma, Zod, tRPC
+- **Acceptance**: Faith orientation supports multi-select array values
 
 ### ~~Task 3.5: Convert insurance plans AutocompleteSelect → CheckboxGroup~~ [x]
 

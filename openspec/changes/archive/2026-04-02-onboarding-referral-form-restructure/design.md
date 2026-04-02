@@ -19,16 +19,16 @@ model TherapistProfile {
   // ADD
   middleName        String?
 
-  // REMOVE
-  // therapistGender  — delete entirely
+  // KEEP
+  therapistGender   String?   // reintroduced — used in profile for identity context
 
   // CHANGE: rate restructure
   // hourlyRate Float?  — REMOVE (single rate)
-  // ADD: per-participant rates (nullable — rates are optional)
-  rateIndividual    Float?
-  rateGroup         Float?
-  rateFamily        Float?
-  rateCouples       Float?
+  // ADD: per-participant rates stored as Int (cents) for precision
+  rateIndividual    Int?
+  rateGroup         Int?
+  rateFamily        Int?
+  rateCouples       Int?
 
   // RENAME for consistency
   // ageGroups String[] → ages String[]
@@ -80,7 +80,7 @@ Current: single `hourlyRate: Float?` on profile, `rateBilling: String?` on refer
 
 New on profile:
 
-- `rateIndividual`, `rateGroup`, `rateFamily`, `rateCouples` — all `Float?` (cents)
+- `rateIndividual`, `rateGroup`, `rateFamily`, `rateCouples` — all `Int?` (cents)
 - Only the rates matching selected `participants[]` are shown in the form
 - Deselecting a participant type clears its rate value
 
@@ -104,10 +104,11 @@ Remove the individual boolean fields: `acceptsInsurance`, `directBilling`, `redu
 
 ```
 OnboardingWizard.tsx          — orchestrator, owns form state + step navigation
-  WizardProgress.tsx          — step indicator (1/3, 2/3, 3/3) with labels
-  OnboardingStepBio.tsx       — step 1 fields
-  OnboardingStepCommunities.tsx — step 2 fields
-  OnboardingStepServices.tsx  — step 3 fields
+  WizardProgress.tsx          — step indicator (1/4 … 4/4) with labels
+  OnboardingStepCountry.tsx   — step 1: country selection
+  OnboardingStepBio.tsx       — step 2 fields
+  OnboardingStepCommunities.tsx — step 3 fields
+  OnboardingStepServices.tsx  — step 4 fields
 ```
 
 ### State management
@@ -116,6 +117,10 @@ Single `react-hook-form` instance in `OnboardingWizard` with the full schema. Ea
 
 ```typescript
 // Zod schemas split per step for partial validation
+const stepCountrySchema = onboardingSchema.pick({
+  country: true,
+});
+
 const stepBioSchema = onboardingSchema.pick({
   profileImageUrl: true,
   firstName: true,
@@ -147,12 +152,14 @@ const stepServicesSchema = onboardingSchema.pick({
 
 ### Step validation flow
 
-1. User fills step 1 → clicks "Next"
-2. Validate step 1 fields only → show errors or advance
-3. User fills step 2 → clicks "Next"
+1. User selects country (step 1) → clicks "Next"
+2. Validate step 1 → show errors or advance
+3. User fills Bio (step 2) → clicks "Next"
 4. Validate step 2 fields only → show errors or advance
-5. User fills step 3 → clicks "Complete"
-6. Validate step 3 + submit full form
+5. User fills Communities (step 3) → clicks "Next"
+6. Validate step 3 fields only → show errors or advance
+7. User fills Services (step 4) → clicks "Complete"
+8. Validate step 4 + submit full form
 
 "Back" button navigates without validation (preserve entered data).
 
@@ -160,22 +167,23 @@ const stepServicesSchema = onboardingSchema.pick({
 
 | #   | Field                  | Step        | Required | Control                                 |
 | --- | ---------------------- | ----------- | -------- | --------------------------------------- |
-| 1   | Profile photo          | Bio         | No       | ProfileImageUpload                      |
-| 2   | First name             | Bio         | Yes      | text input                              |
-| 3   | Middle name            | Bio         | No       | text input                              |
-| 4   | Last name              | Bio         | Yes      | text input                              |
-| 5   | Pronouns               | Bio         | No       | select + conditional text (20 char max) |
-| 6   | Display name           | Bio         | No       | text input                              |
-| 7   | Professional email     | Bio         | Yes      | email input                             |
-| 8   | City                   | Bio         | Yes      | text input                              |
-| 9   | Province               | Bio         | Yes      | select                                  |
-| 10  | Specialties            | Communities | Yes      | AutocompleteSelect                      |
-| 11  | Participants           | Communities | Yes      | ChipSelect                              |
-| 12  | Ages                   | Communities | Yes      | ChipSelect                              |
-| 13  | Modalities             | Communities | Yes      | ChipSelect                              |
-| 14  | Rate (per participant) | Services    | No       | dynamic currency inputs                 |
-| 15  | Payment methods        | Services    | No       | checkboxes                              |
-| 16  | Accepting clients      | Services    | Yes      | toggle                                  |
+| 1   | Country                | Country     | Yes      | select                                  |
+| 2   | Profile photo          | Bio         | No       | ProfileImageUpload                      |
+| 3   | First name             | Bio         | Yes      | text input                              |
+| 4   | Middle name            | Bio         | No       | text input                              |
+| 5   | Last name              | Bio         | Yes      | text input                              |
+| 6   | Pronouns               | Bio         | No       | select + conditional text (20 char max) |
+| 7   | Display name           | Bio         | No       | text input                              |
+| 8   | Professional email     | Bio         | Yes      | email input                             |
+| 9   | City                   | Bio         | Yes      | text input                              |
+| 10  | Province               | Bio         | Yes      | select                                  |
+| 11  | Specialties            | Communities | Yes      | AutocompleteSelect                      |
+| 12  | Participants           | Communities | Yes      | ChipSelect                              |
+| 13  | Ages                   | Communities | Yes      | ChipSelect                              |
+| 14  | Modalities             | Communities | Yes      | ChipSelect                              |
+| 15  | Rate (per participant) | Services    | No       | dynamic currency inputs                 |
+| 16  | Payment methods        | Services    | No       | checkboxes                              |
+| 17  | Accepting clients      | Services    | Yes      | toggle                                  |
 
 ## Referral form changes
 
@@ -226,7 +234,7 @@ Scope: only rendered text in form labels. Do not change variable names, constant
 
 ## Cross-cutting: section rename
 
-"About you" → "Bio" in onboarding wizard step title and profile form section header.
+Profile form section header remains "About you". Onboarding wizard step label is "Bio".
 
 ## Key decisions
 

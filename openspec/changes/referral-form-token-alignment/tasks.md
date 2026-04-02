@@ -5,22 +5,22 @@
 
 ## 2. FormGroup Section Wrapping
 
-- [x] 2.1 Wrap `presentingIssue`, `city`, `province`, and `details` fields in `<FormGroup title="Core Details">`
-- [x] 2.2 Wrap `modalities` and `rate` fields in `<FormGroup title="Session Format">`
-- [x] 2.3 Create a collapsible "Matching Preferences" section containing `participants` and `ageGroup`
-- [x] 2.4 Verify existing "Additional Details" collapsible section still works correctly after restructure
+- [x] 2.1 Wrap `presentingIssue` and `details` in `<FormGroup title="Client needs">`
+- [x] 2.2 Wrap `modalities`, `rate`, and `insuranceRequired` in `<FormGroup title="Service preferences">`
+- [x] 2.3 Wrap `city`, `province`, `participants`, and `ageGroup` in `<FormGroup title="Other preferences">`
+- [x] 2.4 Verify existing "Additional details" collapsible section still works correctly after restructure
 
 ## 3. Component & Styling Alignment
 
 - [x] 3.1 Replace any inline modalities checkbox markup with `<CheckboxGroup>` component
-- [x] 3.2 Apply `.cb-box` / `accent-brand` radio styling pattern to the `rate` field radio buttons
+- [x] 3.2 Apply native `accent-brand` radio styling to the `rate` field radio buttons
 - [x] 3.3 Ensure `participants` select dropdown uses `selectClasses` and `selectStyle` from `form-styles.ts`
 
 ## 4. Field Changes
 
 - [x] 4.1 Remove `modalities` default value (`defaultValues.modalities = []`) — keep required validation
-- [x] 4.2 Move `participants` field into "Matching Preferences" collapsible section (keep as dropdown select)
-- [x] 4.3 Move `ageGroup` field into "Matching Preferences" collapsible section
+- [x] 4.2 Place `participants` field in "Other preferences" section (keep as dropdown select)
+- [x] 4.3 Place `ageGroup` field in "Other preferences" section
 - [x] 4.4 Rename "Age Group" label to "Ages"
 
 ## 5. Label Audit
@@ -30,6 +30,6 @@
 ## 6. Verification
 
 - [x] 6.1 Visual comparison: referral form styling matches profile edit form (spacing, fonts, borders, component styling)
-- [ ] 6.2 Form submission works correctly with all field combinations (including empty Matching Preferences)
-- [ ] 6.3 Validation error displays when submitting without selecting a modality
+- [x] 6.2 Form submission works correctly with all field combinations — fixed: reverted `ageGroup` and `participants` to single-string Zod types, tRPC wraps to array for Prisma, all 18 validation tests passing
+- [x] 6.3 Validation error displays when submitting without selecting a modality — verified: `z.array(...).min(1)` + `errors.modalities?.message` path correct
 - [x] 6.4 Run preflight checks (lint, typecheck, tests)

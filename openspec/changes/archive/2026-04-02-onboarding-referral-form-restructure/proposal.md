@@ -4,13 +4,13 @@
 
 Three coordinated changes:
 
-1. **Onboarding wizard** — Replace the single-page onboarding form with a 3-step wizard (Bio, Communities served, Your services). Onboarding becomes a strict subset of profile fields.
+1. **Onboarding wizard** — Replace the single-page onboarding form with a 4-step wizard (Country, Bio, Communities, Services). Onboarding becomes a strict subset of profile fields.
 2. **Referral form overhaul** — Rename fields, change control types, reorder, remove unused fields, align field names with profile schema.
-3. **Cross-cutting cleanup** — Sentence case all labels site-wide, remove gender field, add middle name, rename sections and fields for consistency.
+3. **Cross-cutting cleanup** — Sentence case all labels site-wide, add middle name, rename fields for consistency.
 
 ## Why
 
-1. **Onboarding is overwhelming** — 30+ fields on one page causes drop-off. A wizard with only the essential 13 fields gets therapists onboarded faster. Remaining fields live on the profile page.
+1. **Onboarding is overwhelming** — 30+ fields on one page causes drop-off. A 4-step wizard with only the essential fields gets therapists onboarded faster. Remaining fields live on the profile page.
 2. **Referral form has UX issues** — field order doesn't match workflow, "Rate / Billing" is confusingly named, modality is single-select when therapists often offer multiple, "Direct billing" doesn't belong in rate options (it's a payment method).
 3. **Inconsistent naming** — referral field names (`locationCity`, `rateBilling`, `additionalNotes`) don't match profile (`city`, `rate`, `details`). Label casing is inconsistent (Title Case vs sentence case).
 
@@ -19,9 +19,10 @@ Three coordinated changes:
 ### In scope
 
 1. **Onboarding wizard** — 3-step form with progress indicator, per-step validation
-   - Step 1 "Bio": photo, first/middle/last name, pronouns, display name, email, city, province
-   - Step 2 "Communities served": specialties, participants (mandatory), ages, modalities
-   - Step 3 "Your services": dynamic rate inputs per participant type, payment methods, accepting clients
+   - Step 1 "Country": country selection
+   - Step 2 "Bio": photo, first/middle/last name, pronouns, display name, email, city, province
+   - Step 3 "Communities": specialties, participants (mandatory), ages, modalities
+   - Step 4 "Services": dynamic rate inputs per participant type, payment methods, accepting clients
 2. **Referral form** — field renames, reorder, control type changes, field removals
 3. **Profile form** — add middle name field, remove gender field, rename sections, sentence case labels
 4. **Prisma schema** — rename referral fields, add middleName, remove gender, restructure rate to per-participant
@@ -39,8 +40,8 @@ Three coordinated changes:
 
 | Metric               | Target                                                                             |
 | -------------------- | ---------------------------------------------------------------------------------- |
-| Onboarding fields    | Exactly 13 fields across 3 wizard steps                                            |
-| Profile fields       | All current fields + middle name, minus gender                                     |
+| Onboarding fields    | Essential fields across 4 wizard steps                                             |
+| Profile fields       | All current fields + middle name                                                   |
 | Referral field names | Aligned with profile naming (city, province, modalities, details, rate, languages) |
 | Label casing         | All labels in sentence case across all 3 forms                                     |
 | Rate inputs          | Dynamic per participant type selected                                              |

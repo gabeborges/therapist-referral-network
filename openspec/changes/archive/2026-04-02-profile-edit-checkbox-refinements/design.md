@@ -19,8 +19,9 @@ Four categories of changes, applied in order:
 interface CheckboxGroupProps {
   name: string; // react-hook-form field name
   options: { value: string; label: string }[]; // checkbox options
-  layout: "inline" | "column" | "grid-3"; // layout mode
-  control: Control<any>; // react-hook-form control
+  itemMinWidth?: "compact" | "standard" | "wide" | "full"; // grid item min width (default: "standard")
+  layout?: "grid" | "inline" | "column"; // layout mode (default: "grid")
+  control: any; // react-hook-form control
   label: string; // group label for <legend>
   srOnlyLabel?: boolean; // visually hide legend (default: false)
   helpText?: string; // optional help text
@@ -31,9 +32,18 @@ interface CheckboxGroupProps {
 ### Layout CSS mapping
 
 ```
-layout="inline"  → flex flex-wrap gap-x-6 gap-y-2
-layout="column"  → space-y-2
-layout="grid-3"  → grid grid-cols-1 sm:grid-cols-3 gap-2
+layout="inline"  → flex gap-6 flex-wrap
+layout="column"  → flex flex-col gap-2
+layout="grid"    → grid gap-y-2 gap-x-4, gridTemplateColumns: repeat(auto-fill, minmax({itemMinWidth}, 1fr))
+```
+
+### itemMinWidth presets
+
+```
+compact   → 140px
+standard  → 180px (default)
+wide      → 240px
+full      → 100%
 ```
 
 ### Accessibility structure
@@ -177,12 +187,13 @@ Options source: use existing constant arrays from `therapist-profile.ts` (e.g., 
 
 ### Field conversions — select/autocomplete → CheckboxGroup
 
-| Field            | Current component                | New component | Layout prop       |
-| ---------------- | -------------------------------- | ------------- | ----------------- |
-| faithOrientation | `<select>` dropdown              | CheckboxGroup | `layout="grid-3"` |
-| insurers         | AutocompleteSelect (conditional) | CheckboxGroup | `layout="grid-3"` |
+| Field            | Current component                | New component      | Layout prop                                           |
+| ---------------- | -------------------------------- | ------------------ | ----------------------------------------------------- |
+| faithOrientation | `<select>` dropdown              | AutocompleteSelect | Kept as autocomplete (multi-select array, searchable) |
+| insurers         | AutocompleteSelect (conditional) | CheckboxGroup      | `layout="grid"`, `itemMinWidth="standard"`            |
 
 Insurance plans CheckboxGroup remains conditional on `acceptsInsurance` checkbox.
+faithOrientation kept as AutocompleteSelect for searchability — schema is still `String[]`.
 
 ## OnboardingStepCommunities refactor
 
@@ -206,7 +217,7 @@ Same pattern for ages (`layout="column"`) and modalities (`layout="inline"`).
 
 1. **Shared component first** — Build `<CheckboxGroup>` before touching any form. Single source of truth.
 2. **Controller-based** — Use react-hook-form `Controller` for array fields, not manual `register`.
-3. **faithOrientation → array** — Multi-select is the correct UX. Schema updated everywhere.
+3. **faithOrientation → array** — Multi-select is the correct UX. Schema updated everywhere. UI kept as AutocompleteSelect for searchability.
 4. **No migration** — Local env, `prisma db push` directly.
 5. **Pronouns + Gender already paired** — They're already in a 2-col grid. Only URLs need pairing.
 6. **Inline SVG, not Heroicons import** — Avoids adding a dependency for one icon.

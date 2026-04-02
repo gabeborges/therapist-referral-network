@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm, FormProvider } from "react-hook-form";
+import { useForm, FormProvider, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useState, useRef, useEffect, useMemo } from "react";
@@ -71,7 +71,7 @@ export function ProfileForm({ defaultValues }: ProfileFormProps): React.ReactEle
   );
 
   const methods = useForm<TherapistProfileFormData>({
-    resolver: zodResolver(therapistProfileSchema),
+    resolver: zodResolver(therapistProfileSchema) as Resolver<TherapistProfileFormData>,
     defaultValues,
   });
 

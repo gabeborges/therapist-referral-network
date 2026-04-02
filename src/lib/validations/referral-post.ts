@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { MODALITIES } from "./therapist-profile";
 
 export const referralPostSchema = z.object({
   // Core fields
@@ -6,9 +7,7 @@ export const referralPostSchema = z.object({
   details: z.string().min(1, "Details are required").max(1000),
   participants: z.string().optional(),
   ageGroup: z.string().min(1, "Select an age group"),
-  modalities: z
-    .array(z.enum(["in-person", "virtual", "phone"]))
-    .min(1, "Select at least one modality"),
+  modalities: z.array(z.enum(MODALITIES)).min(1, "Select at least one modality"),
   city: z.string().optional(),
   province: z.string().optional(),
   rate: z.string().optional(),

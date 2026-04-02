@@ -148,11 +148,11 @@ model TherapistProfile {
   country  String @default("CA")
 
   // Practice details (legacy String[] — kept during migration)
-  specialties         String[] // e.g., ["anxiety", "depression", "trauma"]
-  modalities          String[] // e.g., ["in-person", "virtual"]
-  therapeuticApproach String[] // e.g., ["CBT", "EMDR", "psychodynamic"]
-  languages           String[] // e.g., ["English", "French"]
-  ages                String[] // e.g., ["toddler", "children (6-10)", "preteen", "teen", "adults", "elders (65+)"]
+  specialties         String[] // taxonomy IDs
+  modalities          String[] // ["in-person", "virtual", "phone"]
+  therapeuticApproach String[] // therapy type names from taxonomy
+  languages           String[] // language names from taxonomy
+  ages                String[] // ["Toddler", "Children (6-10)", "Preteen", "Teen", "Adults", "Elders (65+)"]
 
   // Taxonomy relations (replacing String[] above)
   specialtyRecords     Specialty[]     @relation("ProfileSpecialties")
@@ -161,7 +161,7 @@ model TherapistProfile {
   groupRecords         AlliedGroup[]   @relation("ProfileGroups")
 
   // Communities served
-  participants     String[] // ["Individuals", "Couples", "Family", "Group"]
+  participants     String[] // ["Individual", "Couples", "Family", "Group"]
   topSpecialties   String[] // max 3, ordered
   faithOrientation String[]
   ethnicity        String[]

@@ -7,7 +7,13 @@ import { useState, useRef, useEffect } from "react";
 import { useTRPC } from "@/lib/trpc/client";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { referralPostSchema, type ReferralPostFormData } from "@/lib/validations/referral-post";
-import { AGE_OPTIONS } from "@/lib/validations/therapist-profile";
+import {
+  AGE_OPTIONS,
+  MODALITIES,
+  MODALITY_LABELS,
+  PARTICIPANT_OPTIONS,
+  PROVINCES,
+} from "@/lib/validations/therapist-profile";
 import {
   AutocompleteSelect,
   type AutocompleteOption,
@@ -16,30 +22,6 @@ import { FormGroup } from "@/components/ui/FormGroup";
 import { BooleanCheckbox } from "@/components/ui/BooleanCheckbox";
 import { CheckboxGroup } from "@/components/ui/CheckboxGroup";
 import { inputClasses, selectClasses, selectStyle } from "@/lib/form-styles";
-
-const PROVINCES = [
-  { value: "AB", label: "Alberta" },
-  { value: "BC", label: "British Columbia" },
-  { value: "MB", label: "Manitoba" },
-  { value: "NB", label: "New Brunswick" },
-  { value: "NL", label: "Newfoundland and Labrador" },
-  { value: "NS", label: "Nova Scotia" },
-  { value: "NT", label: "Northwest Territories" },
-  { value: "NU", label: "Nunavut" },
-  { value: "ON", label: "Ontario" },
-  { value: "PE", label: "Prince Edward Island" },
-  { value: "QC", label: "Quebec" },
-  { value: "SK", label: "Saskatchewan" },
-  { value: "YT", label: "Yukon" },
-];
-
-const MODALITY_OPTIONS = [
-  { value: "in-person", label: "In-person" },
-  { value: "virtual", label: "Virtual" },
-  { value: "phone", label: "Phone" },
-] as const;
-
-const PARTICIPANTS = ["Individual", "Couples", "Family", "Group"] as const;
 
 const RATE_OPTIONS = ["Full fee", "Sliding scale", "Pro-bono"] as const;
 
@@ -241,7 +223,7 @@ export function ReferralPostForm(): React.ReactElement {
             name="modalities"
             control={control}
             label="Modalities"
-            options={[...MODALITY_OPTIONS]}
+            options={[...MODALITIES].map((m) => ({ value: m, label: MODALITY_LABELS[m] ?? m }))}
             itemMinWidth="full"
             error={errors.modalities?.message}
           />
@@ -261,7 +243,7 @@ export function ReferralPostForm(): React.ReactElement {
               defaultValue=""
             >
               <option value="">Select participant type...</option>
-              {PARTICIPANTS.map((p) => (
+              {PARTICIPANT_OPTIONS.map((p) => (
                 <option key={p} value={p}>
                   {p}
                 </option>

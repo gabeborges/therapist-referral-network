@@ -41,7 +41,7 @@ export default async function ProfileEditPage(): Promise<React.ReactElement> {
     specialties: profile.specialties,
     topSpecialties: profile.topSpecialties,
     therapeuticApproach: profile.therapeuticApproach,
-    modalities: profile.modalities,
+    modalities: profile.modalities as TherapistProfileFormData["modalities"],
     languages: profile.languages,
     ages: profile.ages,
     participants: profile.participants,

@@ -5,7 +5,12 @@ import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useTRPC } from "@/lib/trpc/client";
 import type { OnboardingFormData } from "@/lib/validations/onboarding";
-import { AGE_OPTIONS, PARTICIPANT_OPTIONS, MODALITIES } from "@/lib/validations/therapist-profile";
+import {
+  AGE_OPTIONS,
+  PARTICIPANT_OPTIONS,
+  MODALITIES,
+  MODALITY_LABELS,
+} from "@/lib/validations/therapist-profile";
 import {
   AutocompleteSelect,
   type AutocompleteOption,
@@ -86,7 +91,7 @@ export function OnboardingStepCommunities(): React.ReactElement {
         name="modalities"
         control={control}
         label="Modalities"
-        options={MODALITIES.map((m) => ({ value: m, label: m }))}
+        options={MODALITIES.map((m) => ({ value: m, label: MODALITY_LABELS[m] ?? m }))}
         layout="inline"
         error={errors.modalities?.message}
       />

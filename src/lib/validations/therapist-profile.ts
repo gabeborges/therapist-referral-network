@@ -38,6 +38,13 @@ export const PAYMENT_METHOD_OPTIONS = [
 
 export const GENDER_OPTIONS = ["Female", "Male", "Non-binary", "Prefer not to say"] as const;
 
+export const MODALITIES = ["in-person", "virtual", "phone"] as const;
+export const MODALITY_LABELS: Record<string, string> = {
+  "in-person": "In-person",
+  virtual: "Virtual",
+  phone: "Phone",
+};
+
 export const therapistProfileSchema = z.object({
   // Core identity
   firstName: z.string().min(1, "First name is required"),
@@ -73,7 +80,7 @@ export const therapistProfileSchema = z.object({
   therapeuticApproach: z.array(z.string()).optional(),
 
   // Session details
-  modalities: z.array(z.string()).min(1, "Select at least one modality"),
+  modalities: z.array(z.enum(MODALITIES)).min(1, "Select at least one modality"),
   languages: z.array(z.string()).optional(),
   ages: z.array(z.string()).min(1, "Select at least one age group"),
 
@@ -116,8 +123,6 @@ export const PROVINCES = [
   { value: "SK", label: "Saskatchewan" },
   { value: "YT", label: "Yukon" },
 ] as const;
-
-export const MODALITIES = ["In-Person", "Virtual", "Phone"] as const;
 
 export const INSURERS = [
   "Blue Cross",

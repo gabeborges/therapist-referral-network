@@ -6,6 +6,7 @@ import {
   PARTICIPANT_OPTIONS,
   AGE_OPTIONS,
   MODALITIES,
+  MODALITY_LABELS,
   FAITH_ORIENTATIONS,
   CLIENT_ETHNICITY_OPTIONS,
 } from "@/lib/validations/therapist-profile";
@@ -70,7 +71,7 @@ export function ProfileSectionCommunities({
         name="modalities"
         control={control}
         label="Modalities"
-        options={[...MODALITIES].map((m) => ({ value: m, label: m }))}
+        options={[...MODALITIES].map((m) => ({ value: m, label: MODALITY_LABELS[m] ?? m }))}
         itemMinWidth="full"
         error={errors.modalities?.message}
       />

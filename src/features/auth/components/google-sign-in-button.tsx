@@ -6,32 +6,7 @@ export function GoogleSignInButton(): React.ReactElement {
   return (
     <button
       onClick={() => signIn("google", { redirectTo: "/dashboard" })}
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: "12px",
-        width: "100%",
-        height: "48px",
-        background: "var(--s2)",
-        color: "var(--fg)",
-        fontFamily: "inherit",
-        border: "1px solid var(--b)",
-        borderRadius: "6px",
-        fontSize: "0.9375rem",
-        fontWeight: 500,
-        cursor: "pointer",
-        transition: "border-color 150ms ease-out, box-shadow 150ms ease-out",
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.borderColor = "var(--b-e)";
-        e.currentTarget.style.boxShadow =
-          "0 1px 3px rgba(61,56,54,0.06), 0 1px 2px rgba(61,56,54,0.04)";
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.borderColor = "var(--b)";
-        e.currentTarget.style.boxShadow = "none";
-      }}
+      className="flex items-center justify-center gap-3 w-full h-12 bg-s2 text-fg border border-border rounded-sm text-[0.9375rem] font-medium cursor-pointer font-sans transition-[border-color,box-shadow] duration-150 ease-out hover:border-border-e hover:shadow-1 focus-visible:outline-2 focus-visible:outline-border-f focus-visible:outline-offset-2"
     >
       <svg width="20" height="20" viewBox="0 0 24 24">
         <path

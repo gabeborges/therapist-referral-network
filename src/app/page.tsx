@@ -1,133 +1,83 @@
 import Link from "next/link";
+import { MatchRingLogo } from "@/features/auth/components/match-ring-logo";
+
+const FACEBOOK_COMMUNITY_URL = "https://www.facebook.com/groups/canadiantherapyreferralnetwork";
 
 const STEPS = [
   {
     number: 1,
     title: "Create your profile",
-    description:
-      "Set up your therapist profile with your specialties, location, modalities, and availability.",
+    description: "Add your specialties, location, modalities, and availability.",
   },
   {
     number: 2,
     title: "Post a referral",
-    description:
-      "When a client needs a different fit, post a referral with the presenting issue, location, and modality.",
+    description: "Describe the presenting issue, preferred location, and modality.",
   },
   {
     number: 3,
     title: "Get matched",
+    description: "We notify matching therapists. You stay in the loop until the client connects.",
+  },
+];
+
+const BENEFITS = [
+  {
+    title: "Matched by specialty, not guesswork",
     description:
-      "Our matching engine finds the right therapists and notifies them. You stay in the loop until the client is connected.",
+      "Referrals are matched by presenting issue, modality, location, and availability. No more scrolling directories or asking around.",
+  },
+  {
+    title: "Stay in the loop",
+    description:
+      "Know when a therapist responds to your referral and when your client connects. No more wondering if it went anywhere.",
+  },
+  {
+    title: "A network of your colleagues",
+    description:
+      "A growing community of Canadian therapists who refer to each other. The more who join, the better the matches.",
   },
 ];
 
 export default function LandingPage(): React.ReactElement {
   return (
     <div
+      data-theme="light"
       className="min-h-screen flex flex-col"
       style={{ background: "var(--bg)" }}
     >
-      <main>
-      {/* Hero */}
-      <section aria-label="Hero" className="flex-1 flex flex-col items-center justify-center px-6 pt-20 pb-16 text-center">
-        {/* Match Ring Logo */}
-        <div className="mb-6">
-          <svg
-            aria-hidden="true"
-            width="80"
-            height="80"
-            viewBox="0 0 48 48"
-            style={{ color: "var(--brand)" }}
-          >
-            <circle
-              cx="24"
-              cy="24"
-              r="21"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            />
-            <circle
-              cx="24"
-              cy="24"
-              r="16"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            />
-            <circle
-              cx="24"
-              cy="24"
-              r="11"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            />
-            <circle
-              cx="24"
-              cy="24"
-              r="6"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            />
-          </svg>
+      {/* ─── Hero ─── */}
+      <section
+        aria-label="Hero"
+        className="flex flex-col items-center px-6 pt-16 pb-14 sm:pt-20 sm:pb-16 text-center"
+      >
+        <div className="mb-5">
+          <MatchRingLogo size={72} />
         </div>
 
-        {/* Heading */}
         <h1
-          className="text-[2rem] sm:text-[2.5rem] font-bold tracking-[-0.02em] leading-[1.15] m-0 mb-4 max-w-[600px]"
+          className="text-[1.75rem] sm:text-[2.25rem] font-bold tracking-[-0.025em] leading-[1.15] m-0 mb-3 max-w-[520px]"
           style={{ color: "var(--fg)" }}
         >
-          Therapist Referral Network
+          The right therapist for every referral
         </h1>
 
-        {/* Tagline */}
         <p
-          className="text-[1.0625rem] sm:text-[1.125rem] leading-[1.6] m-0 mb-8 max-w-[480px]"
+          className="text-[0.9375rem] sm:text-[1rem] leading-[1.6] m-0 mb-7 max-w-[420px]"
           style={{ color: "var(--fg-2)" }}
         >
-          Structured referral matching for Canadian therapists. Find the right
-          fit for every client.
+          Structured referral matching for Canadian therapists. Post a referral, get matched by
+          specialty, and know when your client connects.
         </p>
 
-        {/* Primary CTA */}
         <Link
           href="/auth/signup"
-          className="inline-flex items-center justify-center gap-3 h-12 px-8 rounded-sm text-[0.9375rem] font-semibold tracking-[0.01em] no-underline transition-[background] duration-150 ease-out focus-visible:outline-2 focus-visible:outline-offset-2"
-          style={{
-            background: "var(--brand)",
-            color: "var(--brand-on)",
-            border: "none",
-          }}
+          className="inline-flex items-center justify-center h-12 px-8 bg-brand text-brand-on border-none rounded-sm text-[0.9375rem] font-semibold tracking-[0.01em] no-underline transition-[background] duration-150 ease-out hover:bg-brand-h focus-visible:outline-2 focus-visible:outline-border-f focus-visible:outline-offset-2"
         >
-          {/* Google icon */}
-          <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24">
-            <path
-              d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"
-              fill="#4285F4"
-            />
-            <path
-              d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-              fill="#34A853"
-            />
-            <path
-              d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-              fill="#FBBC05"
-            />
-            <path
-              d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-              fill="#EA4335"
-            />
-          </svg>
-          Sign up with Google
+          Sign up
         </Link>
 
-        {/* Sign in link */}
-        <p
-          className="text-[0.875rem] mt-4 m-0"
-          style={{ color: "var(--fg-3)" }}
-        >
+        <p className="text-[0.8125rem] mt-3 m-0" style={{ color: "var(--fg-3)" }}>
           Already have an account?{" "}
           <Link
             href="/auth/signin"
@@ -139,26 +89,33 @@ export default function LandingPage(): React.ReactElement {
         </p>
       </section>
 
-      {/* How it works */}
+      {/* ─── How it works ─── */}
       <section
         aria-label="How it works"
-        className="px-6 py-16 sm:py-20"
-        style={{ borderTop: "1px solid var(--border-s)" }}
+        className="px-6 py-12 sm:py-16"
+        style={{ background: "var(--s1)" }}
       >
-        <div className="max-w-[720px] mx-auto">
+        <div className="max-w-[800px] mx-auto">
           <h2
-            className="text-[0.8125rem] font-semibold tracking-[0.06em] uppercase text-center mb-10 m-0"
+            className="text-[0.8125rem] font-semibold tracking-[0.06em] uppercase text-center mb-8 m-0"
             style={{ color: "var(--fg-3)" }}
           >
             How It Works
           </h2>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {STEPS.map((step) => (
-              <div key={step.number} className="text-center sm:text-left">
-                {/* Numbered circle */}
+              <div
+                key={step.number}
+                className="rounded-[10px] p-5 sm:p-6"
+                style={{
+                  background: "var(--s2)",
+                  border: "1px solid var(--border)",
+                  boxShadow: "var(--shadow-1)",
+                }}
+              >
                 <div
-                  className="w-10 h-10 rounded-full flex items-center justify-center text-[0.875rem] font-bold mx-auto sm:mx-0 mb-3"
+                  className="w-9 h-9 rounded-full flex items-center justify-center text-[0.8125rem] font-bold mb-3"
                   style={{
                     background: "var(--brand)",
                     color: "var(--brand-on)",
@@ -168,16 +125,13 @@ export default function LandingPage(): React.ReactElement {
                 </div>
 
                 <h3
-                  className="text-[1rem] font-semibold tracking-[-0.005em] m-0 mb-2"
+                  className="text-[0.9375rem] font-semibold tracking-[-0.005em] m-0 mb-1.5"
                   style={{ color: "var(--fg)" }}
                 >
                   {step.title}
                 </h3>
 
-                <p
-                  className="text-[0.875rem] leading-[1.6] m-0"
-                  style={{ color: "var(--fg-2)" }}
-                >
+                <p className="text-[0.8125rem] leading-[1.55] m-0" style={{ color: "var(--fg-2)" }}>
                   {step.description}
                 </p>
               </div>
@@ -186,39 +140,122 @@ export default function LandingPage(): React.ReactElement {
         </div>
       </section>
 
-      {/* Secondary CTA */}
-      <section aria-label="Call to action" className="px-6 pb-20 pt-4">
-        <div className="text-center">
-          <p
-            className="text-[1.125rem] font-medium m-0 mb-5"
-            style={{ color: "var(--fg)" }}
+      {/* ─── Why therapists use it ─── */}
+      <section aria-label="Why therapists use it" className="px-6 py-12 sm:py-16">
+        <div className="max-w-[600px] mx-auto">
+          <h2
+            className="text-[0.8125rem] font-semibold tracking-[0.06em] uppercase text-center mb-8 m-0"
+            style={{ color: "var(--fg-3)" }}
           >
-            Ready to make better referrals?
-          </p>
-          <Link
-            href="/auth/signup"
-            className="inline-flex items-center justify-center h-11 px-8 rounded-sm text-[0.8125rem] font-semibold tracking-[0.01em] no-underline transition-[background] duration-150 ease-out focus-visible:outline-2 focus-visible:outline-offset-2"
-            style={{
-              background: "var(--brand)",
-              color: "var(--brand-on)",
-              border: "none",
-            }}
-          >
-            Join the network
-          </Link>
+            Why Therapists Use It
+          </h2>
+
+          <div className="flex flex-col gap-4">
+            {BENEFITS.map((benefit) => (
+              <div
+                key={benefit.title}
+                className="flex gap-4 rounded-[10px] p-5"
+                style={{
+                  background: "var(--s2)",
+                  border: "1px solid var(--border)",
+                  boxShadow: "var(--shadow-1)",
+                }}
+              >
+                <div className="w-1 shrink-0 rounded-full" style={{ background: "var(--brand)" }} />
+                <div>
+                  <h3
+                    className="text-[0.9375rem] font-semibold tracking-[-0.005em] m-0 mb-1"
+                    style={{ color: "var(--fg)" }}
+                  >
+                    {benefit.title}
+                  </h3>
+                  <p
+                    className="text-[0.8125rem] leading-[1.55] m-0"
+                    style={{ color: "var(--fg-2)" }}
+                  >
+                    {benefit.description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      </main>
+      {/* ─── Community + CTA band ─── */}
+      <section
+        aria-label="Community and signup"
+        className="px-6 py-12 sm:py-16"
+        style={{ background: "var(--brand-l)" }}
+      >
+        <div className="max-w-[520px] mx-auto text-center">
+          <h2
+            className="text-[1.25rem] sm:text-[1.375rem] font-semibold m-0 mb-3"
+            style={{ color: "var(--fg)" }}
+          >
+            Your next referral deserves a better process
+          </h2>
 
-      {/* Footer */}
+          <p className="text-[0.9375rem] leading-[1.6] m-0 mb-6" style={{ color: "var(--fg-2)" }}>
+            Join a growing network of Canadian therapists who refer to each other with confidence.
+          </p>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <Link
+              href="/auth/signup"
+              className="inline-flex items-center justify-center h-11 px-7 bg-brand text-brand-on border-none rounded-sm text-[0.875rem] font-semibold tracking-[0.01em] no-underline transition-[background] duration-150 ease-out hover:bg-brand-h focus-visible:outline-2 focus-visible:outline-border-f focus-visible:outline-offset-2"
+            >
+              Sign up
+            </Link>
+
+            <a
+              href={FACEBOOK_COMMUNITY_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center h-11 px-7 bg-s2 text-fg border border-border rounded-sm text-[0.875rem] font-semibold tracking-[0.01em] no-underline transition-[border-color,box-shadow] duration-150 ease-out hover:border-border-e hover:shadow-1 focus-visible:outline-2 focus-visible:outline-border-f focus-visible:outline-offset-2"
+            >
+              Join the Facebook group
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── Footer ─── */}
       <footer
-        className="px-6 py-6 text-center"
+        className="px-6 py-6 text-center mt-auto"
         style={{ borderTop: "1px solid var(--border-s)" }}
       >
-        <p className="text-[0.75rem] m-0" style={{ color: "var(--fg-4)" }}>
-          Therapist Referral Network
-        </p>
+        <nav aria-label="Footer" className="flex items-center justify-center gap-4 flex-wrap">
+          <span className="text-[0.75rem] font-medium" style={{ color: "var(--fg-3)" }}>
+            Therapist Referral Network
+          </span>
+          <span className="text-[0.75rem]" style={{ color: "var(--border-e)" }}>
+            &middot;
+          </span>
+          <a
+            href={FACEBOOK_COMMUNITY_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[0.75rem] no-underline hover:underline"
+            style={{ color: "var(--fg-4)" }}
+          >
+            Community
+          </a>
+          <Link
+            href="/terms"
+            className="text-[0.75rem] no-underline hover:underline"
+            style={{ color: "var(--fg-4)" }}
+          >
+            Terms
+          </Link>
+          <Link
+            href="/privacy"
+            className="text-[0.75rem] no-underline hover:underline"
+            style={{ color: "var(--fg-4)" }}
+          >
+            Privacy
+          </Link>
+        </nav>
       </footer>
     </div>
   );

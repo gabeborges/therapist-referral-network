@@ -9,6 +9,7 @@ export const metadata = {
 export default function SignInPage(): React.ReactElement {
   return (
     <div
+      data-theme="light"
       style={{
         minHeight: "100vh",
         display: "flex",

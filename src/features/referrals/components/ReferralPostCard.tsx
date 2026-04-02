@@ -3,7 +3,7 @@ import { ReferralStatusBadge } from "@/features/referrals/components/ReferralSta
 
 interface ReferralPostCardProps {
   id: string;
-  status: "OPEN" | "FULFILLED" | "EXPIRED";
+  status: "OPEN" | "FULFILLED" | "CANCELLED" | "EXPIRED";
   presentingIssue: string;
   ageGroup: string[];
   city: string | null;

@@ -93,6 +93,8 @@ function makeReferralPost(overrides: Partial<ReferralPostModel> = {}): ReferralP
     languages: [],
     additionalContext: null,
     insuranceRequired: false,
+    fulfilledAt: null,
+    cancelledAt: null,
     ...overrides,
   };
 }

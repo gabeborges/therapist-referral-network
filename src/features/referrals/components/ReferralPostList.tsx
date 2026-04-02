@@ -2,7 +2,7 @@ import { ReferralPostCard } from "@/features/referrals/components/ReferralPostCa
 
 interface ReferralPostItem {
   id: string;
-  status: "OPEN" | "FULFILLED" | "EXPIRED";
+  status: "OPEN" | "FULFILLED" | "CANCELLED" | "EXPIRED";
   presentingIssue: string;
   ageGroup: string[];
   city: string | null;

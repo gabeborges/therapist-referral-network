@@ -379,6 +379,10 @@
         background: var(--inset);
         color: var(--fg-4);
       }
+      .badge-cancelled {
+        background: var(--err-l);
+        color: var(--err);
+      }
 
       /* --- Match Ring (Signature Element) --- */
       .match-ring {
@@ -1039,8 +1043,8 @@
             </svg>
           </a>
 
-          <!-- Row 7: Closed — 3 of 4 match -->
-          <a href="referral-detail.html" class="row" style="opacity: 0.65">
+          <!-- Row 7: Fulfilled — 3 of 4 match -->
+          <a href="referral-detail.html" class="row">
             <div class="shrink-0 mr-3 match-ring" title="Match: 3 of 4">
               <svg width="28" height="28" viewBox="0 0 28 28" aria-label="Match quality: 3 of 4">
                 <circle cx="14" cy="14" r="12" fill="none" class="filled" stroke-width="2" />
@@ -1051,12 +1055,48 @@
             </div>
             <div class="flex-1 min-w-0">
               <div class="flex items-center gap-2 mb-1">
-                <span class="badge badge-closed">Closed</span>
+                <span class="badge badge-connected">Fulfilled</span>
                 <span class="t-body" style="color: var(--fg-2)">OCD, ERP</span>
               </div>
               <div class="flex items-center gap-2 flex-wrap">
-                <span class="t-sm" style="color: var(--fg-3)">Sent &middot; Closed</span>
+                <span class="t-sm" style="color: var(--fg-3)">Sent &middot; Fulfilled</span>
                 <span class="t-caption">&middot; 1 month ago</span>
+              </div>
+            </div>
+            <svg
+              class="w-4 h-4 shrink-0 ml-4"
+              style="color: var(--fg-4)"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+          </a>
+
+          <!-- Row 8: Cancelled — 2 of 4 match -->
+          <a href="referral-detail.html" class="row" style="opacity: 0.65">
+            <div class="shrink-0 mr-3 match-ring" title="Match: 2 of 4">
+              <svg width="28" height="28" viewBox="0 0 28 28" aria-label="Match quality: 2 of 4">
+                <circle cx="14" cy="14" r="12" fill="none" class="filled" stroke-width="2" />
+                <circle cx="14" cy="14" r="9" fill="none" class="filled" stroke-width="2" />
+                <circle cx="14" cy="14" r="6" fill="none" class="empty" stroke-width="2" />
+                <circle cx="14" cy="14" r="3" fill="none" class="empty" stroke-width="2" />
+              </svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-1">
+                <span class="badge badge-cancelled">Cancelled</span>
+                <span class="t-body" style="color: var(--fg-2)">Depression, CBT</span>
+              </div>
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="t-sm" style="color: var(--fg-3)">Sent &middot; Cancelled</span>
+                <span class="t-caption">&middot; 2 weeks ago</span>
               </div>
             </div>
             <svg

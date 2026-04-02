@@ -178,50 +178,101 @@ export const referralRouter = router({
     return referralPost;
   }),
 
-  close: protectedProcedure.input(z.object({ id: z.string() })).mutation(async ({ ctx, input }) => {
-    const userId = ctx.session.user.id as string;
+  fulfill: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id as string;
 
-    const profile = await ctx.prisma.therapistProfile.findUnique({
-      where: { userId },
-      select: { id: true },
-    });
-
-    if (!profile) {
-      throw new TRPCError({
-        code: "NOT_FOUND",
-        message: "Profile not found.",
+      const profile = await ctx.prisma.therapistProfile.findUnique({
+        where: { userId },
+        select: { id: true },
       });
-    }
 
-    const referralPost = await ctx.prisma.referralPost.findUnique({
-      where: { id: input.id },
-      select: { id: true, authorId: true, status: true },
-    });
+      if (!profile) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Profile not found.",
+        });
+      }
 
-    if (!referralPost) {
-      throw new TRPCError({
-        code: "NOT_FOUND",
-        message: "Referral post not found.",
+      const referralPost = await ctx.prisma.referralPost.findUnique({
+        where: { id: input.id },
+        select: { id: true, authorId: true, status: true },
       });
-    }
 
-    if (referralPost.authorId !== profile.id) {
-      throw new TRPCError({
-        code: "FORBIDDEN",
-        message: "You do not have access to this referral.",
+      if (!referralPost) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Referral post not found.",
+        });
+      }
+
+      if (referralPost.authorId !== profile.id) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You do not have access to this referral.",
+        });
+      }
+
+      if (referralPost.status !== "OPEN") {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Only open referrals can be fulfilled.",
+        });
+      }
+
+      return ctx.prisma.referralPost.update({
+        where: { id: input.id },
+        data: { status: "FULFILLED", fulfilledAt: new Date() },
       });
-    }
+    }),
 
-    if (referralPost.status !== "OPEN") {
-      throw new TRPCError({
-        code: "BAD_REQUEST",
-        message: "Only open referrals can be closed.",
+  cancel: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id as string;
+
+      const profile = await ctx.prisma.therapistProfile.findUnique({
+        where: { userId },
+        select: { id: true },
       });
-    }
 
-    return ctx.prisma.referralPost.update({
-      where: { id: input.id },
-      data: { status: "FULFILLED" },
-    });
-  }),
+      if (!profile) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Profile not found.",
+        });
+      }
+
+      const referralPost = await ctx.prisma.referralPost.findUnique({
+        where: { id: input.id },
+        select: { id: true, authorId: true, status: true },
+      });
+
+      if (!referralPost) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Referral post not found.",
+        });
+      }
+
+      if (referralPost.authorId !== profile.id) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You do not have access to this referral.",
+        });
+      }
+
+      if (referralPost.status !== "OPEN") {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Only open referrals can be cancelled.",
+        });
+      }
+
+      return ctx.prisma.referralPost.update({
+        where: { id: input.id },
+        data: { status: "CANCELLED", cancelledAt: new Date() },
+      });
+    }),
 });

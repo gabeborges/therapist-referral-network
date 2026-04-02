@@ -19,43 +19,49 @@
 ## Visual Hierarchy
 
 ### Tool 1: Size
+
 - **Largest:** Page title "Your Referrals" — Display level
 - **Medium:** Referral row content — Body level
 - **Smallest:** Status badges, timestamps — Caption level
 
 ### Tool 2: Weight
+
 - **Bold:** Page title, referral specialty labels (what was needed)
 - **Medium:** Status badges, tab labels
 - **Light:** Timestamps, secondary details
 
 ### Tool 3: Color
+
 - **Brand accent:** "New Referral" CTA button, active tab indicator
 - **Semantic colors:** Status badges (sent=neutral, responded=info, connected=success, closed=muted)
 - **Muted:** Timestamps, secondary metadata
 
 ### Tool 4: Spacing
+
 - **Generous:** Between the page header and list, between referral rows
 - **Compact:** Within referral rows (label-value pairs)
 
 ### Tool 5: Position
+
 - **Top-left:** Page title "Your Referrals"
 - **Top-right:** "New Referral" CTA
 - **Below header:** Direction tabs (All / Sent / Received)
 - **Main area:** Referral list
 
 ### Tool 6: Contrast
+
 - **Highest:** "New Referral" button (brand on white), status badges with semantic colors
 - **Medium:** Referral specialty text (fg-primary)
 - **Lowest:** Timestamps, row borders
 
 ### 4 Hierarchy Levels
 
-| Level | Role | Treatment | Elements |
-|-------|------|-----------|----------|
-| **Primary** | Create a new referral or find the referral that needs attention | Brand-colored CTA, status badges that pop | "New Referral" button, status indicators |
-| **Secondary** | Understand each referral's context | Body text, clear labels | Specialty needed, referral direction (sent/received), therapist name |
-| **Tertiary** | Context and metadata | Muted text, smaller size | Timestamps ("3 days ago"), location, insurance |
-| **Background** | Structure and navigation | Quiet borders, navigation | Top nav, direction tabs, row separators |
+| Level          | Role                                                            | Treatment                                 | Elements                                                             |
+| -------------- | --------------------------------------------------------------- | ----------------------------------------- | -------------------------------------------------------------------- |
+| **Primary**    | Create a new referral or find the referral that needs attention | Brand-colored CTA, status badges that pop | "New Referral" button, status indicators                             |
+| **Secondary**  | Understand each referral's context                              | Body text, clear labels                   | Specialty needed, referral direction (sent/received), therapist name |
+| **Tertiary**   | Context and metadata                                            | Muted text, smaller size                  | Timestamps ("3 days ago"), location, insurance                       |
+| **Background** | Structure and navigation                                        | Quiet borders, navigation                 | Top nav, direction tabs, row separators                              |
 
 **Squint test:** The "New Referral" button and status badges should be the only things visible when blurred. The rest should read as organized rows of quiet content.
 
@@ -63,16 +69,16 @@
 
 ## Content Priority
 
-| Priority | Content Element | Why This Position |
-|----------|----------------|-------------------|
-| 1 | "New Referral" CTA | Primary action — always visible, always accessible |
-| 2 | Status badges on referral rows | The therapist came here to check "what happened?" |
-| 3 | Specialty/need description | Identifies which referral this is ("Anxiety + EMDR") |
-| 4 | Direction indicator | Sent vs. received — orients the therapist |
-| 5 | Referring/matched therapist name | Who's involved |
-| 6 | Timestamp | When this happened |
-| 7 | Direction tabs (All/Sent/Received) | Filtering — secondary navigation |
-| 8 | Page title | Orientation — read once |
+| Priority | Content Element                    | Why This Position                                    |
+| -------- | ---------------------------------- | ---------------------------------------------------- |
+| 1        | "New Referral" CTA                 | Primary action — always visible, always accessible   |
+| 2        | Status badges on referral rows     | The therapist came here to check "what happened?"    |
+| 3        | Specialty/need description         | Identifies which referral this is ("Anxiety + EMDR") |
+| 4        | Direction indicator                | Sent vs. received — orients the therapist            |
+| 5        | Referring/matched therapist name   | Who's involved                                       |
+| 6        | Timestamp                          | When this happened                                   |
+| 7        | Direction tabs (All/Sent/Received) | Filtering — secondary navigation                     |
+| 8        | Page title                         | Orientation — read once                              |
 
 ---
 
@@ -101,6 +107,7 @@
 ```
 
 **Responsive behavior:**
+
 - **Mobile (0–639px):** Full-width rows. Page title and CTA stack vertically. Tabs scroll horizontally. Row content stacks: status + specialty on top, therapist + time below.
 - **Tablet (640–1023px):** Same layout as desktop but narrower. Rows compress slightly.
 - **Desktop (1024px+):** Full layout as drawn. 960px centered container.
@@ -110,26 +117,31 @@
 ## States
 
 ### Loading State
+
 - **Duration expectation:** < 500ms (data from Supabase, small dataset for solo practitioners)
 - **Visual treatment:** Skeleton rows — 5 rows with pulsing rectangles matching row layout (status dot, two text blocks, timestamp)
 - **Content available during load:** Top nav, page title, direction tabs, "New Referral" button — all render immediately. Only the referral list loads.
 - **Accessibility:** Container has `aria-busy="true"` during load
 
 ### Empty State
+
 - **Message:** "No referrals yet. When you create a referral, the system will match your client's needs with therapists in the network."
 - **Action:** Large "Create your first referral" CTA (brand-colored, same style as "New Referral")
 - **Visual:** Simple illustration or icon — a subtle connection/handoff graphic. Minimal, not cute.
 - **Accessibility:** Empty message is in document flow, CTA is focusable
 
 ### Populated State
+
 - **Data density:** Flat list, no pagination needed for V1 (solo practitioners won't have hundreds). Sorted by most recent. Each row shows: status badge, specialty/need, direction, therapist name, relative timestamp.
 - **Content examples:**
   - "Sent · Anxiety, EMDR · Accepting: 2 of 5 responded · 3 days ago"
   - "Received · Couples therapy, CBT · From: Dr. Sarah Chen · 1 week ago"
   - "Connected · Trauma processing · With: Dr. Marcus Lee · 2 weeks ago"
+  - "Cancelled · Depression, CBT · Cancelled · 1 week ago"
 - **Overflow handling:** Long specialty lists truncate with "…" and expand on click. Therapist names truncate at 24 characters.
 
 ### Error State
+
 - **Error types:** Network failure (most likely), auth expired
 - **Recovery path:** "Couldn't load your referrals. Check your connection and try again." + Retry button
 - **Error placement:** Banner at top of content area, above where the list would be. Previous data retained if available.
@@ -139,16 +151,16 @@
 
 ## Component Inventory
 
-| # | Component | Purpose | System.md Pattern? |
-|---|-----------|---------|-------------------|
-| 1 | Top Navigation Bar | App-wide navigation and primary CTA | New — defines the shell |
-| 2 | Page Header | Title + primary action | New |
-| 3 | Direction Tabs | Filter referrals by All/Sent/Received | New |
-| 4 | Referral Row | Display one referral with status and key info | New |
-| 5 | Status Badge | Visual status indicator | New |
-| 6 | Empty State | First-use guidance | New |
-| 7 | Error Banner | Error display with retry | New |
-| 8 | Skeleton Row | Loading placeholder | New |
+| #   | Component          | Purpose                                       | System.md Pattern?      |
+| --- | ------------------ | --------------------------------------------- | ----------------------- |
+| 1   | Top Navigation Bar | App-wide navigation and primary CTA           | New — defines the shell |
+| 2   | Page Header        | Title + primary action                        | New                     |
+| 3   | Direction Tabs     | Filter referrals by All/Sent/Received         | New                     |
+| 4   | Referral Row       | Display one referral with status and key info | New                     |
+| 5   | Status Badge       | Visual status indicator                       | New                     |
+| 6   | Empty State        | First-use guidance                            | New                     |
+| 7   | Error Banner       | Error display with retry                      | New                     |
+| 8   | Skeleton Row       | Loading placeholder                           | New                     |
 
 ### Top Navigation Bar
 
@@ -221,6 +233,7 @@
    - Responded: `--semantic-info` text, light teal background (10% opacity)
    - Connected: `--semantic-success` text, light sage background (10% opacity)
    - Closed: `--fg-muted` text, `--bg-inset` background (very muted)
+   - Cancelled: `--err` text, `--err-l` background (warm red tint) — referral was abandoned
 7. **Interactions:** None — display only
 8. **Responsive:** Unchanged — always compact
 
@@ -242,12 +255,14 @@
 **Primary interaction:** Click referral row to view detail. Click "New Referral" to create.
 
 **Keyboard navigation:**
+
 - Tab order: nav links → "New Referral" button → direction tabs → referral rows → pagination (if exists)
 - Each referral row is focusable (role="link" or anchor)
 - Enter on row → navigates to detail
 - Arrow keys within tab group for direction tabs
 
 **Micro-interactions:**
+
 - Row hover: background shift to `--bg-surface-1`, 150ms ease-out
 - Tab switch: underline slides to active tab, 150ms ease-out
 - New referral appears: subtle fade-in from top of list

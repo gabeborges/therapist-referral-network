@@ -3,7 +3,7 @@ import Link from "next/link";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { ReferralStatusBadge } from "@/features/referrals/components/ReferralStatusBadge";
-import { CloseReferralButton } from "@/features/referrals/components/CloseReferralButton";
+import { ReferralActionBar } from "@/features/referrals/components/ReferralActionBar";
 import { Navbar } from "@/features/layout/components/Navbar";
 
 export const metadata = {
@@ -95,12 +95,25 @@ export default async function ReferralDetailPage({
 
           {/* Header */}
           <div className="bg-s1 border border-border rounded-md p-6 shadow-1 mb-4">
-            <div className="flex items-start justify-between gap-3 mb-4">
+            <div className="flex items-start justify-between gap-3 mb-1">
               <h1 className="text-[1.25rem] font-semibold tracking-[-0.01em] leading-[1.35] text-fg m-0">
                 {referral.presentingIssue}
               </h1>
-              <ReferralStatusBadge status={referral.status} />
+              <div className="flex flex-col items-end gap-1 shrink-0">
+                <ReferralStatusBadge status={referral.status} />
+                {referral.status === "FULFILLED" && referral.fulfilledAt && (
+                  <span className="text-[0.75rem] text-fg-3">
+                    {formatDate(referral.fulfilledAt)}
+                  </span>
+                )}
+                {referral.status === "CANCELLED" && referral.cancelledAt && (
+                  <span className="text-[0.75rem] text-fg-3">
+                    {formatDate(referral.cancelledAt)}
+                  </span>
+                )}
+              </div>
             </div>
+            <p className="text-[0.75rem] text-fg-3 m-0 mb-5">{formatDate(referral.createdAt)}</p>
 
             {/* Criteria grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
@@ -108,7 +121,7 @@ export default async function ReferralDetailPage({
                 <p className="text-[0.75rem] font-medium tracking-[0.04em] uppercase text-fg-3 mb-1">
                   Age group
                 </p>
-                <p className="text-[0.9375rem] text-fg m-0">{referral.ageGroup}</p>
+                <p className="text-[0.9375rem] text-fg m-0">{referral.ageGroup.join(", ")}</p>
               </div>
               <div>
                 <p className="text-[0.75rem] font-medium tracking-[0.04em] uppercase text-fg-3 mb-1">
@@ -122,12 +135,72 @@ export default async function ReferralDetailPage({
                 </p>
                 <p className="text-[0.9375rem] text-fg m-0">{referral.modalities.join(", ")}</p>
               </div>
-              <div>
-                <p className="text-[0.75rem] font-medium tracking-[0.04em] uppercase text-fg-3 mb-1">
-                  Created
-                </p>
-                <p className="text-[0.9375rem] text-fg m-0">{formatDate(referral.createdAt)}</p>
-              </div>
+              {referral.participants.length > 0 && (
+                <div>
+                  <p className="text-[0.75rem] font-medium tracking-[0.04em] uppercase text-fg-3 mb-1">
+                    Participants
+                  </p>
+                  <p className="text-[0.9375rem] text-fg m-0">{referral.participants.join(", ")}</p>
+                </div>
+              )}
+              {referral.rate && (
+                <div>
+                  <p className="text-[0.75rem] font-medium tracking-[0.04em] uppercase text-fg-3 mb-1">
+                    Rate
+                  </p>
+                  <p className="text-[0.9375rem] text-fg m-0">{referral.rate}</p>
+                </div>
+              )}
+              {referral.insuranceRequired && (
+                <div>
+                  <p className="text-[0.75rem] font-medium tracking-[0.04em] uppercase text-fg-3 mb-1">
+                    Insurance required
+                  </p>
+                  <p className="text-[0.9375rem] text-fg m-0">Yes</p>
+                </div>
+              )}
+              {referral.therapistGenderPref && (
+                <div>
+                  <p className="text-[0.75rem] font-medium tracking-[0.04em] uppercase text-fg-3 mb-1">
+                    Gender preference
+                  </p>
+                  <p className="text-[0.9375rem] text-fg m-0">{referral.therapistGenderPref}</p>
+                </div>
+              )}
+              {referral.therapyTypes.length > 0 && (
+                <div className="sm:col-span-2">
+                  <p className="text-[0.75rem] font-medium tracking-[0.04em] uppercase text-fg-3 mb-1">
+                    Therapy types
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {referral.therapyTypes.map((type) => (
+                      <span
+                        key={type}
+                        className="inline-flex items-center h-7 px-2.5 bg-brand-l text-brand rounded-full text-[0.8125rem] font-medium"
+                      >
+                        {type}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {referral.languages.length > 0 && (
+                <div>
+                  <p className="text-[0.75rem] font-medium tracking-[0.04em] uppercase text-fg-3 mb-1">
+                    Languages
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {referral.languages.map((lang) => (
+                      <span
+                        key={lang}
+                        className="inline-flex items-center h-7 px-2.5 bg-inset text-fg-2 rounded-full text-[0.8125rem] font-medium"
+                      >
+                        {lang}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             {referral.details && (
@@ -141,12 +214,21 @@ export default async function ReferralDetailPage({
               </div>
             )}
 
-            {/* Close button */}
-            {referral.status === "OPEN" && (
-              <div className="pt-4 mt-4 border-t border-border-s">
-                <CloseReferralButton referralId={referral.id} />
+            {referral.additionalContext && (
+              <div className={referral.details ? "mt-4" : "pt-4 border-t border-border-s"}>
+                <p className="text-[0.75rem] font-medium tracking-[0.04em] uppercase text-fg-3 mb-1">
+                  Additional context
+                </p>
+                <p className="text-[0.9375rem] text-fg-2 leading-relaxed m-0 whitespace-pre-wrap">
+                  {referral.additionalContext}
+                </p>
               </div>
             )}
+
+            {/* Action bar */}
+            <div className="pt-4 mt-4 border-t border-border-s">
+              <ReferralActionBar referralId={referral.id} status={referral.status} />
+            </div>
           </div>
 
           {/* Notification history */}

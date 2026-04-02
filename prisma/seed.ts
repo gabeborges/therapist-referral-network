@@ -9,14 +9,18 @@ const prisma = new PrismaClient({ adapter });
 
 async function upsertAll(
   model: "specialty" | "therapyType" | "language" | "alliedGroup" | "paymentMethod",
-  items: { name: string; category?: string }[]
+  items: { name: string; category?: string }[],
 ) {
   for (let i = 0; i < items.length; i++) {
     const item = items[i]!;
     await (prisma[model] as any).upsert({
       where: { name: item.name },
       update: { sortOrder: i, ...(item.category !== undefined ? { category: item.category } : {}) },
-      create: { name: item.name, sortOrder: i, ...(item.category !== undefined ? { category: item.category } : {}) },
+      create: {
+        name: item.name,
+        sortOrder: i,
+        ...(item.category !== undefined ? { category: item.category } : {}),
+      },
     });
   }
   console.log(`  Seeded ${items.length} ${model} records`);
@@ -122,7 +126,7 @@ async function main() {
     { name: "LGBTQ+", category: "Sexuality" },
   ]);
 
-  // --- Therapy Types (68) ---
+  // --- Therapy Types (66) ---
   await upsertAll("therapyType", [
     { name: "Acceptance and Commitment (ACT)" },
     { name: "Adlerian" },
@@ -192,7 +196,7 @@ async function main() {
     { name: "Trauma Focused" },
   ]);
 
-  // --- Languages (36 — English + 35 others) ---
+  // --- Languages (35 — English + 34 others) ---
   await upsertAll("language", [
     { name: "English" },
     { name: "Arabic" },

@@ -20,6 +20,7 @@ A platform for therapists to refer clients to trusted colleagues in their profes
 - A [Supabase](https://supabase.com) project
 - A [Google OAuth](https://console.cloud.google.com) app (for authentication)
 - A [Resend](https://resend.com) account (for transactional email)
+
 ## Getting Started
 
 ### 1. Clone and install dependencies
@@ -111,44 +112,57 @@ The app will be available at [http://localhost:3000](http://localhost:3000).
 
 ## Available Scripts
 
-| Command | Description |
-|---|---|
-| `npm run dev` | Start dev server (Turbopack) |
-| `npm run build` | Production build |
-| `npm start` | Start production server |
-| `npm run lint` | Run ESLint |
-| `npm run lint:fix` | Run ESLint with auto-fix |
-| `npm run format` | Format code with Prettier |
-| `npm run format:check` | Check formatting |
-| `npm test` | Run unit tests (watch mode) |
-| `npm run test:run` | Run unit tests once |
-| `npm run test:coverage` | Run tests with coverage |
-| `npm run test:e2e` | Run Playwright E2E tests |
-| `npm run test:e2e:ui` | Run E2E tests with UI |
-| `npm run db:generate` | Regenerate Prisma client |
-| `npm run db:push` | Push schema to database |
-| `npm run db:migrate` | Run database migrations |
-| `npm run db:studio` | Open Prisma Studio |
+| Command                                   | Description                        |
+| ----------------------------------------- | ---------------------------------- |
+| `npm run dev`                             | Start dev server (Turbopack)       |
+| `npm run build`                           | Production build                   |
+| `npm start`                               | Start production server            |
+| `npm run lint`                            | Run ESLint                         |
+| `npm run lint:fix`                        | Run ESLint with auto-fix           |
+| `npm run format`                          | Format code with Prettier          |
+| `npm run format:check`                    | Check formatting                   |
+| `npm test`                                | Run unit tests (watch mode)        |
+| `npm run test:run`                        | Run unit tests once                |
+| `npm run test:coverage`                   | Run tests with coverage            |
+| `npm run test:e2e`                        | Run Playwright E2E tests           |
+| `npm run test:e2e:ui`                     | Run E2E tests with UI              |
+| `npm run db:generate`                     | Regenerate Prisma client           |
+| `npm run db:push`                         | Push schema to database            |
+| `npm run db:migrate`                      | Run database migrations            |
+| `npm run db:studio`                       | Open Prisma Studio                 |
+| `npm run db:seed`                         | Seed the database                  |
+| `npm run db:reset-user -- user@email.com` | Delete a local user and their data |
+
+### Testing Locally
+
+**Trigger the referral drip cron job:**
+
+```bash
+curl -X POST http://localhost:3000/api/cron/drip \
+  -H "Authorization: Bearer CRON_SECRET"
+```
+
+Replace `CRON_SECRET` with the value from your `.env.local` file.
 
 ## Environments
 
 The project uses two environments. Local development and Vercel preview deploys share the **dev** services. Production is fully separate.
 
-| | Local | Staging (Vercel preview) | Production |
-|---|---|---|---|
-| **Runs on** | Your machine (`next dev`) | Vercel preview deploys | Vercel production |
-| **Supabase** | Dev project | Dev project | Prod project |
-| **Google OAuth** | Dev credentials | Dev credentials | Prod credentials |
-| **Resend** | Dev API key | Dev API key | Prod API key |
+|                  | Local                     | Staging (Vercel preview) | Production        |
+| ---------------- | ------------------------- | ------------------------ | ----------------- |
+| **Runs on**      | Your machine (`next dev`) | Vercel preview deploys   | Vercel production |
+| **Supabase**     | Dev project               | Dev project              | Prod project      |
+| **Google OAuth** | Dev credentials           | Dev credentials          | Prod credentials  |
+| **Resend**       | Dev API key               | Dev API key              | Prod API key      |
 
 ### What you need to create
 
-| Service | Dev | Prod |
-|---|---|---|
-| Supabase | 1 project (free tier) | 1 project |
-| Google OAuth | 1 client ID (redirect: `http://localhost:3000/...`) | 1 client ID (redirect: `https://therapistreferralnetwork.com/...`) |
-| Resend | 1 account — same key works for both | Same account |
-| `AUTH_SECRET` | Generate one (`openssl rand -base64 32`) | Generate a separate one |
+| Service       | Dev                                                 | Prod                                                               |
+| ------------- | --------------------------------------------------- | ------------------------------------------------------------------ |
+| Supabase      | 1 project (free tier)                               | 1 project                                                          |
+| Google OAuth  | 1 client ID (redirect: `http://localhost:3000/...`) | 1 client ID (redirect: `https://therapistreferralnetwork.com/...`) |
+| Resend        | 1 account — same key works for both                 | Same account                                                       |
+| `AUTH_SECRET` | Generate one (`openssl rand -base64 32`)            | Generate a separate one                                            |
 
 ### Where secrets live
 
@@ -161,12 +175,12 @@ Secrets are **never** committed to the repo.
 
 Non-secret config that differs between environments is committed:
 
-| File | Purpose | Committed? | Loaded when |
-|---|---|---|---|
-| `.env.local` | Your secrets | No | Always (overrides everything) |
-| `.env.development` | Non-secret defaults (app URL, drip config) | Yes | `next dev` |
-| `.env.production` | Non-secret defaults for production | Yes | `next build` / `next start` |
-| `.env.example` | Template listing all secret names | Yes | Never (reference only) |
+| File               | Purpose                                    | Committed? | Loaded when                   |
+| ------------------ | ------------------------------------------ | ---------- | ----------------------------- |
+| `.env.local`       | Your secrets                               | No         | Always (overrides everything) |
+| `.env.development` | Non-secret defaults (app URL, drip config) | Yes        | `next dev`                    |
+| `.env.production`  | Non-secret defaults for production         | Yes        | `next build` / `next start`   |
+| `.env.example`     | Template listing all secret names          | Yes        | Never (reference only)        |
 
 ### Adding a new env variable
 
@@ -179,11 +193,13 @@ Non-secret config that differs between environments is committed:
 Before going live, configure DNS records for the custom domain and email deliverability:
 
 **Domain (Vercel)**
+
 1. Add `therapistreferralnetwork.com` in Vercel Project Settings > Domains
 2. Set a CNAME record: `www` → `cname.vercel-dns.com`
 3. For apex domain, follow Vercel's A record instructions
 
 **Email deliverability (Resend)**
+
 1. In the Resend dashboard, add and verify `therapistreferralnetwork.com`
 2. Add the DNS records Resend provides:
    - **SPF** — TXT record: `v=spf1 include:amazonses.com ~all`

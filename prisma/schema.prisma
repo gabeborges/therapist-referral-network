@@ -200,6 +200,7 @@ model TherapistProfile {
 enum ReferralStatus {
   OPEN
   FULFILLED
+  CANCELLED
   EXPIRED
 }
 
@@ -226,7 +227,9 @@ model ReferralPost {
   additionalContext   String?  // Extended free text for nuance
 
   // Status
-  status ReferralStatus @default(OPEN)
+  status      ReferralStatus @default(OPEN)
+  fulfilledAt DateTime?
+  cancelledAt DateTime?
 
   // Drip tracking
   currentBatch  Int       @default(0)

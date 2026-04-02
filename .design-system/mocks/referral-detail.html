@@ -253,6 +253,109 @@
         color: var(--fg);
       }
 
+      .btn-ok {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        height: 40px;
+        padding: 0 20px;
+        background: var(--ok);
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        letter-spacing: 0.01em;
+        cursor: pointer;
+        font-family: inherit;
+        transition: opacity 150ms ease-out;
+      }
+      .btn-ok:hover {
+        opacity: 0.9;
+      }
+      .btn-ok:focus-visible {
+        outline: 2px solid var(--b-f);
+        outline-offset: 2px;
+      }
+      .btn-ok:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      .btn-ok.btn-sm {
+        height: 36px;
+        padding: 0 16px;
+      }
+
+      .btn-err-outline {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        height: 40px;
+        padding: 0 20px;
+        background: transparent;
+        color: var(--err);
+        border: 1px solid rgba(184, 84, 84, 0.3);
+        border-radius: 6px;
+        font-size: 0.8125rem;
+        font-weight: 500;
+        letter-spacing: 0.01em;
+        cursor: pointer;
+        font-family: inherit;
+        transition: all 150ms ease-out;
+      }
+      .btn-err-outline:hover {
+        background: var(--err-l);
+        border-color: var(--err);
+      }
+      .btn-err-outline:focus-visible {
+        outline: 2px solid var(--b-f);
+        outline-offset: 2px;
+      }
+      .btn-err-outline:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      .btn-err-outline.btn-sm {
+        height: 36px;
+        padding: 0 16px;
+      }
+
+      .btn-err {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        height: 40px;
+        padding: 0 20px;
+        background: var(--err);
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        letter-spacing: 0.01em;
+        cursor: pointer;
+        font-family: inherit;
+        transition: opacity 150ms ease-out;
+      }
+      .btn-err:hover {
+        opacity: 0.9;
+      }
+      .btn-err:focus-visible {
+        outline: 2px solid var(--b-f);
+        outline-offset: 2px;
+      }
+      .btn-err:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      .btn-err.btn-sm {
+        height: 36px;
+        padding: 0 16px;
+      }
+
       /* --- Inputs --- */
       .input {
         width: 100%;
@@ -804,7 +907,10 @@
         <!-- Header -->
         <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-2">
           <h1 class="t-h1">Anxiety, EMDR</h1>
-          <span class="badge badge-responded">Responded</span>
+          <div class="flex flex-col items-start sm:items-end gap-1">
+            <span id="status-badge" class="badge badge-responded">Responded</span>
+            <span id="status-date" class="t-caption" style="display: none"></span>
+          </div>
         </div>
         <p class="t-caption mb-8">Sent 3 days ago &middot; Ref #R-2026-042</p>
 
@@ -825,11 +931,40 @@
             <span class="t-sm" style="color: var(--fg)">Toronto &middot; Virtual OK</span>
             <span class="t-sm" style="color: var(--fg-3)">Urgency</span>
             <span class="t-sm" style="color: var(--fg)">Soon</span>
+            <span class="t-sm" style="color: var(--fg-3)">Participants</span>
+            <div class="flex flex-wrap gap-2">
+              <span class="chip chip-neutral">Individual</span
+              ><span class="chip chip-neutral">Couples</span>
+            </div>
+            <span class="t-sm" style="color: var(--fg-3)">Rate</span>
+            <span class="t-sm" style="color: var(--fg)">Sliding scale</span>
+            <span class="t-sm" style="color: var(--fg-3)">Insurance required</span>
+            <span class="t-sm" style="color: var(--fg)">Yes</span>
+            <span class="t-sm" style="color: var(--fg-3)">Gender preference</span>
+            <span class="t-sm" style="color: var(--fg)">Female</span>
+            <span class="t-sm" style="color: var(--fg-3)">Therapy types</span>
+            <div class="flex flex-wrap gap-2">
+              <span class="chip">CBT</span><span class="chip">EMDR</span
+              ><span class="chip">Somatic Experiencing</span>
+            </div>
+            <span class="t-sm" style="color: var(--fg-3)">Languages</span>
+            <div class="flex flex-wrap gap-2">
+              <span class="chip chip-neutral">English</span
+              ><span class="chip chip-neutral">French</span>
+            </div>
             <span class="t-sm" style="color: var(--fg-3)">Context</span>
             <span class="t-sm" style="color: var(--fg)"
               >Client is looking for evening availability, prefers a therapist experienced with
               complex trauma</span
             >
+          </div>
+
+          <!-- Additional context (full-width, outside grid) -->
+          <div class="mt-4">
+            <p class="t-sm mb-1" style="color: var(--fg-3)">Additional context</p>
+            <p class="t-sm" style="color: var(--fg)">
+              Client has previous experience with CBT but is looking to try somatic approaches.
+            </p>
           </div>
         </div>
 
@@ -1018,9 +1153,96 @@
           </ol>
         </div>
 
-        <!-- Close button -->
-        <div class="border-t pt-6" style="border-color: var(--b-s)">
-          <button class="btn-secondary btn-sm">Close Referral</button>
+        <!-- ===== Action Bar ===== -->
+        <!-- State 1: OPEN default — two action buttons -->
+        <div data-state="default" class="border-t pt-6" style="border-color: var(--b-s)">
+          <div style="display: flex; align-items: center; gap: 12px">
+            <button class="btn-ok btn-sm">Mark as Fulfilled</button>
+            <button class="btn-err-outline btn-sm">Cancel Referral</button>
+          </div>
+        </div>
+
+        <!-- State 2: Fulfill confirmation (hidden by default) -->
+        <div
+          data-state="confirm-fulfill"
+          class="border-t pt-6"
+          style="border-color: var(--b-s); display: none"
+        >
+          <div role="alertdialog" style="display: flex; align-items: center; gap: 12px">
+            <p class="t-sm" style="color: var(--fg-2); margin: 0">
+              Mark this referral as fulfilled?
+            </p>
+            <button class="btn-secondary btn-sm">No</button>
+            <button class="btn-ok btn-sm">Yes, Fulfilled</button>
+          </div>
+        </div>
+
+        <!-- State 3: Cancel confirmation (hidden by default) -->
+        <div
+          data-state="confirm-cancel"
+          class="border-t pt-6"
+          style="border-color: var(--b-s); display: none"
+        >
+          <div role="alertdialog" style="display: flex; align-items: center; gap: 12px">
+            <p class="t-sm" style="color: var(--fg-2); margin: 0">
+              Cancel this referral? This cannot be undone.
+            </p>
+            <button class="btn-secondary btn-sm">No</button>
+            <button class="btn-err btn-sm">Yes, Cancel</button>
+          </div>
+        </div>
+
+        <!-- State 4: FULFILLED terminal (hidden by default) -->
+        <div
+          data-state="fulfilled"
+          class="border-t pt-6"
+          style="border-color: var(--b-s); display: none"
+        >
+          <div style="display: flex; align-items: center; gap: 8px">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="var(--ok)"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+              <polyline points="22 4 12 14.01 9 11.01" />
+            </svg>
+            <p class="t-sm" style="color: var(--ok); font-weight: 500; margin: 0">
+              This referral was marked as fulfilled
+            </p>
+          </div>
+        </div>
+
+        <!-- State 5: CANCELLED terminal (hidden by default) -->
+        <div
+          data-state="cancelled"
+          class="border-t pt-6"
+          style="border-color: var(--b-s); display: none"
+        >
+          <div style="display: flex; align-items: center; gap: 8px">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="var(--fg-3)"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <line x1="15" y1="9" x2="9" y2="15" />
+              <line x1="9" y1="9" x2="15" y2="15" />
+            </svg>
+            <p class="t-sm" style="color: var(--fg-3); font-weight: 500; margin: 0">
+              This referral was cancelled
+            </p>
+          </div>
         </div>
       </div>
     </div>
@@ -1105,6 +1327,17 @@
       <button class="ctrl-btn" onclick="setState('loading')">Loading</button>
       <button class="ctrl-btn" onclick="setState('error')">Error</button>
       <div class="ctrl-sep"></div>
+      <span class="ctrl-label">Action</span>
+      <button class="ctrl-btn active" data-action="default" onclick="showState('default')">
+        Open
+      </button>
+      <button class="ctrl-btn" data-action="fulfilled" onclick="showState('fulfilled')">
+        Fulfilled
+      </button>
+      <button class="ctrl-btn" data-action="cancelled" onclick="showState('cancelled')">
+        Cancelled
+      </button>
+      <div class="ctrl-sep"></div>
       <span class="ctrl-label">Theme</span>
       <button class="ctrl-btn active" onclick="setTheme('light')">Light</button>
       <button class="ctrl-btn" onclick="setTheme('dark')">Dark</button>
@@ -1129,6 +1362,66 @@
           }
         });
       }
+    </script>
+    <script>
+      // Toggle action bar states for mock review
+      // Usage: in browser console, call showState('confirm-fulfill'), etc.
+      window.showState = function (state) {
+        // Show the correct action bar panel; keep populated wrapper visible
+        var populatedEl = document.querySelector('[data-state="populated"]');
+        var loadingEl = document.querySelector('[data-state="loading"]');
+        var errorEl = document.querySelector('[data-state="error"]');
+        var actionStates = [
+          "default",
+          "confirm-fulfill",
+          "confirm-cancel",
+          "fulfilled",
+          "cancelled",
+        ];
+
+        if (actionStates.includes(state)) {
+          // Show populated wrapper, hide loading/error
+          populatedEl.style.display = "";
+          loadingEl.style.display = "none";
+          errorEl.style.display = "none";
+          // Toggle action bar sub-states
+          actionStates.forEach(function (s) {
+            var el = populatedEl.querySelector('[data-state="' + s + '"]');
+            if (el) el.style.display = s === state ? "" : "none";
+          });
+        } else {
+          document.querySelectorAll("[data-state]").forEach(function (el) {
+            el.style.display = el.dataset.state === state ? "" : "none";
+          });
+        }
+
+        // Update header badge and status date for terminal states
+        var badge = document.getElementById("status-badge");
+        var dateEl = document.getElementById("status-date");
+        if (badge && dateEl) {
+          if (state === "cancelled") {
+            badge.className = "badge badge-closed";
+            badge.textContent = "Cancelled";
+            dateEl.textContent = "Cancelled Mar 30, 2026";
+            dateEl.style.display = "";
+          } else if (state === "fulfilled") {
+            badge.className = "badge badge-connected";
+            badge.textContent = "Fulfilled";
+            dateEl.textContent = "Fulfilled Apr 1, 2026";
+            dateEl.style.display = "";
+          } else {
+            badge.className = "badge badge-responded";
+            badge.textContent = "Responded";
+            dateEl.style.display = "none";
+          }
+        }
+
+        // Update action-bar control buttons
+        document.querySelectorAll("#controls .ctrl-btn").forEach(function (btn) {
+          var val = btn.getAttribute("data-action");
+          if (val) btn.classList.toggle("active", val === state);
+        });
+      };
     </script>
   </body>
 </html>

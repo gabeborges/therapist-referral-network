@@ -4,20 +4,25 @@
 
 The referral post form SHALL wrap all field groups in the `FormGroup` component with descriptive section titles, matching the profile edit form's section pattern.
 
-#### Scenario: Core Details section
+#### Scenario: Client needs section
 
 - **WHEN** the referral form renders
-- **THEN** `presentingIssue`, `city`, `province`, and `details` fields are wrapped in a `FormGroup` titled "Core Details"
+- **THEN** `presentingIssue` and `details` fields are wrapped in a `FormGroup` titled "Client needs"
 
-#### Scenario: Session Format section
-
-- **WHEN** the referral form renders
-- **THEN** `modalities` and `rate` fields are wrapped in a `FormGroup` titled "Session Format"
-
-#### Scenario: Matching Preferences section
+#### Scenario: Service preferences section
 
 - **WHEN** the referral form renders
-- **THEN** `participants` and `ageGroup` fields are in a collapsible "Matching Preferences" section
+- **THEN** `modalities`, `rate`, and `insuranceRequired` fields are wrapped in a `FormGroup` titled "Service preferences"
+
+#### Scenario: Other preferences section
+
+- **WHEN** the referral form renders
+- **THEN** `city`, `province`, `participants`, and `ageGroup` fields are wrapped in a `FormGroup` titled "Other preferences"
+
+#### Scenario: Additional details collapsible section
+
+- **WHEN** the referral form renders
+- **THEN** `therapistGenderPref`, `therapyTypes`, `languages`, and `additionalContext` fields are in a collapsible "Additional details" section
 
 ### Requirement: All checkboxes use CheckboxGroup component
 
@@ -28,14 +33,14 @@ The referral form SHALL render all multi-select checkbox fields using the shared
 - **WHEN** the referral form renders the modalities field
 - **THEN** it uses the `CheckboxGroup` component with options ["in-person", "virtual", "phone"]
 
-### Requirement: All radio buttons use shared styling pattern
+### Requirement: Radio buttons use native accent-brand styling
 
-The referral form SHALL render all radio button fields using the `.cb-box` / `accent-brand` styling pattern consistent with shared components.
+The referral form SHALL render radio button fields using native `accent-brand` styling with consistent sizing and label alignment.
 
-#### Scenario: Rate renders with shared radio styling
+#### Scenario: Rate renders with accent-brand radio styling
 
 - **WHEN** the referral form renders the rate field
-- **THEN** radio buttons use `accent-brand` color and consistent sizing/spacing matching `CheckboxGroup` item layout
+- **THEN** radio buttons use `w-4 h-4 accent-brand` with `cursor-pointer` and consistent label spacing
 
 ### Requirement: Modalities has no default selection
 
@@ -51,33 +56,28 @@ The referral form SHALL NOT pre-select any modality options. The user MUST expli
 - **WHEN** the user attempts to submit without selecting any modality
 - **THEN** a validation error is displayed on the modalities field
 
-### Requirement: Participants field is a dropdown select in Matching Preferences
+### Requirement: Participants and ageGroup are single-select dropdowns
 
-The `participants` field SHALL remain a dropdown select (not converted to checkboxes) and SHALL be located in the "Matching Preferences" collapsible section.
+The `participants` and `ageGroup` fields SHALL be single-select `<select>` dropdowns using `selectClasses` from `form-styles.ts`. The Zod schema validates them as single strings; the tRPC router wraps them into arrays for Prisma storage.
 
 #### Scenario: Participants renders as select dropdown
 
 - **WHEN** the referral form renders
-- **THEN** the `participants` field is a `<select>` dropdown using `selectClasses` from `form-styles.ts`
+- **THEN** the `participants` field is a `<select>` dropdown in the "Other preferences" section
 
-#### Scenario: Participants is in Matching Preferences section
+#### Scenario: ageGroup renders as select dropdown
 
 - **WHEN** the referral form renders
-- **THEN** the `participants` field is inside the "Matching Preferences" collapsible section, not in the main form body
+- **THEN** the `ageGroup` field is a `<select>` dropdown in the "Other preferences" section
 
 ### Requirement: Age Group label renamed to "Ages"
 
-The `ageGroup` field's display label SHALL be "Ages" and the field SHALL be located in the "Matching Preferences" collapsible section.
+The `ageGroup` field's display label SHALL be "Ages".
 
 #### Scenario: Label displays "Ages"
 
 - **WHEN** the referral form renders the age group field
 - **THEN** the label text reads "Ages" (not "Age Group")
-
-#### Scenario: Ages field is in Matching Preferences section
-
-- **WHEN** the referral form renders
-- **THEN** the `ageGroup` field is inside the "Matching Preferences" collapsible section
 
 ### Requirement: Display labels align with schema naming
 

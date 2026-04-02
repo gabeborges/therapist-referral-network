@@ -210,7 +210,7 @@ model ReferralPost {
 
   // Referral criteria
   presentingIssue String
-  ageGroup        String
+  ageGroup        String[]
   city            String?
   province        String?
   modalities      String[] // ["in-person", "virtual", "phone"]
@@ -218,7 +218,7 @@ model ReferralPost {
 
   // Expanded referral fields
   insuranceRequired   Boolean  @default(false) // Match therapists with acceptsInsurance
-  participants        String?  // "Individual" | "Couples" | "Family" | "Group"
+  participants        String[] // ["Individual", "Couples", "Family", "Group"]
   rate                String?  // "Full fee" | "Sliding scale" | "Pro-bono"
   therapistGenderPref String?  // "Any" | "Female" | "Male" | "Non-binary"
   therapyTypes        String[] // Therapy type names from taxonomy

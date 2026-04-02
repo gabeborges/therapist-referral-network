@@ -15,7 +15,7 @@ interface ReferralNotificationEmailProps {
   referrerName: string;
   referrerEmail: string;
   presentingIssue: string;
-  ageGroup: string;
+  ageGroup: string[];
   city: string | null;
   province: string;
   modalities: string[];
@@ -66,7 +66,7 @@ export function ReferralNotificationEmail({
               <Text style={detailValueStyle}>{presentingIssue}</Text>
 
               <Text style={detailLabelStyle}>Age group</Text>
-              <Text style={detailValueStyle}>{ageGroup}</Text>
+              <Text style={detailValueStyle}>{ageGroup.join(", ")}</Text>
 
               <Text style={detailLabelStyle}>Location</Text>
               <Text style={detailValueStyle}>{location}</Text>
@@ -241,7 +241,7 @@ ReferralNotificationEmail.PreviewProps = {
   referrerName: "Dr. Sarah Chen",
   referrerEmail: "sarah.chen@practice.com",
   presentingIssue: "Anxiety & PTSD",
-  ageGroup: "Adults",
+  ageGroup: ["Adults"],
   city: "Toronto",
   province: "ON",
   modalities: ["virtual"],

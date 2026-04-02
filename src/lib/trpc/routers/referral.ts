@@ -92,7 +92,7 @@ export const referralRouter = router({
         province: input.province ?? null,
         modalities: input.modalities,
         details: input.details ?? null,
-        participants: input.participants ?? null,
+        participants: input.participants ?? [],
         rate: input.rate ?? null,
         therapistGenderPref: input.therapistGenderPref ?? null,
         therapyTypes: input.therapyTypes ?? [],

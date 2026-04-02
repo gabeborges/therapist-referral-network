@@ -33,10 +33,14 @@ export function computeSpecialtyScore(
   return Math.min(overlap, 3);
 }
 
-export function computeAgeGroupScore(profileAgeGroups: string[], referralAgeGroup: string): number {
-  return profileAgeGroups.map((g) => g.toLowerCase()).includes(referralAgeGroup.toLowerCase())
-    ? 1
-    : 0;
+export function computeAgeGroupScore(
+  profileAgeGroups: string[],
+  referralAgeGroups: string[],
+): number {
+  if (referralAgeGroups.length === 0) return 0;
+  const profileSet = new Set(profileAgeGroups.map((g) => g.toLowerCase()));
+  const matches = referralAgeGroups.filter((g) => profileSet.has(g.toLowerCase()));
+  return matches.length / referralAgeGroups.length;
 }
 
 export function computeModalityScore(
@@ -74,14 +78,12 @@ export function computeActivityDecay(lastActiveAt: Date, now: Date = new Date())
 
 export function computeParticipantsScore(
   profileParticipants: string[],
-  referralParticipants: string | null,
+  referralParticipants: string[],
 ): number {
-  if (!referralParticipants) return 0;
-  return profileParticipants
-    .map((p) => p.toLowerCase())
-    .includes(referralParticipants.toLowerCase())
-    ? 1
-    : 0;
+  if (referralParticipants.length === 0) return 0;
+  const profileSet = new Set(profileParticipants.map((p) => p.toLowerCase()));
+  const matches = referralParticipants.filter((p) => profileSet.has(p.toLowerCase()));
+  return matches.length / referralParticipants.length;
 }
 
 export function computeLanguageScore(

@@ -5,7 +5,7 @@ interface ReferralPostCardProps {
   id: string;
   status: "OPEN" | "FULFILLED" | "EXPIRED";
   presentingIssue: string;
-  ageGroup: string;
+  ageGroup: string[];
   city: string | null;
   province: string;
   modalities: string[];
@@ -49,7 +49,7 @@ export function ReferralPostCard({
       </div>
 
       <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-[0.8125rem] text-fg-2 mb-3">
-        <span>{ageGroup}</span>
+        <span>{Array.isArray(ageGroup) ? ageGroup.join(", ") : ageGroup}</span>
         <span>{location}</span>
         <span>{modalities.join(", ")}</span>
       </div>

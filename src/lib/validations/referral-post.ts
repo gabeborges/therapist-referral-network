@@ -4,8 +4,8 @@ export const referralPostSchema = z.object({
   // Core fields
   presentingIssue: z.string().min(1, "Presenting issue is required"),
   details: z.string().min(1, "Details are required").max(1000),
-  participants: z.string().optional(),
-  ageGroup: z.string().min(1, "Age group is required"),
+  participants: z.array(z.string()).optional(),
+  ageGroup: z.array(z.string()).min(1, "Select at least one age group"),
   modalities: z
     .array(z.enum(["in-person", "virtual", "phone"]))
     .min(1, "Select at least one modality"),

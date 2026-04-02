@@ -4,7 +4,7 @@ interface ReferralPostItem {
   id: string;
   status: "OPEN" | "FULFILLED" | "EXPIRED";
   presentingIssue: string;
-  ageGroup: string;
+  ageGroup: string[];
   city: string | null;
   province: string | null;
   modalities: string[];

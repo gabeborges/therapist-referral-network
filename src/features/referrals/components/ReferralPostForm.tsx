@@ -41,6 +41,9 @@ const MODALITY_OPTIONS = [
 
 const PARTICIPANTS = ["Individual", "Couples", "Family", "Group"] as const;
 
+const PARTICIPANT_CHECKBOX_OPTIONS = PARTICIPANTS.map((p) => ({ value: p, label: p }));
+const AGE_CHECKBOX_OPTIONS = AGE_OPTIONS.map((a) => ({ value: a, label: a }));
+
 const RATE_OPTIONS = ["Full fee", "Sliding scale", "Pro-bono"] as const;
 
 const THERAPIST_GENDER_PREF_OPTIONS = ["Any", "Female", "Male", "Non-binary"] as const;
@@ -81,8 +84,8 @@ export function ReferralPostForm(): React.ReactElement {
     defaultValues: {
       presentingIssue: "",
       details: "",
-      participants: undefined,
-      ageGroup: "",
+      participants: [],
+      ageGroup: [],
       modalities: [],
       city: "",
       province: "",
@@ -149,7 +152,7 @@ export function ReferralPostForm(): React.ReactElement {
       )}
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-        <FormGroup title="Client needs">
+        <FormGroup title="Details">
           {/* Presenting issue */}
           <div>
             <label htmlFor="presentingIssue" className={labelClass}>
@@ -174,7 +177,7 @@ export function ReferralPostForm(): React.ReactElement {
           {/* Details */}
           <div>
             <label htmlFor="details" className={labelClass}>
-              Details
+              More details
             </label>
             <div className="p-3 rounded-sm border-l-[3px] border-l-warn bg-warn-l mb-3">
               <p className="text-[0.875rem] text-fg-2 m-0">
@@ -204,9 +207,17 @@ export function ReferralPostForm(): React.ReactElement {
               <span className="text-[0.75rem] text-fg-4">{details.length}/1000</span>
             </div>
           </div>
-        </FormGroup>
 
-        <FormGroup title="Service preferences">
+          {/* Ages (checkboxes — single column) */}
+          <CheckboxGroup
+            name="ageGroup"
+            control={control}
+            label="Ages"
+            options={AGE_CHECKBOX_OPTIONS}
+            itemMinWidth="full"
+            error={errors.ageGroup?.message}
+          />
+
           {/* Modalities (checkboxes) */}
           <CheckboxGroup
             name="modalities"
@@ -216,44 +227,19 @@ export function ReferralPostForm(): React.ReactElement {
             itemMinWidth="full"
             error={errors.modalities?.message}
           />
-
-          {/* Rate (radio buttons) */}
-          <fieldset className="border-none p-0">
-            <legend className={labelClass}>
-              Rate <span className="font-normal text-fg-4">(optional)</span>
-            </legend>
-            <div className="flex flex-wrap gap-4">
-              {RATE_OPTIONS.map((option) => (
-                <label
-                  key={option}
-                  className="inline-flex items-center gap-2 cursor-pointer text-[0.9375rem] text-fg select-none leading-[1.4]"
-                >
-                  <input
-                    type="radio"
-                    value={option}
-                    {...register("rate")}
-                    className="w-4 h-4 accent-brand cursor-pointer"
-                  />
-                  {option}
-                </label>
-              ))}
-            </div>
-          </fieldset>
-
-          {/* Insurance */}
-          <div>
-            <span className={labelClass}>
-              Insurance <span className="font-normal text-fg-4">(optional)</span>
-            </span>
-            <BooleanCheckbox
-              name="insuranceRequired"
-              control={control}
-              label="Insurance required"
-            />
-          </div>
         </FormGroup>
 
-        <FormGroup title="Other preferences">
+        <FormGroup title="Service preferences">
+          {/* Participants (checkboxes — single column) */}
+          <CheckboxGroup
+            name="participants"
+            control={control}
+            label="Participants"
+            options={PARTICIPANT_CHECKBOX_OPTIONS}
+            helpText="(optional)"
+            itemMinWidth="full"
+          />
+
           {/* City + Province */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
@@ -288,56 +274,39 @@ export function ReferralPostForm(): React.ReactElement {
             </div>
           </div>
 
-          {/* Participants (dropdown) */}
-          <div>
-            <label htmlFor="participants" className={labelClass}>
-              Participants <span className="font-normal text-fg-4">(optional)</span>
-            </label>
-            <select
-              id="participants"
-              {...register("participants")}
-              className={selectClasses(false)}
-              style={selectStyle}
-              defaultValue=""
-            >
-              <option value="">Select participant type...</option>
-              {PARTICIPANTS.map((p) => (
-                <option key={p} value={p}>
-                  {p}
-                </option>
+          {/* Rate (radio buttons) */}
+          <fieldset className="border-none p-0">
+            <legend className={labelClass}>
+              Rate <span className="font-normal text-fg-4">(optional)</span>
+            </legend>
+            <div className="flex flex-wrap gap-4">
+              {RATE_OPTIONS.map((option) => (
+                <label
+                  key={option}
+                  className="inline-flex items-center gap-2 cursor-pointer text-[0.9375rem] text-fg select-none leading-[1.4]"
+                >
+                  <input
+                    type="radio"
+                    value={option}
+                    {...register("rate")}
+                    className="w-4 h-4 accent-brand cursor-pointer"
+                  />
+                  {option}
+                </label>
               ))}
-            </select>
-          </div>
+            </div>
+          </fieldset>
 
-          {/* Ages */}
+          {/* Insurance */}
           <div>
-            <label htmlFor="ageGroup" className={labelClass}>
-              Ages
-            </label>
-            <select
-              id="ageGroup"
-              {...register("ageGroup")}
-              aria-required="true"
-              aria-invalid={!!errors.ageGroup}
-              aria-describedby={errors.ageGroup ? "ageGroup-error" : undefined}
-              className={selectClasses(!!errors.ageGroup)}
-              style={selectStyle}
-              defaultValue=""
-            >
-              <option value="" disabled>
-                Select age group...
-              </option>
-              {AGE_OPTIONS.map((group) => (
-                <option key={group} value={group}>
-                  {group}
-                </option>
-              ))}
-            </select>
-            {errors.ageGroup && (
-              <p id="ageGroup-error" className="mt-1 text-[0.75rem] text-err">
-                {errors.ageGroup.message}
-              </p>
-            )}
+            <span className={labelClass}>
+              Insurance <span className="font-normal text-fg-4">(optional)</span>
+            </span>
+            <BooleanCheckbox
+              name="insuranceRequired"
+              control={control}
+              label="Insurance required"
+            />
           </div>
         </FormGroup>
 

@@ -74,7 +74,7 @@ function makeReferralPost(overrides: Partial<ReferralPostModel> = {}): ReferralP
     id: "referral-1",
     authorId: "author-profile-id",
     presentingIssue: "anxiety",
-    ageGroup: "adults",
+    ageGroup: ["adults"],
     city: "Toronto",
     province: "ON",
     modalities: ["virtual"],
@@ -86,7 +86,7 @@ function makeReferralPost(overrides: Partial<ReferralPostModel> = {}): ReferralP
     createdAt: new Date("2026-03-20"),
     updatedAt: new Date("2026-03-20"),
     // New fields
-    participants: null,
+    participants: [],
     rate: null,
     therapistGenderPref: null,
     therapyTypes: [],
@@ -120,15 +120,15 @@ describe("computeSpecialtyScore", () => {
 
 describe("computeAgeGroupScore", () => {
   it("returns 1 when the age group matches", () => {
-    expect(computeAgeGroupScore(["adults", "adolescents"], "adults")).toBe(1);
+    expect(computeAgeGroupScore(["adults", "adolescents"], ["adults"])).toBe(1);
   });
 
   it("returns 0 when the age group does not match", () => {
-    expect(computeAgeGroupScore(["children"], "adults")).toBe(0);
+    expect(computeAgeGroupScore(["children"], ["adults"])).toBe(0);
   });
 
   it("is case-insensitive", () => {
-    expect(computeAgeGroupScore(["Adults"], "adults")).toBe(1);
+    expect(computeAgeGroupScore(["Adults"], ["adults"])).toBe(1);
   });
 });
 
@@ -257,23 +257,23 @@ describe("computeCompletenessBoost", () => {
 
 describe("computeParticipantsScore", () => {
   it("returns 1 when the profile includes the referral participant type", () => {
-    expect(computeParticipantsScore(["Individuals", "Couples"], "Couples")).toBe(1);
+    expect(computeParticipantsScore(["Individuals", "Couples"], ["Couples"])).toBe(1);
   });
 
   it("returns 0 when the profile does not include the referral participant type", () => {
-    expect(computeParticipantsScore(["Individuals"], "Couples")).toBe(0);
+    expect(computeParticipantsScore(["Individuals"], ["Couples"])).toBe(0);
   });
 
-  it("returns 0 when referralParticipants is null", () => {
-    expect(computeParticipantsScore(["Individuals", "Couples"], null)).toBe(0);
+  it("returns 0 when referralParticipants is empty", () => {
+    expect(computeParticipantsScore(["Individuals", "Couples"], [])).toBe(0);
   });
 
   it("returns 0 when profile participants is empty", () => {
-    expect(computeParticipantsScore([], "Individuals")).toBe(0);
+    expect(computeParticipantsScore([], ["Individuals"])).toBe(0);
   });
 
   it("is case-insensitive", () => {
-    expect(computeParticipantsScore(["individuals"], "Individuals")).toBe(1);
+    expect(computeParticipantsScore(["individuals"], ["Individuals"])).toBe(1);
   });
 });
 
@@ -397,7 +397,7 @@ describe("scoreProfile", () => {
 
   it("scores participants dimension when referral specifies participants", () => {
     const profile = makeProfile({ participants: ["Couples", "Family"] });
-    const referral = makeReferralPost({ participants: "Couples" });
+    const referral = makeReferralPost({ participants: ["Couples"] });
 
     const result = scoreProfile(profile, referral, NOW);
 
@@ -406,7 +406,7 @@ describe("scoreProfile", () => {
 
   it("does not score participants when referral has no participants", () => {
     const profile = makeProfile({ participants: ["Couples"] });
-    const referral = makeReferralPost({ participants: null });
+    const referral = makeReferralPost({ participants: [] });
 
     const result = scoreProfile(profile, referral, NOW);
 
@@ -456,7 +456,7 @@ describe("scoreProfile", () => {
       therapeuticApproach: ["EMDR"],
     });
     const referral = makeReferralPost({
-      participants: "Couples",
+      participants: ["Couples"],
       languages: ["French"],
       therapyTypes: ["EMDR"],
     });

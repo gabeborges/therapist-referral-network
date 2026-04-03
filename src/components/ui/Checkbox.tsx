@@ -15,7 +15,7 @@ export function Checkbox({
 }: CheckboxProps): React.ReactElement {
   return (
     <label
-      className={`inline-flex items-center gap-2 cursor-pointer select-none leading-[1.4] hover:[&>.cb-box]:border-border-e hover:[&>.cb-box]:bg-bg hover:[&_input:checked+.cb-box]:bg-brand-h hover:[&_input:checked+.cb-box]:border-brand-h ${
+      className={`flex items-center gap-2 cursor-pointer select-none leading-[1.4] hover:[&>.cb-box]:border-border-e hover:[&>.cb-box]:bg-bg hover:[&_input:checked+.cb-box]:bg-brand-h hover:[&_input:checked+.cb-box]:border-brand-h ${
         disabled ? "cursor-not-allowed opacity-70" : ""
       }`}
     >

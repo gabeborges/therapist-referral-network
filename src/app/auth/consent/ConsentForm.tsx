@@ -117,7 +117,7 @@ export function ConsentForm(): React.ReactElement {
       </Checkbox>
 
       {error && (
-        <p className="text-[0.8125rem]" style={{ color: "var(--danger)" }}>
+        <p className="text-[0.8125rem]" style={{ color: "var(--err)" }}>
           {error}
         </p>
       )}

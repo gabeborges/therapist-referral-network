@@ -23,7 +23,7 @@ const variantClasses: Record<ButtonVariant, string> = {
     "w-full bg-s2 text-fg border border-border text-[0.9375rem] font-medium gap-3 transition-[border-color,box-shadow] duration-150 ease-out hover:border-border-e hover:shadow-1",
   text: "bg-transparent border-none text-fg-2 text-[0.8125rem] font-medium p-0 transition-[color] duration-150 hover:text-fg",
   danger:
-    "bg-danger text-white border-none font-semibold transition-[opacity] duration-150 ease-out hover:opacity-90",
+    "bg-err text-white border-none font-semibold transition-[opacity] duration-150 ease-out hover:opacity-90",
 };
 
 const sizeClasses: Record<ButtonVariant, Record<ButtonSize, string>> = {

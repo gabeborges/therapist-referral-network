@@ -49,12 +49,6 @@ export function UserAvatar({ initials, imageUrl }: UserAvatarProps): React.React
           }}
         >
           <div className="px-3 py-2">
-            <p
-              className="text-[0.6875rem] font-semibold tracking-[0.06em] uppercase mb-1.5"
-              style={{ color: "var(--fg-3)" }}
-            >
-              Theme
-            </p>
             <ThemeToggle />
           </div>
           <div className="my-1" style={{ borderTop: "1px solid var(--border-s)" }} />

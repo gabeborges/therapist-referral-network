@@ -28,12 +28,12 @@ export function DeleteAccountForm(): React.ReactElement {
       <div
         className="rounded-sm p-4 text-[0.8125rem] leading-[1.6]"
         style={{
-          border: "1px solid var(--danger)",
-          background: "color-mix(in srgb, var(--danger) 6%, transparent)",
+          border: "1px solid var(--err)",
+          background: "color-mix(in srgb, var(--err) 6%, transparent)",
           color: "var(--fg-2)",
         }}
       >
-        <p className="font-semibold mb-2" style={{ color: "var(--danger)" }}>
+        <p className="font-semibold mb-2" style={{ color: "var(--err)" }}>
           What happens when you delete your account
         </p>
         <ul className="list-disc pl-4 space-y-1">
@@ -53,7 +53,7 @@ export function DeleteAccountForm(): React.ReactElement {
       </Checkbox>
 
       {error && (
-        <p className="text-[0.8125rem]" style={{ color: "var(--danger)" }}>
+        <p className="text-[0.8125rem]" style={{ color: "var(--err)" }}>
           {error}
         </p>
       )}

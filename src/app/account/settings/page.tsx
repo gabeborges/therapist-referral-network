@@ -40,11 +40,11 @@ export default async function AccountSettingsPage(): Promise<React.ReactElement>
           <section className="mt-10">
             <p
               className="text-[0.6875rem] font-semibold tracking-[0.06em] uppercase mb-4"
-              style={{ color: "var(--danger)" }}
+              style={{ color: "var(--err)" }}
             >
               Danger zone
             </p>
-            <Card className="p-6 border-danger">
+            <Card className="p-6">
               <h2 className="text-[1rem] font-semibold mb-1" style={{ color: "var(--fg)" }}>
                 Delete your account
               </h2>

@@ -26,6 +26,12 @@ export default auth((req) => {
     return Response.redirect(signInUrl);
   }
 
+  // Authenticated users shouldn't see signin/signup — send them to referrals
+  const isAuthPage = nextUrl.pathname === "/auth/signin" || nextUrl.pathname === "/auth/signup";
+  if (isAuthenticated && isAuthPage) {
+    return Response.redirect(new URL("/referrals", nextUrl.origin));
+  }
+
   // Authenticated but hasn't accepted terms — force consent screen (skip API routes)
   if (
     isAuthenticated &&

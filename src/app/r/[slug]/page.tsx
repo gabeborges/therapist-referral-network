@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { BackLink } from "@/components/ui/BackLink";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
@@ -263,13 +264,7 @@ export default async function ReferralSharePage({
         {/* Back to dashboard for authenticated users */}
         {isAuthenticated && (
           <div className="text-center mt-6">
-            <Link
-              href="/referrals"
-              className="text-[0.8125rem] font-medium no-underline hover:underline"
-              style={{ color: "var(--brand)" }}
-            >
-              Back to My Referrals
-            </Link>
+            <BackLink href="/referrals">Back to My Referrals</BackLink>
           </div>
         )}
       </div>

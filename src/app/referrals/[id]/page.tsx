@@ -1,5 +1,5 @@
 import { redirect, notFound } from "next/navigation";
-import Link from "next/link";
+import { BackLink } from "@/components/ui/BackLink";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { ReferralStatusBadge } from "@/features/referrals/components/ReferralStatusBadge";
@@ -74,24 +74,9 @@ export default async function ReferralDetailPage({
       <div className="px-4 sm:px-6 pt-12 pb-24">
         <div className="max-w-[640px] mx-auto">
           {/* Back link */}
-          <Link
-            href="/referrals"
-            className="inline-flex items-center gap-1.5 text-[0.8125rem] font-medium text-fg-3 no-underline mb-6 hover:text-fg-2 transition-colors duration-150"
-          >
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M19 12H5M12 19l-7-7 7-7" />
-            </svg>
+          <BackLink href="/referrals" className="mb-6">
             Back to Referrals
-          </Link>
+          </BackLink>
 
           {/* Header */}
           <div className="bg-s1 border border-border rounded-md p-6 shadow-1 mb-4">

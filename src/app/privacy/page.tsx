@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { BackLink } from "@/components/ui/BackLink";
 
 export const metadata: Metadata = {
   title: "Privacy Policy — Therapist Referral Network",
@@ -21,13 +21,7 @@ export default function PrivacyPage(): React.ReactElement {
         <p className="text-[0.9375rem] leading-[1.7] mb-8" style={{ color: "var(--fg-2)" }}>
           Our privacy policy is being prepared and will be published here shortly.
         </p>
-        <Link
-          href="/"
-          className="text-[0.875rem] font-medium no-underline hover:underline"
-          style={{ color: "var(--brand)" }}
-        >
-          &larr; Back to home
-        </Link>
+        <BackLink href="/">Back to home</BackLink>
       </div>
     </div>
   );

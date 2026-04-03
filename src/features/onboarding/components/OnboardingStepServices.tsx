@@ -110,7 +110,7 @@ export function OnboardingStepServices(): React.ReactElement {
                 }
               }}
               className={`relative w-11 h-6 rounded-xl cursor-pointer border-none p-0 transition-[background] duration-150 ease-out focus-visible:outline-2 focus-visible:outline-border-f focus-visible:outline-offset-2 ${
-                field.value ? "bg-ok" : "bg-fg-4"
+                field.value ? "bg-brand" : "bg-fg-4"
               }`}
             >
               <span

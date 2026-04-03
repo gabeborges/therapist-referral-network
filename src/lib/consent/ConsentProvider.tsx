@@ -25,8 +25,18 @@ export function ConsentProvider({ children }: { children: React.ReactNode }): Re
   const [consented, setConsented] = useState(false);
 
   useEffect(() => {
-    setPreferences(getConsentPreferences());
-    setConsented(checkHasConsented());
+    const prefs = getConsentPreferences();
+    const consented = checkHasConsented();
+    console.log(
+      "[ConsentDebug] prefs:",
+      prefs,
+      "hasConsented:",
+      consented,
+      "raw cookie:",
+      document.cookie,
+    );
+    setPreferences(prefs);
+    setConsented(consented);
   }, []);
 
   const updatePreferences = useCallback(

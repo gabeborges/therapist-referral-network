@@ -160,7 +160,8 @@ export function ReferralPostForm(): React.ReactElement {
             </label>
             <div className="p-3 rounded-sm border-l-[3px] border-l-warn bg-warn-l mb-3">
               <p className="text-[0.875rem] text-fg-2 m-0">
-                Do not include client names, dates of birth, or identifying health details.
+                Do not include client names, dates of birth, email addresses, or any identifying
+                health details.
               </p>
             </div>
             <textarea
@@ -382,7 +383,8 @@ export function ReferralPostForm(): React.ReactElement {
                 control={control}
                 render={({ field }) => (
                   <AutocompleteSelect
-                    label="Therapy types (optional)"
+                    label="Therapy types"
+                    optional
                     options={therapyTypeOptions}
                     selected={
                       (field.value ?? [])
@@ -402,7 +404,8 @@ export function ReferralPostForm(): React.ReactElement {
                 control={control}
                 render={({ field }) => (
                   <AutocompleteSelect
-                    label="Languages (optional)"
+                    label="Languages"
+                    optional
                     options={languageOptions}
                     selected={
                       (field.value ?? [])
@@ -421,6 +424,12 @@ export function ReferralPostForm(): React.ReactElement {
                 <label htmlFor="additionalContext" className={labelClass}>
                   Additional context <span className="font-normal text-fg-4">(optional)</span>
                 </label>
+                <div className="p-3 rounded-sm border-l-[3px] border-l-warn bg-warn-l mb-3">
+                  <p className="text-[0.875rem] text-fg-2 m-0">
+                    Do not include client names, dates of birth, email addresses, or any identifying
+                    health details.
+                  </p>
+                </div>
                 <textarea
                   id="additionalContext"
                   {...register("additionalContext")}

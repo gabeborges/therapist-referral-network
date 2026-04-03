@@ -17,6 +17,7 @@ interface CheckboxGroupProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: any;
   label: string;
+  optional?: boolean;
   srOnlyLabel?: boolean;
   helpText?: string;
   error?: string;
@@ -29,6 +30,7 @@ export function CheckboxGroup({
   layout = "grid",
   control,
   label,
+  optional = false,
   srOnlyLabel = false,
   helpText,
   error,
@@ -50,6 +52,7 @@ export function CheckboxGroup({
         className={`block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2 ${srOnlyLabel ? "sr-only" : ""}`}
       >
         {label}
+        {optional && <span className="font-normal text-fg-4"> (optional)</span>}
       </legend>
       {helpText && (
         <p id={helpId} className="text-[0.75rem] text-fg-3 mb-2">

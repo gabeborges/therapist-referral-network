@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm, FormProvider, type Resolver } from "react-hook-form";
+import { useForm, FormProvider, Controller, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useState, useRef, useEffect, useMemo } from "react";
@@ -165,8 +165,45 @@ export function ProfileForm({ defaultValues }: ProfileFormProps): React.ReactEle
               />
               <ProfileSectionFinances />
 
+              {/* Communities served consent — gates public display and referral matching, not data entry */}
+              <div className="pt-4 border-t border-border-s">
+                <Controller
+                  name="consentCommunitiesServed"
+                  control={methods.control}
+                  render={({ field }) => (
+                    <label className="flex items-start gap-3 cursor-pointer select-none hover:[&>.cb-box]:border-border-e hover:[&>.cb-box]:bg-bg hover:[&_input:checked+.cb-box]:bg-brand-h hover:[&_input:checked+.cb-box]:border-brand-h">
+                      <input
+                        type="checkbox"
+                        checked={field.value}
+                        onChange={(e) => field.onChange(e.target.checked)}
+                        className="sr-only peer"
+                      />
+                      <span className="cb-box mt-0.5 w-[18px] h-[18px] shrink-0 rounded-[4px] border border-border bg-inset inline-flex items-center justify-center transition-[background,border-color,box-shadow] duration-150 ease-out peer-checked:bg-brand peer-checked:border-brand peer-checked:[&>svg]:opacity-100 peer-checked:[&>svg]:scale-100 peer-focus-visible:outline-2 peer-focus-visible:outline-border-f peer-focus-visible:outline-offset-2">
+                        <svg
+                          className="w-3 h-3 opacity-0 scale-[0.6] transition-[opacity,transform] duration-150 ease-out"
+                          viewBox="0 0 12 12"
+                          fill="none"
+                          stroke="white"
+                          strokeWidth={3}
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          aria-hidden="true"
+                        >
+                          <polyline points="2.5,6 5,8.5 9.5,3.5" />
+                        </svg>
+                      </span>
+                      <span className="text-[0.8125rem] leading-[1.5] text-fg-2">
+                        I consent to displaying the faith orientation and ethnicity communities I
+                        serve on my public profile and using them for referral matching. I can
+                        withdraw this consent at any time from my profile settings.
+                      </span>
+                    </label>
+                  )}
+                />
+              </div>
+
               {/* Actions */}
-              <div className="pt-4 border-t border-border-s flex gap-3">
+              <div className="flex gap-3">
                 <button
                   type="button"
                   onClick={handleCancel}

@@ -153,7 +153,7 @@ export function ProfileSectionBio(): React.ReactElement {
           </p>
         )}
         <p className="mt-1 text-[0.75rem] italic text-fg-3 tracking-[0.015em]">
-          This is how your name appears to other therapists in the network.
+          This is how your name appears to other therapists.
         </p>
       </div>
 
@@ -205,6 +205,9 @@ export function ProfileSectionBio(): React.ReactElement {
             {errors.contactEmail.message}
           </p>
         )}
+        <p className="mt-1 text-[0.75rem] italic text-fg-3 tracking-[0.015em]">
+          We will use this email to send you referrals.
+        </p>
       </div>
 
       {/* 8-9. Website URL + Psychology Today URL */}

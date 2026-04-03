@@ -10,6 +10,7 @@ export interface AutocompleteOption {
 
 interface AutocompleteSelectProps {
   label: string;
+  optional?: boolean;
   options: AutocompleteOption[];
   selected: AutocompleteOption[];
   onChange: (selected: AutocompleteOption[]) => void;
@@ -23,6 +24,7 @@ interface AutocompleteSelectProps {
 
 export function AutocompleteSelect({
   label,
+  optional = false,
   options,
   selected,
   onChange,
@@ -156,6 +158,7 @@ export function AutocompleteSelect({
         className="block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2"
       >
         {label}
+        {optional && <span className="font-normal text-fg-4"> (optional)</span>}
         {maxItems && (
           <span className="ml-1 font-normal text-fg-4">
             ({selected.length}/{maxItems})

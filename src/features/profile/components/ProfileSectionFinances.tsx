@@ -84,7 +84,8 @@ export function ProfileSectionFinances(): React.ReactElement {
       <CheckboxGroup
         name="paymentMethods"
         control={control}
-        label="Payment methods (optional)"
+        label="Payment methods"
+        optional
         options={PAYMENT_METHOD_OPTIONS.map((m) => ({ value: m, label: m }))}
         itemMinWidth="standard"
         error={errors.paymentMethods?.message}
@@ -95,7 +96,8 @@ export function ProfileSectionFinances(): React.ReactElement {
         <CheckboxGroup
           name="insurers"
           control={control}
-          label="Insurance (optional)"
+          label="Insurance"
+          optional
           options={INSURERS.map((i) => ({ value: i, label: i }))}
           itemMinWidth="standard"
           error={errors.insurers?.message}
@@ -121,7 +123,7 @@ export function ProfileSectionFinances(): React.ReactElement {
                 }
               }}
               className={`relative w-11 h-6 rounded-xl cursor-pointer border-none p-0 transition-[background] duration-150 ease-out focus-visible:outline-2 focus-visible:outline-border-f focus-visible:outline-offset-2 ${
-                field.value ? "bg-ok" : "bg-fg-4"
+                field.value ? "bg-brand" : "bg-fg-4"
               }`}
             >
               <span

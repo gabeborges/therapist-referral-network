@@ -140,7 +140,7 @@ export function OnboardingStepBio(): React.ReactElement {
             <p className="mt-1 text-[0.75rem] text-err">{errors.displayName.message}</p>
           )}
           <p className="mt-1 text-[0.75rem] italic text-fg-3 tracking-[0.015em]">
-            This is how your name appears to other therapists in the network.
+            This is how your name appears to other therapists.
           </p>
         </div>
       </div>
@@ -167,6 +167,9 @@ export function OnboardingStepBio(): React.ReactElement {
             {errors.contactEmail.message}
           </p>
         )}
+        <p className="mt-1 text-[0.75rem] italic text-fg-3 tracking-[0.015em]">
+          We will use this email to send you referrals.
+        </p>
       </div>
 
       {/* City + Province */}

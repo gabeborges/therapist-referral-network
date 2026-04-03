@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useConsent } from "@/lib/consent/ConsentProvider";
+import { Button } from "@/components/ui/Button";
+import { Toggle } from "@/components/ui/Toggle";
 
 type Props = {
   open: boolean;
@@ -35,7 +37,7 @@ export function ConsentPreferencesModal({ open, onClose }: Props): React.ReactEl
     >
       {/* Backdrop */}
       <div
-        className="absolute inset-0"
+        className="absolute inset-0 cursor-pointer"
         style={{ background: "rgba(0, 0, 0, 0.5)" }}
         onClick={onClose}
       />
@@ -54,7 +56,13 @@ export function ConsentPreferencesModal({ open, onClose }: Props): React.ReactEl
 
         <div className="space-y-4">
           {/* Essential — always on */}
-          <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Toggle
+              checked={true}
+              onChange={() => {}}
+              disabled
+              ariaLabel="Essential cookies (always on)"
+            />
             <div>
               <p className="text-[0.8125rem] font-medium" style={{ color: "var(--fg)" }}>
                 Essential
@@ -63,18 +71,11 @@ export function ConsentPreferencesModal({ open, onClose }: Props): React.ReactEl
                 Required for the platform to function
               </p>
             </div>
-            <button
-              disabled
-              className="relative w-9 h-5 rounded-full cursor-not-allowed opacity-70"
-              style={{ background: "var(--brand)" }}
-              aria-label="Essential cookies (always on)"
-            >
-              <span className="absolute top-0.5 right-0.5 w-4 h-4 rounded-full bg-white transition-transform" />
-            </button>
           </div>
 
           {/* Analytics */}
-          <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Toggle checked={analytics} onChange={setAnalytics} ariaLabel="Analytics cookies" />
             <div>
               <p className="text-[0.8125rem] font-medium" style={{ color: "var(--fg)" }}>
                 Analytics
@@ -83,23 +84,15 @@ export function ConsentPreferencesModal({ open, onClose }: Props): React.ReactEl
                 Help us understand how you use the platform
               </p>
             </div>
-            <button
-              onClick={() => setAnalytics(!analytics)}
-              className="relative w-9 h-5 rounded-full transition-colors"
-              style={{ background: analytics ? "var(--brand)" : "var(--border-e)" }}
-              role="switch"
-              aria-checked={analytics}
-              aria-label="Analytics cookies"
-            >
-              <span
-                className="absolute top-0.5 w-4 h-4 rounded-full bg-white transition-transform"
-                style={{ left: analytics ? "calc(100% - 18px)" : "2px" }}
-              />
-            </button>
           </div>
 
           {/* Session recording */}
-          <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Toggle
+              checked={sessionRecording}
+              onChange={setSessionRecording}
+              ariaLabel="Session recording cookies"
+            />
             <div>
               <p className="text-[0.8125rem] font-medium" style={{ color: "var(--fg)" }}>
                 Session recording
@@ -108,44 +101,16 @@ export function ConsentPreferencesModal({ open, onClose }: Props): React.ReactEl
                 Help us improve the experience by recording sessions
               </p>
             </div>
-            <button
-              onClick={() => setSessionRecording(!sessionRecording)}
-              className="relative w-9 h-5 rounded-full transition-colors"
-              style={{ background: sessionRecording ? "var(--brand)" : "var(--border-e)" }}
-              role="switch"
-              aria-checked={sessionRecording}
-              aria-label="Session recording cookies"
-            >
-              <span
-                className="absolute top-0.5 w-4 h-4 rounded-full bg-white transition-transform"
-                style={{ left: sessionRecording ? "calc(100% - 18px)" : "2px" }}
-              />
-            </button>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 mt-6">
-          <button
-            onClick={onClose}
-            className="h-9 px-4 rounded-sm text-[0.8125rem] font-medium"
-            style={{
-              border: "1px solid var(--border)",
-              background: "transparent",
-              color: "var(--fg-2)",
-            }}
-          >
+        <div className="flex items-center justify-between mt-6">
+          <Button variant="secondary" size="sm" onClick={onClose}>
             Cancel
-          </button>
-          <button
-            onClick={handleSave}
-            className="h-9 px-4 rounded-sm text-[0.8125rem] font-semibold"
-            style={{
-              background: "var(--brand)",
-              color: "var(--brand-on)",
-            }}
-          >
+          </Button>
+          <Button variant="primary" size="sm" onClick={handleSave}>
             Save preferences
-          </button>
+          </Button>
         </div>
       </div>
     </div>

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useConsent } from "@/lib/consent/ConsentProvider";
+import { Button } from "@/components/ui/Button";
 import { ConsentPreferencesModal } from "@/features/consent/components/ConsentPreferencesModal";
 
 export function CookieConsentBanner(): React.ReactElement | null {
@@ -37,38 +38,15 @@ export function CookieConsentBanner(): React.ReactElement | null {
             accept/reject all non-essential cookies.
           </p>
           <div className="flex items-center gap-2 flex-wrap">
-            <button
-              onClick={rejectAll}
-              className="h-8 px-3 rounded-sm text-[0.75rem] font-medium transition-colors"
-              style={{
-                border: "1px solid var(--border)",
-                background: "transparent",
-                color: "var(--fg-2)",
-              }}
-            >
+            <Button variant="secondary" size="sm" onClick={rejectAll}>
               Reject all
-            </button>
-            <button
-              onClick={() => setShowPreferences(true)}
-              className="h-8 px-3 rounded-sm text-[0.75rem] font-medium transition-colors"
-              style={{
-                border: "1px solid var(--border)",
-                background: "transparent",
-                color: "var(--fg-2)",
-              }}
-            >
+            </Button>
+            <Button variant="secondary" size="sm" onClick={() => setShowPreferences(true)}>
               Customize
-            </button>
-            <button
-              onClick={acceptAll}
-              className="h-8 px-3 rounded-sm text-[0.75rem] font-semibold transition-colors"
-              style={{
-                background: "var(--brand)",
-                color: "var(--brand-on)",
-              }}
-            >
+            </Button>
+            <Button variant="primary" size="sm" onClick={acceptAll}>
               Accept all
-            </button>
+            </Button>
           </div>
         </div>
       </div>

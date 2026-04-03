@@ -2,7 +2,12 @@
 
 import { useFormContext } from "react-hook-form";
 import type { TherapistProfileFormData } from "@/lib/validations/therapist-profile";
-import { PRONOUNS_OPTIONS, GENDER_OPTIONS, PROVINCES } from "@/lib/validations/therapist-profile";
+import {
+  PRONOUNS_OPTIONS,
+  GENDER_OPTIONS,
+  PROVINCES,
+  UNSUPPORTED_PROVINCES,
+} from "@/lib/validations/therapist-profile";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { Textarea } from "@/components/ui/Textarea";
@@ -285,17 +290,24 @@ export function ProfileSectionBio(): React.ReactElement {
             <option value="" disabled>
               Select province...
             </option>
-            {PROVINCES.map((p) => (
-              <option key={p.value} value={p.value}>
-                {p.label}
-              </option>
-            ))}
+            {PROVINCES.map((p) => {
+              const unsupported = UNSUPPORTED_PROVINCES.has(p.value);
+              return (
+                <option key={p.value} value={p.value} disabled={unsupported}>
+                  {p.label}
+                  {unsupported ? " (not yet supported)" : ""}
+                </option>
+              );
+            })}
           </Select>
           {errors.province && (
             <p id="pf-province-error" className="mt-1 text-[0.75rem] text-err">
               {errors.province.message}
             </p>
           )}
+          <p className="mt-1 text-[0.75rem] italic text-fg-3 tracking-[0.015em]">
+            Quebec is not yet supported.
+          </p>
         </div>
       </div>
     </FormGroup>

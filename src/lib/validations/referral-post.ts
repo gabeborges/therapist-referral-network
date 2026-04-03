@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { MODALITIES } from "./therapist-profile";
+import { MODALITIES, UNSUPPORTED_PROVINCES } from "./therapist-profile";
 
 export const referralPostSchema = z.object({
   // Core fields
@@ -9,7 +9,10 @@ export const referralPostSchema = z.object({
   ageGroup: z.string().min(1, "Select an age group"),
   modalities: z.array(z.enum(MODALITIES)).min(1, "Select at least one modality"),
   city: z.string().optional(),
-  province: z.string().optional(),
+  province: z
+    .string()
+    .optional()
+    .refine((v) => !v || !UNSUPPORTED_PROVINCES.has(v), "This province is not yet supported"),
   rate: z.string().optional(),
   insuranceRequired: z.boolean().optional(),
 

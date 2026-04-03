@@ -13,6 +13,7 @@ import {
   MODALITY_LABELS,
   PARTICIPANT_OPTIONS,
   PROVINCES,
+  UNSUPPORTED_PROVINCES,
 } from "@/lib/validations/therapist-profile";
 import {
   AutocompleteSelect,
@@ -260,12 +261,19 @@ export function ReferralPostForm(): React.ReactElement {
               </label>
               <Select id="province" {...register("province")} defaultValue="">
                 <option value="">Select province...</option>
-                {PROVINCES.map((p) => (
-                  <option key={p.value} value={p.value}>
-                    {p.label}
-                  </option>
-                ))}
+                {PROVINCES.map((p) => {
+                  const unsupported = UNSUPPORTED_PROVINCES.has(p.value);
+                  return (
+                    <option key={p.value} value={p.value} disabled={unsupported}>
+                      {p.label}
+                      {unsupported ? " (not yet supported)" : ""}
+                    </option>
+                  );
+                })}
               </Select>
+              <p className="mt-1 text-[0.75rem] italic text-fg-3 tracking-[0.015em]">
+                Quebec is not yet supported.
+              </p>
             </div>
           </div>
 

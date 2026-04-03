@@ -95,7 +95,10 @@ export const therapistProfileSchema = z.object({
 
   // Location
   city: z.string().min(1, "City is required"),
-  province: z.string().min(1, "Province is required"),
+  province: z
+    .string()
+    .min(1, "Province is required")
+    .refine((v) => !UNSUPPORTED_PROVINCES.has(v), "This province is not yet supported"),
   country: z.literal("CA"),
 
   // Specialties & approaches (taxonomy IDs)
@@ -160,6 +163,9 @@ export const PROVINCES = [
   { value: "SK", label: "Saskatchewan" },
   { value: "YT", label: "Yukon" },
 ] as const;
+
+/** Provinces listed here are shown as disabled in dropdowns and rejected by validation. */
+export const UNSUPPORTED_PROVINCES = new Set(["QC"]);
 
 export const INSURERS = [
   "Aetna",

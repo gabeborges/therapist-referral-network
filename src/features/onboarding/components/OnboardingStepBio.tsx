@@ -3,7 +3,11 @@
 import { useFormContext, Controller } from "react-hook-form";
 import type { OnboardingFormData } from "@/lib/validations/onboarding";
 import { ProfileImageUpload } from "@/features/profile/components/ProfileImageUpload";
-import { PRONOUNS_OPTIONS, PROVINCES } from "@/lib/validations/therapist-profile";
+import {
+  PRONOUNS_OPTIONS,
+  PROVINCES,
+  UNSUPPORTED_PROVINCES,
+} from "@/lib/validations/therapist-profile";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 
@@ -203,17 +207,24 @@ export function OnboardingStepBio(): React.ReactElement {
             error={!!errors.province}
           >
             <option value="">Select province...</option>
-            {PROVINCES.map((p) => (
-              <option key={p.value} value={p.value}>
-                {p.label}
-              </option>
-            ))}
+            {PROVINCES.map((p) => {
+              const unsupported = UNSUPPORTED_PROVINCES.has(p.value);
+              return (
+                <option key={p.value} value={p.value} disabled={unsupported}>
+                  {p.label}
+                  {unsupported ? " (not yet supported)" : ""}
+                </option>
+              );
+            })}
           </Select>
           {errors.province && (
             <p id="ob-province-error" className="mt-1 text-[0.75rem] text-err">
               {errors.province.message}
             </p>
           )}
+          <p className="mt-1 text-[0.75rem] italic text-fg-3 tracking-[0.015em]">
+            Quebec is not yet supported.
+          </p>
         </div>
       </div>
     </div>

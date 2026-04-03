@@ -6,10 +6,10 @@ import { Button } from "@/components/ui/Button";
 import { ConsentPreferencesModal } from "@/features/consent/components/ConsentPreferencesModal";
 
 export function CookieConsentBanner(): React.ReactElement | null {
-  const { hasConsented, updatePreferences } = useConsent();
+  const { hasConsented, isReady, updatePreferences } = useConsent();
   const [showPreferences, setShowPreferences] = useState(false);
 
-  if (hasConsented) return null;
+  if (!isReady || hasConsented) return null;
 
   function acceptAll(): void {
     updatePreferences({ analytics: true, sessionRecording: true });

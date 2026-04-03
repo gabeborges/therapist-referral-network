@@ -1,6 +1,8 @@
 import { router, protectedProcedure } from "@/lib/trpc/server";
 import { therapistProfileSchema } from "@/lib/validations/therapist-profile";
 
+const CONSENT_POLICY_VERSION = "2026-04-01";
+
 export const therapistRouter = router({
   getProfile: protectedProcedure.query(async ({ ctx }) => {
     return ctx.prisma.therapistProfile.findUnique({
@@ -59,12 +61,12 @@ export const therapistRouter = router({
           // Session details
           modalities: input.modalities,
           ages: input.ages,
-          // Communities
+          // Communities — clear sensitive fields when consent is withdrawn (PIPEDA 4.5)
           consentCommunitiesServed: input.consentCommunitiesServed,
           participants: input.participants,
           topSpecialties: input.topSpecialties ?? [],
-          faithOrientation: input.faithOrientation ?? [],
-          ethnicity: input.ethnicity ?? [],
+          faithOrientation: input.consentCommunitiesServed ? (input.faithOrientation ?? []) : [],
+          ethnicity: input.consentCommunitiesServed ? (input.ethnicity ?? []) : [],
           therapyStyle: input.therapyStyle ?? [],
           therapistGender: input.therapistGender ?? null,
           // Insurance & pricing
@@ -81,6 +83,19 @@ export const therapistRouter = router({
           acceptingClients: input.acceptingClients,
         },
       });
+
+      // Log initial communities consent if granted
+      if (input.consentCommunitiesServed) {
+        await ctx.prisma.consentLog.create({
+          data: {
+            userId,
+            consentType: "communities_served",
+            action: "granted",
+            policyVersion: CONSENT_POLICY_VERSION,
+          },
+        });
+      }
+
       return profile;
     }),
 
@@ -88,6 +103,15 @@ export const therapistRouter = router({
     .input(therapistProfileSchema)
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.session.user.id as string;
+
+      // Fetch current consent state for audit logging
+      const current = await ctx.prisma.therapistProfile.findUnique({
+        where: { userId },
+        select: { consentCommunitiesServed: true },
+      });
+      const consentChanged =
+        current && current.consentCommunitiesServed !== input.consentCommunitiesServed;
+
       const profile = await ctx.prisma.therapistProfile.update({
         where: { userId },
         data: {
@@ -123,12 +147,12 @@ export const therapistRouter = router({
           // Session details
           modalities: input.modalities,
           ages: input.ages,
-          // Communities
+          // Communities — clear sensitive fields when consent is withdrawn (PIPEDA 4.5)
           consentCommunitiesServed: input.consentCommunitiesServed,
           participants: input.participants,
           topSpecialties: input.topSpecialties ?? [],
-          faithOrientation: input.faithOrientation ?? [],
-          ethnicity: input.ethnicity ?? [],
+          faithOrientation: input.consentCommunitiesServed ? (input.faithOrientation ?? []) : [],
+          ethnicity: input.consentCommunitiesServed ? (input.ethnicity ?? []) : [],
           therapyStyle: input.therapyStyle ?? [],
           therapistGender: input.therapistGender ?? null,
           // Insurance & pricing
@@ -146,6 +170,22 @@ export const therapistRouter = router({
           lastActiveAt: new Date(),
         },
       });
+
+      // Log consent changes for audit trail
+      if (consentChanged) {
+        await ctx.prisma.consentLog.create({
+          data: {
+            userId,
+            consentType: "communities_served",
+            action: input.consentCommunitiesServed ? "granted" : "withdrawn",
+            policyVersion: CONSENT_POLICY_VERSION,
+            metadata: !input.consentCommunitiesServed
+              ? { fieldsCleared: ["faithOrientation", "ethnicity"] }
+              : undefined,
+          },
+        });
+      }
+
       return profile;
     }),
 
@@ -163,5 +203,58 @@ export const therapistRouter = router({
       },
     });
     return profile;
+  }),
+
+  // Account deletion workflow (PIPEDA data retention compliance)
+  requestDeletion: protectedProcedure.mutation(async ({ ctx }) => {
+    const userId = ctx.session.user.id as string;
+    const now = new Date();
+
+    await ctx.prisma.$transaction(async (tx) => {
+      // 1. Soft-delete the user
+      await tx.user.update({
+        where: { id: userId },
+        data: { deletedAt: now, deleteReason: "user_request" },
+      });
+
+      // 2. Clear sensitive data immediately (PIPEDA — no retention for sensitive fields)
+      const profile = await tx.therapistProfile.findUnique({
+        where: { userId },
+        select: { id: true },
+      });
+
+      if (profile) {
+        await tx.therapistProfile.update({
+          where: { id: profile.id },
+          data: {
+            consentCommunitiesServed: false,
+            faithOrientation: [],
+            ethnicity: [],
+          },
+        });
+
+        // 3. Cancel all OPEN referrals
+        await tx.referralPost.updateMany({
+          where: { authorId: profile.id, status: "OPEN" },
+          data: { status: "CANCELLED", cancelledAt: now },
+        });
+      }
+
+      // 4. Revoke auth — delete sessions and OAuth accounts
+      await tx.session.deleteMany({ where: { userId } });
+      await tx.account.deleteMany({ where: { userId } });
+
+      // 5. Consent audit log (survives hard-delete — no FK)
+      await tx.consentLog.create({
+        data: {
+          userId,
+          consentType: "account_deletion",
+          action: "withdrawn",
+          policyVersion: "2026-04-01",
+        },
+      });
+    });
+
+    return { success: true };
   }),
 });

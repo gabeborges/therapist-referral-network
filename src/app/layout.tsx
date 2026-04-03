@@ -5,6 +5,8 @@ import { SessionProvider } from "@/app/providers/session-provider";
 import { ConsentProvider } from "@/lib/consent/ConsentProvider";
 import { CookieConsentBanner } from "@/features/consent/components/CookieConsentBanner";
 import { CookieSettingsTrigger } from "@/features/consent/components/CookieSettingsTrigger";
+import { ConsentModeDefaults } from "@/features/analytics/components/ConsentModeDefaults";
+import { GoogleTagManagerLoader } from "@/features/analytics/components/GoogleTagManagerLoader";
 import "./globals.css";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -34,6 +36,7 @@ export default function RootLayout({
             __html: `(function(){try{var t=localStorage.getItem("theme-preference");if(t==="light"||t==="dark"||t==="system")document.documentElement.setAttribute("data-theme",t)}catch(e){}})()`,
           }}
         />
+        <ConsentModeDefaults />
       </head>
       <body className={`${plusJakartaSans.variable} antialiased bg-[var(--bg)] text-[var(--fg)]`}>
         <a
@@ -45,6 +48,7 @@ export default function RootLayout({
         <SessionProvider>
           <TRPCReactProvider>
             <ConsentProvider>
+              <GoogleTagManagerLoader gtmId={process.env.NEXT_PUBLIC_GTM_ID ?? ""} />
               <main id="main-content">{children}</main>
               <CookieConsentBanner />
               <CookieSettingsTrigger />

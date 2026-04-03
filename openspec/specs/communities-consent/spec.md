@@ -43,28 +43,35 @@ The consent checkbox label SHALL read: "I consent to collecting and displaying m
 - **WHEN** the consent checkbox is rendered
 - **THEN** the label text matches the specified consent language
 
-### Requirement: Data persists regardless of consent state
+### Requirement: Consent withdrawal deletes sensitive data
 
-The form SHALL save faith orientation and ethnicity values to the database when the user submits, regardless of whether `consentCommunitiesServed` is checked.
+When `consentCommunitiesServed` is set to false, the server MUST clear `faithOrientation` and `ethnicity` arrays to `[]` in the same database operation. This is a PIPEDA Principle 4.5 compliance requirement — sensitive personal data (ethnic/racial origins, religious/philosophical beliefs) cannot be retained without consent.
+
+> **Supersedes** the previous "Data persists regardless of consent state" requirement. The original design decoupled data entry from consent to improve UX. PIPEDA compliance requires that consent withdrawal triggers data deletion for sensitive fields.
+
+#### Scenario: Consent withdrawal clears data
+
+- **WHEN** user unchecks `consentCommunitiesServed` and saves the form
+- **THEN** `faithOrientation` and `ethnicity` are set to `[]` in the database, regardless of what values the form submitted
 
 #### Scenario: Save without consent
 
 - **WHEN** user fills faith orientation and ethnicity fields but leaves consent unchecked and saves
-- **THEN** the values are persisted to the database with `consentCommunitiesServed = false`
+- **THEN** `consentCommunitiesServed = false` is stored and `faithOrientation` and `ethnicity` are stored as `[]`
 
-#### Scenario: Revoke consent preserves data
+#### Scenario: Server-side enforcement
 
-- **WHEN** user has consent checked, fills fields, then unchecks consent and saves
-- **THEN** the faith and ethnicity values remain in the database, only `consentCommunitiesServed` changes to false
+- **WHEN** a profile update is submitted with `consentCommunitiesServed = false` and non-empty `faithOrientation` or `ethnicity` values
+- **THEN** the server forces both arrays to `[]` before writing to the database (client input is overridden)
 
-### Requirement: Consent gates public display and matching, not data entry
+### Requirement: Consent gates public display and matching
 
 When `consentCommunitiesServed` is false, faith orientation and ethnicity values MUST NOT be displayed on the public profile or used in referral matching. When true, they SHALL be displayed and used.
 
 #### Scenario: Public profile without consent
 
-- **WHEN** a therapist profile has `consentCommunitiesServed = false` and faith/ethnicity data
-- **THEN** the public profile does not display faith orientation or ethnicity
+- **WHEN** a therapist profile has `consentCommunitiesServed = false`
+- **THEN** the public profile does not display faith orientation or ethnicity (fields are empty in the database)
 
 #### Scenario: Public profile with consent
 
@@ -75,3 +82,17 @@ When `consentCommunitiesServed` is false, faith orientation and ethnicity values
 
 - **WHEN** a referral matching query considers faith/ethnicity criteria
 - **THEN** profiles with `consentCommunitiesServed = false` are excluded from faith/ethnicity-based matching
+
+### Requirement: Consent changes are audit-logged
+
+Every change to `consentCommunitiesServed` MUST create a `ConsentLog` entry recording the action (`granted` or `withdrawn`), timestamp, and policy version. Initial consent grant during profile creation is also logged.
+
+#### Scenario: Consent granted
+
+- **WHEN** user checks `consentCommunitiesServed` and saves (or creates a profile with it checked)
+- **THEN** a `ConsentLog` entry is created with `consentType: "communities_served"`, `action: "granted"`, and the current policy version
+
+#### Scenario: Consent withdrawn
+
+- **WHEN** user unchecks `consentCommunitiesServed` and saves
+- **THEN** a `ConsentLog` entry is created with `consentType: "communities_served"`, `action: "withdrawn"`, the current policy version, and metadata noting which fields were cleared

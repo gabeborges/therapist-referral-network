@@ -3,6 +3,18 @@
     {
       "path": "/api/cron/drip",
       "schedule": "0 */6 * * *"
+    },
+    {
+      "path": "/api/cron/purge-accounts",
+      "schedule": "0 3 * * *"
+    },
+    {
+      "path": "/api/cron/purge-referrals",
+      "schedule": "0 2 * * *"
+    },
+    {
+      "path": "/api/cron/purge-consent-logs",
+      "schedule": "0 4 1 * *"
     }
   ]
 }

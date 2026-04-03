@@ -11,32 +11,27 @@ import {
 type ConsentContextValue = {
   preferences: ConsentPreferences | null;
   hasConsented: boolean;
+  isReady: boolean;
   updatePreferences: (prefs: Omit<ConsentPreferences, "essential" | "updatedAt">) => void;
 };
 
 const ConsentContext = createContext<ConsentContextValue>({
   preferences: null,
   hasConsented: false,
+  isReady: false,
   updatePreferences: () => {},
 });
 
 export function ConsentProvider({ children }: { children: React.ReactNode }): React.ReactElement {
   const [preferences, setPreferences] = useState<ConsentPreferences | null>(null);
   const [consented, setConsented] = useState(false);
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
     const prefs = getConsentPreferences();
-    const consented = checkHasConsented();
-    console.log(
-      "[ConsentDebug] prefs:",
-      prefs,
-      "hasConsented:",
-      consented,
-      "raw cookie:",
-      document.cookie,
-    );
     setPreferences(prefs);
-    setConsented(consented);
+    setConsented(checkHasConsented());
+    setIsReady(true);
   }, []);
 
   const updatePreferences = useCallback(
@@ -49,7 +44,9 @@ export function ConsentProvider({ children }: { children: React.ReactNode }): Re
   );
 
   return (
-    <ConsentContext.Provider value={{ preferences, hasConsented: consented, updatePreferences }}>
+    <ConsentContext.Provider
+      value={{ preferences, hasConsented: consented, isReady, updatePreferences }}
+    >
       {children}
     </ConsentContext.Provider>
   );

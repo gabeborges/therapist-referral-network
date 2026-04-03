@@ -60,6 +60,16 @@ export async function acceptTerms(): Promise<{ success: boolean; error?: string 
         providerAccountId: pendingAccount.providerAccountId,
       },
     });
+
+    // Consent audit log — record terms acceptance
+    await tx.consentLog.create({
+      data: {
+        userId: user.id,
+        consentType: "terms",
+        action: "granted",
+        policyVersion: TERMS_VERSION,
+      },
+    });
   });
 
   return { success: true };

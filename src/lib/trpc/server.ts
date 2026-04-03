@@ -23,6 +23,15 @@ export const protectedProcedure = t.procedure.use(async ({ ctx, next }) => {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
 
+  // Reject soft-deleted users (account deletion in progress)
+  const user = await ctx.prisma.user.findUnique({
+    where: { id: ctx.session.user.id },
+    select: { deletedAt: true },
+  });
+  if (!user || user.deletedAt) {
+    throw new TRPCError({ code: "UNAUTHORIZED", message: "Account has been deleted" });
+  }
+
   // Touch lastActiveAt for matching decay scoring (fire-and-forget)
   ctx.prisma.therapistProfile
     .update({

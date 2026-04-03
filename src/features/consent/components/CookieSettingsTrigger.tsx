@@ -5,12 +5,12 @@ import { useConsent } from "@/lib/consent/ConsentProvider";
 import { ConsentPreferencesModal } from "@/features/consent/components/ConsentPreferencesModal";
 
 export function CookieSettingsTrigger(): React.ReactElement | null {
-  const { hasConsented } = useConsent();
+  const { hasConsented, isReady } = useConsent();
   const [open, setOpen] = useState(false);
 
   // Only show after user has already made a cookie choice
   // (hidden while banner is active to avoid double UI)
-  if (!hasConsented) return null;
+  if (!isReady || !hasConsented) return null;
 
   return (
     <>

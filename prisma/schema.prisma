@@ -23,8 +23,14 @@ model User {
   agreedToTermsAt DateTime?
   termsVersion    String?
 
+  // Soft-delete for account deletion workflow (PIPEDA data retention)
+  deletedAt    DateTime?
+  deleteReason String?   // "user_request" | "admin"
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([deletedAt])
 }
 
 model Account {
@@ -259,7 +265,7 @@ model ReferralNotification {
   referralPostId String
   referralPost   ReferralPost     @relation(fields: [referralPostId], references: [id], onDelete: Cascade)
   recipientId    String
-  recipient      TherapistProfile @relation("ReceivedNotifications", fields: [recipientId], references: [id])
+  recipient      TherapistProfile @relation("ReceivedNotifications", fields: [recipientId], references: [id], onDelete: Cascade)
 
   batch   Int          // Which drip batch this was sent in
   sentAt  DateTime     @default(now())
@@ -289,4 +295,21 @@ model Waitlist {
   email     String   @unique
   country   String   // "US" or other non-CA countries
   createdAt DateTime @default(now())
+}
+
+// === Data retention / compliance ===
+
+// Consent audit log — no FK to User so records survive account hard-deletion.
+// Retained for 24 months after account closure as compliance proof (PIPEDA).
+model ConsentLog {
+  id            String   @id @default(cuid())
+  userId        String
+  consentType   String   // "terms" | "communities_served" | "account_deletion"
+  action        String   // "granted" | "withdrawn"
+  policyVersion String?
+  metadata      Json?
+  createdAt     DateTime @default(now())
+
+  @@index([userId, consentType])
+  @@index([createdAt])
 }

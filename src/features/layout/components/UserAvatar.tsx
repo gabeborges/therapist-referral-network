@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import Link from "next/link";
 import { SignOutButton } from "@/features/layout/components/SignOutButton";
 import { ThemeToggle } from "@/features/layout/components/ThemeToggle";
 
@@ -58,6 +59,13 @@ export function UserAvatar({ initials, imageUrl }: UserAvatarProps): React.React
           </div>
           <div className="my-1" style={{ borderTop: "1px solid var(--border-s)" }} />
           <SignOutButton />
+          <Link
+            href="/account/delete"
+            className="block w-full text-left px-4 py-2 text-[0.8125rem] font-medium transition-[color] duration-150 no-underline"
+            style={{ color: "var(--danger)" }}
+          >
+            Delete account
+          </Link>
         </div>
       )}
     </div>

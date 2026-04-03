@@ -1,0 +1,15 @@
+name: compliance-consent-infrastructure
+description: Add cookie consent banner, express consent for sensitive profile fields, and T&C agreement checkbox (PIPEDA compliance)
+status: ready
+prd: openspec/prd-referral-network.md
+artifacts:
+  proposal:
+    status: done
+  design:
+    status: done
+    dependencies: [proposal]
+  tasks:
+    status: done
+    dependencies: [design]
+apply:
+  requires: [tasks]

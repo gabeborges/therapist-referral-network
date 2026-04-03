@@ -85,6 +85,7 @@ export const therapistProfileSchema = z.object({
   ages: z.array(z.string()).min(1, "Select at least one age group"),
 
   // Communities served
+  consentCommunitiesServed: z.boolean(),
   participants: z.array(z.string()).min(1, "Select at least one participant type"),
   groups: z.array(z.string()).optional(),
   faithOrientation: z.array(z.string()).default([]),

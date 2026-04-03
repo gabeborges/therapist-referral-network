@@ -9,21 +9,31 @@ export default auth((req) => {
 
   // Define public route patterns
   const publicPatterns = [
-    /^\/$/,                    // Home page
-    /^\/auth\//,               // Auth pages
-    /^\/r\//,                  // Shareable referral links
-    /^\/api\//,                // API routes
+    /^\/$/, // Home page
+    /^\/auth\//, // Auth pages
+    /^\/r\//, // Shareable referral links
+    /^\/api\//, // API routes
     /^\/referrals\/fulfill\//, // Fulfillment check responses
+    /^\/terms$/, // Terms of Service
+    /^\/privacy$/, // Privacy Policy
   ];
 
-  const isPublicRoute = publicPatterns.some((pattern) =>
-    pattern.test(nextUrl.pathname),
-  );
+  const isPublicRoute = publicPatterns.some((pattern) => pattern.test(nextUrl.pathname));
 
   if (!isAuthenticated && !isPublicRoute) {
     const signInUrl = new URL("/auth/signin", nextUrl.origin);
     signInUrl.searchParams.set("callbackUrl", nextUrl.pathname);
     return Response.redirect(signInUrl);
+  }
+
+  // Authenticated but hasn't accepted terms — force consent screen (skip API routes)
+  if (
+    isAuthenticated &&
+    req.auth?.needsConsent &&
+    nextUrl.pathname !== "/auth/consent" &&
+    !nextUrl.pathname.startsWith("/api/")
+  ) {
+    return Response.redirect(new URL("/auth/consent", nextUrl.origin));
   }
 
   return undefined;

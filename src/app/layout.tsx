@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import { TRPCReactProvider } from "@/lib/trpc/provider";
 import { SessionProvider } from "@/app/providers/session-provider";
+import { ConsentProvider } from "@/lib/consent/ConsentProvider";
+import { CookieConsentBanner } from "@/features/consent/components/CookieConsentBanner";
+import { CookieSettingsTrigger } from "@/features/consent/components/CookieSettingsTrigger";
 import "./globals.css";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -41,7 +44,11 @@ export default function RootLayout({
         </a>
         <SessionProvider>
           <TRPCReactProvider>
-            <main id="main-content">{children}</main>
+            <ConsentProvider>
+              <main id="main-content">{children}</main>
+              <CookieConsentBanner />
+              <CookieSettingsTrigger />
+            </ConsentProvider>
           </TRPCReactProvider>
         </SessionProvider>
       </body>

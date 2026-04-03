@@ -17,6 +17,7 @@ function validProfile(overrides: Record<string, unknown> = {}) {
     languages: ["lang-id-1"],
     ages: ["adults"],
     participants: ["Individual"],
+    consentCommunitiesServed: false,
     freeConsultation: false,
     proBono: false,
     reducedFees: false,
@@ -233,6 +234,7 @@ describe("therapistProfileSchema", () => {
   // ─── Boolean fields ───────────────────────────────────────────────────────
 
   it.each([
+    ["consentCommunitiesServed"],
     ["freeConsultation"],
     ["acceptingClients"],
     ["proBono"],

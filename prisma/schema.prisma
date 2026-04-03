@@ -20,6 +20,9 @@ model User {
 
   therapistProfile TherapistProfile?
 
+  agreedToTermsAt DateTime?
+  termsVersion    String?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -159,6 +162,9 @@ model TherapistProfile {
   therapyTypeRecords   TherapyType[]   @relation("ProfileTherapyTypes")
   languageRecords      Language[]      @relation("ProfileLanguages")
   groupRecords         AlliedGroup[]   @relation("ProfileGroups")
+
+  // Consent
+  consentCommunitiesServed Boolean @default(false)
 
   // Communities served
   participants     String[] // ["Individual", "Couples", "Family", "Group"]

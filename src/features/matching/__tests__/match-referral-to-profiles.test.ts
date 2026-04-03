@@ -53,6 +53,7 @@ function makeProfile(overrides: Partial<TherapistProfileModel> = {}): TherapistP
     freeConsultation: false,
     participants: [],
     topSpecialties: [],
+    consentCommunitiesServed: false,
     faithOrientation: [],
     ethnicity: [],
     therapyStyle: [],

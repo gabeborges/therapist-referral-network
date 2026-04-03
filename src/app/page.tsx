@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { MatchRingLogo } from "@/features/auth/components/match-ring-logo";
+import { CookiePreferencesLink } from "@/features/consent/components/CookiePreferencesLink";
 
 const FACEBOOK_COMMUNITY_URL = "https://www.facebook.com/groups/canadiantherapyreferralnetwork";
 
@@ -255,6 +256,7 @@ export default function LandingPage(): React.ReactElement {
           >
             Privacy
           </Link>
+          <CookiePreferencesLink />
         </nav>
       </footer>
     </div>

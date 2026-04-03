@@ -1,6 +1,6 @@
 "use client";
 
-import { useFormContext, Controller } from "react-hook-form";
+import { useFormContext, Controller, useWatch } from "react-hook-form";
 import type { TherapistProfileFormData } from "@/lib/validations/therapist-profile";
 import {
   PARTICIPANT_OPTIONS,
@@ -44,6 +44,8 @@ export function ProfileSectionCommunities({
     formState: { errors },
   } = useFormContext<TherapistProfileFormData>();
 
+  const consentCommunitiesServed = useWatch({ control, name: "consentCommunitiesServed" });
+
   return (
     <FormGroup title="Communities served" description="Your clients">
       {/* 20. Participants */}
@@ -76,30 +78,61 @@ export function ProfileSectionCommunities({
         error={errors.modalities?.message}
       />
 
-      {/* 23. Faith orientation */}
-      <Controller
-        name="faithOrientation"
-        control={control}
-        render={({ field }) => (
-          <AutocompleteSelect
-            label="Faith orientation (optional)"
-            options={FAITH_ORIENTATIONS.map((f) => ({ id: f, name: f }))}
-            selected={(field.value ?? []).map((f: string) => ({ id: f, name: f }))}
-            onChange={(sel) => field.onChange(sel.map((s) => s.id))}
-            placeholder="Search faith orientations..."
-          />
-        )}
-      />
+      {/* Communities served consent */}
+      <div
+        className="rounded-sm p-4"
+        style={{ border: "1px solid var(--border)", background: "var(--s2)" }}
+      >
+        <Controller
+          name="consentCommunitiesServed"
+          control={control}
+          render={({ field }) => (
+            <label className="flex items-start gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={field.value}
+                onChange={(e) => field.onChange(e.target.checked)}
+                className="mt-0.5 h-4 w-4 rounded-sm accent-[var(--brand)]"
+              />
+              <span className="text-[0.8125rem] leading-[1.5]" style={{ color: "var(--fg-2)" }}>
+                I consent to displaying my communities served information (including cultural
+                background and faith orientation) on my public profile to help therapists find
+                culturally matched referral matches. I can remove this at any time from my profile
+                settings.
+              </span>
+            </label>
+          )}
+        />
+      </div>
 
-      {/* 24. Ethnicity */}
-      <CheckboxGroup
-        name="ethnicity"
-        control={control}
-        label="Ethnicity (optional)"
-        options={[...CLIENT_ETHNICITY_OPTIONS].map((e) => ({ value: e, label: e }))}
-        itemMinWidth="full"
-        error={errors.ethnicity?.message}
-      />
+      {/* 23. Faith orientation — gated by consent */}
+      {consentCommunitiesServed && (
+        <Controller
+          name="faithOrientation"
+          control={control}
+          render={({ field }) => (
+            <AutocompleteSelect
+              label="Faith orientation (optional)"
+              options={FAITH_ORIENTATIONS.map((f) => ({ id: f, name: f }))}
+              selected={(field.value ?? []).map((f: string) => ({ id: f, name: f }))}
+              onChange={(sel) => field.onChange(sel.map((s) => s.id))}
+              placeholder="Search faith orientations..."
+            />
+          )}
+        />
+      )}
+
+      {/* 24. Ethnicity — gated by consent */}
+      {consentCommunitiesServed && (
+        <CheckboxGroup
+          name="ethnicity"
+          control={control}
+          label="Ethnicity (optional)"
+          options={[...CLIENT_ETHNICITY_OPTIONS].map((e) => ({ value: e, label: e }))}
+          itemMinWidth="full"
+          error={errors.ethnicity?.message}
+        />
+      )}
 
       {/* 25. Languages spoken */}
       <Controller

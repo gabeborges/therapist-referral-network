@@ -14,4 +14,13 @@ export const authConfig = {
   session: {
     strategy: "jwt",
   },
+  callbacks: {
+    session({ session, token }) {
+      if (token.sub) {
+        session.user.id = token.sub;
+      }
+      session.needsConsent = !!token.needsConsent;
+      return session;
+    },
+  },
 } satisfies NextAuthConfig;

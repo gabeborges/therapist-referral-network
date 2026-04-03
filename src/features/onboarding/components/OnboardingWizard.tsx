@@ -145,6 +145,7 @@ export function OnboardingWizard(): React.ReactElement {
       therapeuticApproach: [],
       languages: [],
       topSpecialties: [],
+      consentCommunitiesServed: false,
       groups: [],
       faithOrientation: [],
       ethnicity: [],

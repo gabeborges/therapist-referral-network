@@ -60,6 +60,7 @@ export const therapistRouter = router({
           modalities: input.modalities,
           ages: input.ages,
           // Communities
+          consentCommunitiesServed: input.consentCommunitiesServed,
           participants: input.participants,
           topSpecialties: input.topSpecialties ?? [],
           faithOrientation: input.faithOrientation ?? [],
@@ -123,6 +124,7 @@ export const therapistRouter = router({
           modalities: input.modalities,
           ages: input.ages,
           // Communities
+          consentCommunitiesServed: input.consentCommunitiesServed,
           participants: input.participants,
           topSpecialties: input.topSpecialties ?? [],
           faithOrientation: input.faithOrientation ?? [],

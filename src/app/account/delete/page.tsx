@@ -18,7 +18,7 @@ export default async function DeleteAccountPage(): Promise<React.ReactElement> {
       style={{ background: "var(--bg)" }}
     >
       <div className="max-w-[640px] w-full">
-        <BackLink href="/dashboard">Back to dashboard</BackLink>
+        <BackLink href="/account/settings">Back to settings</BackLink>
 
         <h1
           className="text-[1.75rem] font-bold tracking-[-0.02em] mt-6 mb-2"

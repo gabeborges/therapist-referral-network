@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
+import { Checkbox } from "@/components/ui/Checkbox";
 import { deleteAccount } from "@/features/account/actions";
 
 export function DeleteAccountForm(): React.ReactElement {
@@ -45,17 +46,11 @@ export function DeleteAccountForm(): React.ReactElement {
         </ul>
       </div>
 
-      <label className="flex items-start gap-3 cursor-pointer select-none">
-        <input
-          type="checkbox"
-          checked={confirmed}
-          onChange={(e) => setConfirmed(e.target.checked)}
-          className="mt-0.5 h-4 w-4 rounded-sm accent-[var(--danger)]"
-        />
+      <Checkbox checked={confirmed} onChange={setConfirmed}>
         <span className="text-[0.8125rem] leading-[1.5]" style={{ color: "var(--fg-2)" }}>
           I understand this action is permanent and cannot be undone.
         </span>
-      </label>
+      </Checkbox>
 
       {error && (
         <p className="text-[0.8125rem]" style={{ color: "var(--danger)" }}>
@@ -64,10 +59,10 @@ export function DeleteAccountForm(): React.ReactElement {
       )}
 
       <Button
+        variant="danger"
         onClick={handleDelete}
         disabled={!confirmed || loading}
         loading={loading}
-        className="bg-danger text-white border-none hover:opacity-90"
       >
         {loading ? "Deleting account..." : "Delete my account"}
       </Button>

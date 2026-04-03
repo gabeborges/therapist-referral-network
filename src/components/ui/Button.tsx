@@ -1,7 +1,7 @@
 import { type ButtonHTMLAttributes } from "react";
 import { Spinner } from "@/components/ui/Spinner";
 
-type ButtonVariant = "primary" | "secondary" | "google" | "text";
+type ButtonVariant = "primary" | "secondary" | "google" | "text" | "danger";
 type ButtonSize = "default" | "sm";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -22,6 +22,8 @@ const variantClasses: Record<ButtonVariant, string> = {
   google:
     "w-full bg-s2 text-fg border border-border text-[0.9375rem] font-medium gap-3 transition-[border-color,box-shadow] duration-150 ease-out hover:border-border-e hover:shadow-1",
   text: "bg-transparent border-none text-fg-2 text-[0.8125rem] font-medium p-0 transition-[color] duration-150 hover:text-fg",
+  danger:
+    "bg-danger text-white border-none font-semibold transition-[opacity] duration-150 ease-out hover:opacity-90",
 };
 
 const sizeClasses: Record<ButtonVariant, Record<ButtonSize, string>> = {
@@ -29,6 +31,7 @@ const sizeClasses: Record<ButtonVariant, Record<ButtonSize, string>> = {
   secondary: { default: "h-11 px-6 text-[0.8125rem]", sm: "h-9 px-4 text-[0.8125rem]" },
   google: { default: "h-12 px-6", sm: "h-10 px-4" },
   text: { default: "", sm: "" },
+  danger: { default: "h-11 px-6 text-[0.8125rem]", sm: "h-9 px-4 text-[0.8125rem]" },
 };
 
 export function Button({
@@ -41,7 +44,8 @@ export function Button({
   children,
   ...props
 }: ButtonProps): React.ReactElement {
-  const spinnerVariant = variant === "primary" || variant === "google" ? "white" : "brand";
+  const spinnerVariant =
+    variant === "primary" || variant === "google" || variant === "danger" ? "white" : "brand";
 
   return (
     <button
@@ -49,7 +53,7 @@ export function Button({
       disabled={disabled || loading}
       {...props}
     >
-      {loading ? <Spinner variant={variant === "primary" ? "white" : "brand"} size={16} /> : icon}
+      {loading ? <Spinner variant={spinnerVariant} size={16} /> : icon}
       {children}
     </button>
   );

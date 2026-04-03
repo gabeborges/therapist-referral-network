@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { acceptTerms } from "@/app/auth/consent/actions";
 import { Button } from "@/components/ui/Button";
+import { Checkbox } from "@/components/ui/Checkbox";
 
 export function ConsentForm(): React.ReactElement {
   const router = useRouter();
@@ -91,13 +92,7 @@ export function ConsentForm(): React.ReactElement {
         </div>
       </div>
 
-      <label className="flex items-start gap-3 cursor-pointer">
-        <input
-          type="checkbox"
-          checked={agreed}
-          onChange={(e) => setAgreed(e.target.checked)}
-          className="mt-0.5 h-4 w-4 rounded-sm accent-[var(--brand)]"
-        />
+      <Checkbox checked={agreed} onChange={setAgreed}>
         <span className="text-[0.8125rem] leading-[1.5]" style={{ color: "var(--fg-2)" }}>
           I have read and agree to the{" "}
           <Link
@@ -119,7 +114,7 @@ export function ConsentForm(): React.ReactElement {
           </Link>
           .
         </span>
-      </label>
+      </Checkbox>
 
       {error && (
         <p className="text-[0.8125rem]" style={{ color: "var(--danger)" }}>

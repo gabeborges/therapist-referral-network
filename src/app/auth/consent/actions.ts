@@ -32,11 +32,49 @@ export async function acceptTerms(): Promise<{ success: boolean; error?: string 
 
   const { pendingProfile, pendingAccount } = token;
 
-  // Check if user already exists (race condition guard)
+  // Check if user already exists (race condition guard + soft-deleted re-registration)
   const existing = await prisma.user.findUnique({
     where: { email: pendingProfile.email },
   });
   if (existing) {
+    if (existing.deletedAt) {
+      // Reactivate soft-deleted user: wipe old profile data (PIPEDA fresh-consent)
+      // and create new OAuth account so the user starts clean from onboarding.
+      await prisma.$transaction(async (tx) => {
+        // Delete old profile + cascaded data (referrals, notifications, etc.)
+        await tx.therapistProfile.deleteMany({ where: { userId: existing.id } });
+
+        await tx.user.update({
+          where: { id: existing.id },
+          data: {
+            deletedAt: null,
+            deleteReason: null,
+            name: pendingProfile.name,
+            image: pendingProfile.image,
+            agreedToTermsAt: new Date(),
+            termsVersion: TERMS_VERSION,
+          },
+        });
+
+        await tx.account.create({
+          data: {
+            userId: existing.id,
+            type: "oidc",
+            provider: pendingAccount.provider,
+            providerAccountId: pendingAccount.providerAccountId,
+          },
+        });
+
+        await tx.consentLog.create({
+          data: {
+            userId: existing.id,
+            consentType: "terms",
+            action: "granted",
+            policyVersion: TERMS_VERSION,
+          },
+        });
+      });
+    }
     return { success: true };
   }
 

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { TherapistProfile, User } from "@/generated/prisma/client";
 import { AvailabilityToggle } from "@/features/profile/components/AvailabilityToggle";
+import { formatWebsiteDisplay } from "@/lib/validations/therapist-profile";
 
 interface TaxonomyRecord {
   id: string;
@@ -49,8 +50,12 @@ export function ProfileView({ profile }: ProfileViewProps): React.ReactElement {
         {/* Profile Header */}
         <div className="bg-s1 border border-border rounded-md p-6 shadow-1 mb-6">
           <div className="flex items-start gap-4">
-            <div className="w-16 h-16 rounded-full flex items-center justify-center text-xl font-bold shrink-0 bg-brand-l text-brand">
-              {initials}
+            <div className="w-16 h-16 rounded-full flex items-center justify-center text-xl font-bold shrink-0 bg-brand-l text-brand overflow-hidden">
+              {profile.imageUrl ? (
+                <img src={profile.imageUrl} alt="" className="w-full h-full object-cover" />
+              ) : (
+                initials
+              )}
             </div>
             <div className="flex-1">
               <h1 className="text-[1.5rem] font-semibold tracking-[-0.015em] leading-[1.3] text-fg mb-1">
@@ -60,6 +65,16 @@ export function ProfileView({ profile }: ProfileViewProps): React.ReactElement {
                 {profile.firstName} {profile.lastName}
               </p>
               <p className="text-[0.75rem] tracking-[0.015em] text-fg-3">{profile.user.email}</p>
+              {profile.websiteUrl && (
+                <a
+                  href={profile.websiteUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[0.75rem] tracking-[0.015em] text-brand hover:underline"
+                >
+                  {formatWebsiteDisplay(profile.websiteUrl)}
+                </a>
+              )}
             </div>
             <Link
               href="/profile/edit"

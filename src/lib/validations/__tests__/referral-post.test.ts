@@ -70,7 +70,6 @@ describe("referralPostSchema", () => {
         therapistGenderPref: "Female",
         therapyTypes: ["CBT", "EMDR"],
         languages: ["English", "French"],
-        additionalContext: "Client has previous CBT experience",
       }),
     );
     expect(result.success).toBe(true);
@@ -86,22 +85,6 @@ describe("referralPostSchema", () => {
 
     it("rejects over 1000 characters", () => {
       const result = referralPostSchema.safeParse(validReferral({ details: "A".repeat(1001) }));
-      expect(result.success).toBe(false);
-    });
-  });
-
-  describe("additionalContext", () => {
-    it("accepts up to 2000 characters", () => {
-      const result = referralPostSchema.safeParse(
-        validReferral({ additionalContext: "A".repeat(2000) }),
-      );
-      expect(result.success).toBe(true);
-    });
-
-    it("rejects over 2000 characters", () => {
-      const result = referralPostSchema.safeParse(
-        validReferral({ additionalContext: "A".repeat(2001) }),
-      );
       expect(result.success).toBe(false);
     });
   });

@@ -8,9 +8,10 @@ import { ThemeToggle } from "@/features/layout/components/ThemeToggle";
 
 interface NavbarMobileProps {
   initials: string;
+  imageUrl?: string | null;
 }
 
-export function NavbarMobile({ initials }: NavbarMobileProps): React.ReactElement {
+export function NavbarMobile({ initials, imageUrl }: NavbarMobileProps): React.ReactElement {
   const [isOpen, setIsOpen] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
   const hamburgerRef = useRef<HTMLButtonElement>(null);
@@ -101,13 +102,17 @@ export function NavbarMobile({ initials }: NavbarMobileProps): React.ReactElemen
             {/* Header with avatar + close */}
             <div className="flex items-center justify-between h-14 px-4">
               <div
-                className="w-8 h-8 rounded-full flex items-center justify-center text-[0.75rem] font-medium"
+                className="w-8 h-8 rounded-full flex items-center justify-center text-[0.75rem] font-medium overflow-hidden"
                 style={{
                   background: "var(--inset)",
                   color: "var(--fg-2)",
                 }}
               >
-                {initials}
+                {imageUrl ? (
+                  <img src={imageUrl} alt="" className="w-full h-full object-cover" />
+                ) : (
+                  initials
+                )}
               </div>
               <button
                 ref={closeButtonRef}

@@ -63,7 +63,31 @@ export const therapistProfileSchema = z.object({
   credentials: z.array(z.string()).max(3, "Maximum 3 credentials").optional(),
 
   // Practice info
-  websiteUrl: z.string().url("Must be a valid URL").optional().or(z.literal("")),
+  websiteUrl: z
+    .string()
+    .optional()
+    .or(z.literal(""))
+    .transform((val) => {
+      if (!val) return val;
+      // Prepend https:// if no protocol
+      if (!/^https?:\/\//i.test(val)) {
+        return `https://${val}`;
+      }
+      return val;
+    })
+    .refine(
+      (val) => {
+        if (!val) return true;
+        try {
+          const url = new URL(val);
+          // Must have a dot in hostname (e.g. domain.com, not just "localhost")
+          return url.hostname.includes(".");
+        } catch {
+          return false;
+        }
+      },
+      { message: "Must be a valid website (e.g. yourpractice.com)" },
+    ),
   psychologyTodayUrl: z.string().url("Must be a valid URL").optional().or(z.literal("")),
   contactEmail: z.string().email("Must be a valid email").optional().or(z.literal("")),
   licensingLevel: z.string().optional(),
@@ -108,6 +132,18 @@ export const therapistProfileSchema = z.object({
 });
 
 export type TherapistProfileFormData = z.infer<typeof therapistProfileSchema>;
+
+/** Strips protocol and shows www.domain.tld/path */
+export function formatWebsiteDisplay(url: string): string {
+  try {
+    const parsed = new URL(url);
+    const host = parsed.hostname.startsWith("www.") ? parsed.hostname : `www.${parsed.hostname}`;
+    const path = parsed.pathname === "/" ? "" : parsed.pathname;
+    return `${host}${path}`;
+  } catch {
+    return url;
+  }
+}
 
 export const PROVINCES = [
   { value: "AB", label: "Alberta" },

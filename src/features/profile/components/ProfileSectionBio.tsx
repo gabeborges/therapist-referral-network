@@ -206,12 +206,12 @@ export function ProfileSectionBio(): React.ReactElement {
           </label>
           <Input
             id="pf-websiteUrl"
-            type="url"
+            type="text"
             {...register("websiteUrl")}
             aria-invalid={!!errors.websiteUrl}
             aria-describedby={errors.websiteUrl ? "pf-websiteUrl-error" : undefined}
             error={!!errors.websiteUrl}
-            placeholder="https://yourpractice.com"
+            placeholder="yourpractice.com"
           />
           {errors.websiteUrl && (
             <p id="pf-websiteUrl-error" className="mt-1 text-[0.75rem] text-err">

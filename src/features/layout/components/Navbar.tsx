@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 import { NavLink } from "@/features/layout/components/NavLink";
 import { UserAvatar } from "@/features/layout/components/UserAvatar";
 import { NavbarMobile } from "@/features/layout/components/NavbarMobile";
@@ -23,6 +24,12 @@ export async function Navbar(): Promise<React.ReactElement> {
   }
 
   const initials = getInitials(session.user.name);
+
+  const profile = await prisma.therapistProfile.findUnique({
+    where: { userId: session.user.id },
+    select: { imageUrl: true },
+  });
+  const imageUrl = profile?.imageUrl ?? null;
 
   return (
     <nav
@@ -61,7 +68,7 @@ export async function Navbar(): Promise<React.ReactElement> {
           >
             Post a referral
           </Link>
-          <UserAvatar initials={initials} />
+          <UserAvatar initials={initials} imageUrl={imageUrl} />
         </div>
 
         {/* Right: Mobile nav */}
@@ -72,7 +79,7 @@ export async function Navbar(): Promise<React.ReactElement> {
           >
             Post
           </Link>
-          <NavbarMobile initials={initials} />
+          <NavbarMobile initials={initials} imageUrl={imageUrl} />
         </div>
       </div>
     </nav>

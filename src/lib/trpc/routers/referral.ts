@@ -97,7 +97,6 @@ export const referralRouter = router({
         therapistGenderPref: input.therapistGenderPref ?? null,
         therapyTypes: input.therapyTypes ?? [],
         languages: input.languages ?? [],
-        additionalContext: input.additionalContext ?? null,
       },
     });
 

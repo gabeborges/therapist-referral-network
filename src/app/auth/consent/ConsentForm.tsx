@@ -2,10 +2,14 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { acceptTerms } from "@/app/auth/consent/actions";
 import { Button } from "@/components/ui/Button";
 
 export function ConsentForm(): React.ReactElement {
+  const router = useRouter();
+  const { update } = useSession();
   const [agreed, setAgreed] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -23,8 +27,9 @@ export function ConsentForm(): React.ReactElement {
       return;
     }
 
-    // Full navigation so the JWT callback detects the new user and clears needsConsent
-    window.location.href = "/onboarding";
+    // Refresh the JWT so the session picks up the new user and clears needsConsent
+    await update();
+    router.push("/onboarding");
   }
 
   return (

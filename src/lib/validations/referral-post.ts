@@ -17,7 +17,6 @@ export const referralPostSchema = z.object({
   therapistGenderPref: z.string().optional(),
   therapyTypes: z.array(z.string()).optional(),
   languages: z.array(z.string()).optional(),
-  additionalContext: z.string().max(2000).optional(),
 });
 
 export type ReferralPostFormData = z.infer<typeof referralPostSchema>;

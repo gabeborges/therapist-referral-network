@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { therapistProfileSchema } from "@/lib/validations/therapist-profile";
+import { therapistProfileSchema, formatWebsiteDisplay } from "@/lib/validations/therapist-profile";
 
 // ─── Fixtures ──────────────────────────────────────────────────────────────────
 
@@ -84,14 +84,50 @@ describe("therapistProfileSchema", () => {
       },
     );
 
-    it.each([["websiteUrl"], ["psychologyTodayUrl"]])("rejects an invalid URL for %s", (field) => {
-      const result = therapistProfileSchema.safeParse(validProfile({ [field]: "not-a-url" }));
+    it("rejects an invalid URL for psychologyTodayUrl", () => {
+      const result = therapistProfileSchema.safeParse(
+        validProfile({ psychologyTodayUrl: "not-a-url" }),
+      );
       expect(result.success).toBe(false);
     });
 
     it("accepts null for imageUrl", () => {
       const result = therapistProfileSchema.safeParse(validProfile({ imageUrl: null }));
       expect(result.success).toBe(true);
+    });
+  });
+
+  describe("websiteUrl flexible formats", () => {
+    it.each([
+      ["https://example.com", "https://example.com"],
+      ["http://example.com", "http://example.com"],
+      ["www.example.com", "https://www.example.com"],
+      ["example.com", "https://example.com"],
+      ["example.health", "https://example.health"],
+      ["www.practice.so", "https://www.practice.so"],
+      ["my-practice.ca/about", "https://my-practice.ca/about"],
+    ])("accepts %s and normalizes to %s", (input, expected) => {
+      const result = therapistProfileSchema.safeParse(validProfile({ websiteUrl: input }));
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data.websiteUrl).toBe(expected);
+      }
+    });
+
+    it.each([["not-a-url"], ["just spaces"], ["no dots"]])("rejects invalid input: %s", (input) => {
+      const result = therapistProfileSchema.safeParse(validProfile({ websiteUrl: input }));
+      expect(result.success).toBe(false);
+    });
+  });
+
+  describe("formatWebsiteDisplay", () => {
+    it.each([
+      ["https://example.com", "www.example.com"],
+      ["https://www.example.com", "www.example.com"],
+      ["https://example.health/about", "www.example.health/about"],
+      ["https://www.practice.so", "www.practice.so"],
+    ])("formats %s as %s", (input, expected) => {
+      expect(formatWebsiteDisplay(input)).toBe(expected);
     });
   });
 

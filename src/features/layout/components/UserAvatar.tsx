@@ -6,9 +6,10 @@ import { ThemeToggle } from "@/features/layout/components/ThemeToggle";
 
 interface UserAvatarProps {
   initials: string;
+  imageUrl?: string | null;
 }
 
-export function UserAvatar({ initials }: UserAvatarProps): React.ReactElement {
+export function UserAvatar({ initials, imageUrl }: UserAvatarProps): React.ReactElement {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -26,7 +27,7 @@ export function UserAvatar({ initials }: UserAvatarProps): React.ReactElement {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-8 h-8 rounded-full flex items-center justify-center text-[0.75rem] tracking-[0.015em] leading-[1.4] font-medium cursor-pointer border-0"
+        className="w-8 h-8 rounded-full flex items-center justify-center text-[0.75rem] tracking-[0.015em] leading-[1.4] font-medium cursor-pointer border-0 overflow-hidden"
         style={{
           background: "var(--inset)",
           color: "var(--fg-2)",
@@ -34,7 +35,7 @@ export function UserAvatar({ initials }: UserAvatarProps): React.ReactElement {
         }}
         aria-label="User menu"
       >
-        {initials}
+        {imageUrl ? <img src={imageUrl} alt="" className="w-full h-full object-cover" /> : initials}
       </button>
 
       {isOpen && (

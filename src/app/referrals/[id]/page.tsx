@@ -214,17 +214,6 @@ export default async function ReferralDetailPage({
               </div>
             )}
 
-            {referral.additionalContext && (
-              <div className={referral.details ? "mt-4" : "pt-4 border-t border-border-s"}>
-                <p className="text-[0.75rem] font-medium tracking-[0.04em] uppercase text-fg-3 mb-1">
-                  Additional context
-                </p>
-                <p className="text-[0.9375rem] text-fg-2 leading-relaxed m-0 whitespace-pre-wrap">
-                  {referral.additionalContext}
-                </p>
-              </div>
-            )}
-
             {/* Action bar */}
             <div className="pt-4 mt-4 border-t border-border-s">
               <ReferralActionBar referralId={referral.id} status={referral.status} />

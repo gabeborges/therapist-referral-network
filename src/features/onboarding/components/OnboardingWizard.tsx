@@ -18,6 +18,7 @@ import { OnboardingStepCountry } from "@/features/onboarding/components/Onboardi
 import { OnboardingStepBio } from "@/features/onboarding/components/OnboardingStepBio";
 import { OnboardingStepCommunities } from "@/features/onboarding/components/OnboardingStepCommunities";
 import { OnboardingStepServices } from "@/features/onboarding/components/OnboardingStepServices";
+import { Button } from "@/components/ui/Button";
 
 const STEP_SCHEMAS = [null, stepBioSchema, stepCommunitiesSchema, stepServicesSchema];
 
@@ -217,24 +218,16 @@ export function OnboardingWizard(): React.ReactElement {
 
               {/* Navigation buttons */}
               <div className="mt-6 pt-4 border-t border-border-s flex justify-between">
-                <button
-                  type="button"
-                  onClick={handleBack}
-                  className="inline-flex items-center justify-center h-11 px-6 bg-transparent text-fg border border-border rounded-sm text-[0.8125rem] font-semibold tracking-[0.01em] cursor-pointer transition-colors duration-150 font-sans hover:bg-inset focus-visible:outline-2 focus-visible:outline-border-f focus-visible:outline-offset-2"
-                >
+                <Button variant="secondary" type="button" onClick={handleBack}>
                   Back
-                </button>
-                <button
-                  type="submit"
-                  disabled={createProfile.isPending}
-                  className="inline-flex items-center justify-center h-11 px-6 bg-brand text-brand-on border-none rounded-sm text-[0.8125rem] font-semibold tracking-[0.01em] cursor-pointer transition-[background] duration-150 ease-out font-sans hover:bg-brand-h focus-visible:outline-2 focus-visible:outline-border-f focus-visible:outline-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
+                </Button>
+                <Button type="submit" loading={createProfile.isPending}>
                   {currentStep === 4
                     ? createProfile.isPending
                       ? "Creating profile..."
                       : "Complete"
                     : "Next"}
-                </button>
+                </Button>
               </div>
             </form>
           </FormProvider>
@@ -243,14 +236,9 @@ export function OnboardingWizard(): React.ReactElement {
         {/* Step 1 button (outside form since Country has no form fields) */}
         {currentStep === 1 && (
           <div className="border-t border-border-s pt-4">
-            <button
-              type="button"
-              onClick={handleNext}
-              disabled={!country}
-              className="inline-flex items-center justify-center w-full h-11 px-6 bg-brand text-brand-on border-none rounded-sm text-[0.8125rem] font-semibold tracking-[0.01em] cursor-pointer transition-[background] duration-150 ease-out font-sans hover:bg-brand-h focus-visible:outline-2 focus-visible:outline-border-f focus-visible:outline-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
+            <Button type="button" onClick={handleNext} disabled={!country} className="w-full">
               Next
-            </button>
+            </Button>
           </div>
         )}
       </div>

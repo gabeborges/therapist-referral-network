@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { acceptTerms } from "@/app/auth/consent/actions";
+import { Button } from "@/components/ui/Button";
 
 export function ConsentForm(): React.ReactElement {
   const [agreed, setAgreed] = useState(false);
@@ -121,17 +122,9 @@ export function ConsentForm(): React.ReactElement {
         </p>
       )}
 
-      <button
-        type="submit"
-        disabled={!agreed || loading}
-        className="w-full h-11 rounded-sm text-[0.875rem] font-semibold transition-[background] duration-150 ease-out focus-visible:outline-2 focus-visible:outline-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
-        style={{
-          background: "var(--brand)",
-          color: "var(--brand-on)",
-        }}
-      >
+      <Button type="submit" disabled={!agreed || loading} loading={loading} className="w-full">
         {loading ? "Creating your account..." : "Continue"}
-      </button>
+      </Button>
     </form>
   );
 }

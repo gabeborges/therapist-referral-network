@@ -214,6 +214,20 @@
   --radius-full: var(--radius-full);
 }
 
+/* ── Shimmer animation for Skeleton component ── */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@utility animate-shimmer {
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
 /* ── Base body styles ── */
 body {
   background-color: var(--bg);

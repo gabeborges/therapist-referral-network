@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTRPC } from "@/lib/trpc/client";
 import { useMutation } from "@tanstack/react-query";
+import { Button } from "@/components/ui/Button";
 
 type ActionBarState = "default" | "confirm-fulfill" | "confirm-cancel";
 
@@ -19,13 +20,6 @@ export function ReferralActionBar({
   const router = useRouter();
   const trpc = useTRPC();
   const [state, setState] = useState<ActionBarState>("default");
-  const confirmRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    if (state !== "default") {
-      confirmRef.current?.focus();
-    }
-  }, [state]);
 
   const fulfillMutation = useMutation(
     trpc.referral.fulfill.mutationOptions({
@@ -103,20 +97,21 @@ export function ReferralActionBar({
   if (state === "default") {
     return (
       <div className="flex items-center gap-3 flex-wrap">
-        <button
+        <Button
           type="button"
           onClick={() => setState("confirm-fulfill")}
-          className="inline-flex items-center justify-center h-9 px-4 bg-ok text-white border-none rounded-sm text-[0.8125rem] font-semibold tracking-[0.01em] cursor-pointer transition-opacity duration-150 ease-out font-sans hover:opacity-90 focus-visible:outline-2 focus-visible:outline-border-f focus-visible:outline-offset-2"
+          className="bg-ok text-white hover:opacity-90"
         >
           Mark as Fulfilled
-        </button>
-        <button
+        </Button>
+        <Button
+          variant="secondary"
           type="button"
           onClick={() => setState("confirm-cancel")}
-          className="inline-flex items-center justify-center h-9 px-4 bg-transparent text-err border border-err/30 rounded-sm text-[0.8125rem] font-medium tracking-[0.01em] cursor-pointer transition-all duration-150 ease-out font-sans hover:bg-err-l hover:border-err focus-visible:outline-2 focus-visible:outline-border-f focus-visible:outline-offset-2"
+          className="text-err border-err/30 hover:bg-err-l hover:border-err"
         >
           Cancel Referral
-        </button>
+        </Button>
       </div>
     );
   }
@@ -132,30 +127,26 @@ export function ReferralActionBar({
         <p id="confirm-fulfill-text" className="text-[0.875rem] text-fg-2 m-0">
           Mark this referral as fulfilled?
         </p>
-        <button
+        <Button
+          variant="secondary"
+          size="sm"
           type="button"
           onClick={() => setState("default")}
           disabled={isPending}
-          className="inline-flex items-center justify-center h-9 px-4 bg-transparent text-fg-3 border border-border rounded-sm text-[0.8125rem] font-medium cursor-pointer transition-[border-color,background] duration-150 ease-out font-sans hover:bg-inset focus-visible:outline-2 focus-visible:outline-border-f focus-visible:outline-offset-2 disabled:opacity-50"
         >
           No
-        </button>
-        <button
-          ref={confirmRef}
+        </Button>
+        <Button
+          autoFocus
+          size="sm"
           type="button"
           onClick={() => fulfillMutation.mutate({ id: referralId })}
+          loading={fulfillMutation.isPending}
           disabled={isPending}
-          className="inline-flex items-center justify-center gap-2 h-9 px-4 bg-ok text-white border-none rounded-sm text-[0.8125rem] font-semibold cursor-pointer transition-opacity duration-150 ease-out font-sans hover:opacity-90 focus-visible:outline-2 focus-visible:outline-border-f focus-visible:outline-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="bg-ok text-white hover:opacity-90"
         >
-          {fulfillMutation.isPending ? (
-            <>
-              <span className="w-[14px] h-[14px] border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              Fulfilling...
-            </>
-          ) : (
-            "Yes, Fulfilled"
-          )}
-        </button>
+          {fulfillMutation.isPending ? "Fulfilling..." : "Yes, Fulfilled"}
+        </Button>
       </div>
     );
   }
@@ -170,30 +161,26 @@ export function ReferralActionBar({
       <p id="confirm-cancel-text" className="text-[0.875rem] text-fg-2 m-0">
         Cancel this referral? This cannot be undone.
       </p>
-      <button
+      <Button
+        variant="secondary"
+        size="sm"
         type="button"
         onClick={() => setState("default")}
         disabled={isPending}
-        className="inline-flex items-center justify-center h-9 px-4 bg-transparent text-fg-3 border border-border rounded-sm text-[0.8125rem] font-medium cursor-pointer transition-[border-color,background] duration-150 ease-out font-sans hover:bg-inset focus-visible:outline-2 focus-visible:outline-border-f focus-visible:outline-offset-2 disabled:opacity-50"
       >
         No
-      </button>
-      <button
-        ref={confirmRef}
+      </Button>
+      <Button
+        autoFocus
+        size="sm"
         type="button"
         onClick={() => cancelMutation.mutate({ id: referralId })}
+        loading={cancelMutation.isPending}
         disabled={isPending}
-        className="inline-flex items-center justify-center gap-2 h-9 px-4 bg-err text-white border-none rounded-sm text-[0.8125rem] font-semibold cursor-pointer transition-opacity duration-150 ease-out font-sans hover:opacity-90 focus-visible:outline-2 focus-visible:outline-border-f focus-visible:outline-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="bg-err text-white hover:opacity-90"
       >
-        {cancelMutation.isPending ? (
-          <>
-            <span className="w-[14px] h-[14px] border-2 border-white/30 border-t-white rounded-full animate-spin" />
-            Cancelling...
-          </>
-        ) : (
-          "Yes, Cancel"
-        )}
-      </button>
+        {cancelMutation.isPending ? "Cancelling..." : "Yes, Cancel"}
+      </Button>
     </div>
   );
 }

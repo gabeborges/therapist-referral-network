@@ -7,9 +7,10 @@ import {
   PAYMENT_METHOD_OPTIONS,
   INSURERS,
 } from "@/lib/validations/therapist-profile";
-import { inputClasses } from "@/lib/form-styles";
+import { Input } from "@/components/ui/Input";
 import { CheckboxGroup } from "@/components/ui/CheckboxGroup";
 import { FormGroup } from "@/components/ui/FormGroup";
+import { Toggle } from "@/components/ui/Toggle";
 
 export function ProfileSectionFinances(): React.ReactElement {
   const {
@@ -57,12 +58,12 @@ export function ProfileSectionFinances(): React.ReactElement {
                         <span className="absolute left-3 top-1/2 -translate-y-1/2 text-fg-4 text-[0.9375rem]">
                           $
                         </span>
-                        <input
+                        <Input
                           id={`pf-${config.field}`}
                           type="number"
                           min="0"
                           step="1"
-                          className={`${inputClasses(false)} pl-7`}
+                          className="pl-7"
                           placeholder="0"
                           value={field.value ?? ""}
                           onChange={(e) => {
@@ -110,28 +111,11 @@ export function ProfileSectionFinances(): React.ReactElement {
           name="acceptingClients"
           control={control}
           render={({ field }) => (
-            <button
-              type="button"
-              role="switch"
-              aria-checked={field.value}
-              aria-label="Accepting referrals"
-              onClick={() => field.onChange(!field.value)}
-              onKeyDown={(e) => {
-                if (e.key === " " || e.key === "Enter") {
-                  e.preventDefault();
-                  field.onChange(!field.value);
-                }
-              }}
-              className={`relative w-11 h-6 rounded-xl cursor-pointer border-none p-0 transition-[background] duration-150 ease-out focus-visible:outline-2 focus-visible:outline-border-f focus-visible:outline-offset-2 ${
-                field.value ? "bg-brand" : "bg-fg-4"
-              }`}
-            >
-              <span
-                className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow-[0_1px_3px_rgba(0,0,0,0.15)] transition-transform duration-150 ease-out ${
-                  field.value ? "translate-x-5" : "translate-x-0"
-                }`}
-              />
-            </button>
+            <Toggle
+              checked={field.value}
+              onChange={(checked) => field.onChange(checked)}
+              ariaLabel="Toggle accepting referrals"
+            />
           )}
         />
         <div>

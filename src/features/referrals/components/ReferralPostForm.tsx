@@ -21,7 +21,12 @@ import {
 import { FormGroup } from "@/components/ui/FormGroup";
 import { BooleanCheckbox } from "@/components/ui/BooleanCheckbox";
 import { CheckboxGroup } from "@/components/ui/CheckboxGroup";
-import { inputClasses, selectClasses, selectStyle } from "@/lib/form-styles";
+import { Input } from "@/components/ui/Input";
+import { Select } from "@/components/ui/Select";
+import { Textarea } from "@/components/ui/Textarea";
+import { Button } from "@/components/ui/Button";
+import { RadioGroup } from "@/components/ui/RadioGroup";
+import { PHINotice } from "@/components/ui/PHINotice";
 
 const RATE_OPTIONS = ["Full fee", "Sliding scale", "Pro-bono"] as const;
 
@@ -73,12 +78,10 @@ export function ReferralPostForm(): React.ReactElement {
       therapistGenderPref: "",
       therapyTypes: [],
       languages: [],
-      additionalContext: "",
     },
   });
 
   const details = watch("details") ?? "";
-  const additionalContext = watch("additionalContext") ?? "";
 
   const createReferral = useMutation(
     trpc.referral.create.mutationOptions({
@@ -137,13 +140,13 @@ export function ReferralPostForm(): React.ReactElement {
             <label htmlFor="presentingIssue" className={labelClass}>
               Presenting issue
             </label>
-            <input
+            <Input
               id="presentingIssue"
               {...register("presentingIssue")}
               aria-required="true"
               aria-invalid={!!errors.presentingIssue}
               aria-describedby={errors.presentingIssue ? "presentingIssue-error" : undefined}
-              className={inputClasses(!!errors.presentingIssue)}
+              error={!!errors.presentingIssue}
               placeholder="e.g., Anxiety, Depression, Trauma"
             />
             {errors.presentingIssue && (
@@ -158,21 +161,19 @@ export function ReferralPostForm(): React.ReactElement {
             <label htmlFor="details" className={labelClass}>
               More details
             </label>
-            <div className="p-3 rounded-sm border-l-[3px] border-l-warn bg-warn-l mb-3">
-              <p className="text-[0.875rem] text-fg-2 m-0">
+            <div className="mb-3">
+              <PHINotice>
                 Do not include client names, dates of birth, email addresses, or any identifying
                 health details.
-              </p>
+              </PHINotice>
             </div>
-            <textarea
+            <Textarea
               id="details"
               {...register("details")}
               aria-required="true"
               aria-invalid={!!errors.details}
               aria-describedby={errors.details ? "details-error" : undefined}
-              className={`w-full min-h-[100px] p-3 bg-inset text-fg border rounded-sm text-[0.9375rem] font-sans resize-y transition-[border-color] duration-150 ease-out focus:border-border-f focus:bg-bg focus:outline-2 focus:outline-border-f focus:outline-offset-2 placeholder:text-fg-4 ${
-                errors.details ? "border-err" : "border-border"
-              }`}
+              error={!!errors.details}
               placeholder="Any additional context for the receiving therapist..."
               maxLength={1000}
             />
@@ -193,14 +194,13 @@ export function ReferralPostForm(): React.ReactElement {
             <label htmlFor="ageGroup" className={labelClass}>
               Ages
             </label>
-            <select
+            <Select
               id="ageGroup"
               {...register("ageGroup")}
               aria-required="true"
               aria-invalid={!!errors.ageGroup}
               aria-describedby={errors.ageGroup ? "ageGroup-error" : undefined}
-              className={selectClasses(!!errors.ageGroup)}
-              style={selectStyle}
+              error={!!errors.ageGroup}
               defaultValue=""
             >
               <option value="" disabled>
@@ -211,7 +211,7 @@ export function ReferralPostForm(): React.ReactElement {
                   {group}
                 </option>
               ))}
-            </select>
+            </Select>
             {errors.ageGroup && (
               <p id="ageGroup-error" className="mt-1 text-[0.75rem] text-err">
                 {errors.ageGroup.message}
@@ -236,20 +236,14 @@ export function ReferralPostForm(): React.ReactElement {
             <label htmlFor="participants" className={labelClass}>
               Participants <span className="font-normal text-fg-4">(optional)</span>
             </label>
-            <select
-              id="participants"
-              {...register("participants")}
-              className={selectClasses(false)}
-              style={selectStyle}
-              defaultValue=""
-            >
+            <Select id="participants" {...register("participants")} defaultValue="">
               <option value="">Select participant type...</option>
               {PARTICIPANT_OPTIONS.map((p) => (
                 <option key={p} value={p}>
                   {p}
                 </option>
               ))}
-            </select>
+            </Select>
           </div>
 
           {/* City + Province */}
@@ -258,56 +252,33 @@ export function ReferralPostForm(): React.ReactElement {
               <label htmlFor="city" className={labelClass}>
                 City <span className="font-normal text-fg-4">(optional)</span>
               </label>
-              <input
-                id="city"
-                {...register("city")}
-                className={inputClasses(false)}
-                placeholder="e.g., Toronto"
-              />
+              <Input id="city" {...register("city")} placeholder="e.g., Toronto" />
             </div>
             <div>
               <label htmlFor="province" className={labelClass}>
                 Province <span className="font-normal text-fg-4">(optional)</span>
               </label>
-              <select
-                id="province"
-                {...register("province")}
-                className={selectClasses(false)}
-                style={selectStyle}
-                defaultValue=""
-              >
+              <Select id="province" {...register("province")} defaultValue="">
                 <option value="">Select province...</option>
                 {PROVINCES.map((p) => (
                   <option key={p.value} value={p.value}>
                     {p.label}
                   </option>
                 ))}
-              </select>
+              </Select>
             </div>
           </div>
 
           {/* Rate (radio buttons) */}
-          <fieldset className="border-none p-0">
-            <legend className={labelClass}>
-              Rate <span className="font-normal text-fg-4">(optional)</span>
-            </legend>
-            <div className="flex flex-wrap gap-4">
-              {RATE_OPTIONS.map((option) => (
-                <label
-                  key={option}
-                  className="inline-flex items-center gap-2 cursor-pointer text-[0.9375rem] text-fg select-none leading-[1.4]"
-                >
-                  <input
-                    type="radio"
-                    value={option}
-                    {...register("rate")}
-                    className="w-4 h-4 accent-brand cursor-pointer"
-                  />
-                  {option}
-                </label>
-              ))}
-            </div>
-          </fieldset>
+          <RadioGroup
+            name="rate"
+            control={control}
+            label="Rate"
+            optional
+            options={RATE_OPTIONS.map((r) => ({ value: r, label: r }))}
+            layout="inline"
+            allowDeselect
+          />
 
           {/* Insurance */}
           <div>
@@ -361,11 +332,9 @@ export function ReferralPostForm(): React.ReactElement {
                   Therapist gender preference{" "}
                   <span className="font-normal text-fg-4">(optional)</span>
                 </label>
-                <select
+                <Select
                   id="therapistGenderPref"
                   {...register("therapistGenderPref")}
-                  className={selectClasses(false)}
-                  style={selectStyle}
                   defaultValue=""
                 >
                   <option value="">Select preference...</option>
@@ -374,7 +343,7 @@ export function ReferralPostForm(): React.ReactElement {
                       {option}
                     </option>
                   ))}
-                </select>
+                </Select>
               </div>
 
               {/* Therapy types */}
@@ -418,72 +387,18 @@ export function ReferralPostForm(): React.ReactElement {
                   />
                 )}
               />
-
-              {/* Additional context */}
-              <div>
-                <label htmlFor="additionalContext" className={labelClass}>
-                  Additional context <span className="font-normal text-fg-4">(optional)</span>
-                </label>
-                <div className="p-3 rounded-sm border-l-[3px] border-l-warn bg-warn-l mb-3">
-                  <p className="text-[0.875rem] text-fg-2 m-0">
-                    Do not include client names, dates of birth, email addresses, or any identifying
-                    health details.
-                  </p>
-                </div>
-                <textarea
-                  id="additionalContext"
-                  {...register("additionalContext")}
-                  aria-invalid={!!errors.additionalContext}
-                  aria-describedby={
-                    errors.additionalContext ? "additionalContext-error" : undefined
-                  }
-                  className={`w-full min-h-[100px] p-3 bg-inset text-fg border rounded-sm text-[0.9375rem] font-sans resize-y transition-[border-color] duration-150 ease-out focus:border-border-f focus:bg-bg focus:outline-2 focus:outline-border-f focus:outline-offset-2 placeholder:text-fg-4 ${
-                    errors.additionalContext ? "border-err" : "border-border"
-                  }`}
-                  placeholder="Any other relevant context for matching..."
-                  maxLength={2000}
-                />
-                <div className="flex items-center justify-between mt-1">
-                  {errors.additionalContext ? (
-                    <p id="additionalContext-error" className="text-[0.75rem] text-err">
-                      {errors.additionalContext.message}
-                    </p>
-                  ) : (
-                    <span />
-                  )}
-                  <span className="text-[0.75rem] text-fg-4">{additionalContext.length}/2000</span>
-                </div>
-              </div>
             </div>
           )}
         </div>
 
         {/* Actions */}
         <div className="flex items-center justify-between pt-4 border-t border-border-s">
-          <button
-            type="button"
-            onClick={() => router.push("/referrals")}
-            className="inline-flex items-center justify-center h-11 px-6 bg-transparent text-fg-2 border border-border rounded-sm text-[0.8125rem] font-semibold tracking-[0.01em] cursor-pointer transition-[border-color,background] duration-150 ease-out font-sans hover:bg-inset hover:border-border-e focus-visible:outline-2 focus-visible:outline-border-f focus-visible:outline-offset-2"
-          >
+          <Button type="button" variant="secondary" onClick={() => router.push("/referrals")}>
             Cancel
-          </button>
-          <button
-            type="submit"
-            disabled={createReferral.isPending}
-            className="inline-flex items-center justify-center gap-2 h-11 px-6 bg-brand text-brand-on border-none rounded-sm text-[0.8125rem] font-semibold tracking-[0.01em] cursor-pointer transition-[background] duration-150 ease-out font-sans hover:bg-brand-h focus-visible:outline-2 focus-visible:outline-border-f focus-visible:outline-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {createReferral.isPending ? (
-              <>
-                <span
-                  aria-hidden="true"
-                  className="w-[18px] h-[18px] border-2 border-white/30 border-t-white rounded-full animate-spin"
-                />
-                Posting...
-              </>
-            ) : (
-              "Post referral"
-            )}
-          </button>
+          </Button>
+          <Button type="submit" loading={createReferral.isPending}>
+            {createReferral.isPending ? "Posting..." : "Post referral"}
+          </Button>
         </div>
       </form>
     </div>

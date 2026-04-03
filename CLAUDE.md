@@ -1,6 +1,7 @@
 # Web App
 
 ## Stack
+
 - Next.js 15 (App Router, RSC, Server Actions)
 - TypeScript strict mode
 - Supabase (Postgres, Auth, RLS, Edge Functions)
@@ -14,6 +15,7 @@
 - Vercel deployment
 
 ## Code Style
+
 - ESLint + Prettier
 - Feature-based folder structure (see rules/feature-folder-structure.md)
 - No barrel files (see rules/no-barrel-files.md)
@@ -23,13 +25,23 @@
 - RSC by default; 'use client' only when needed
 
 ## Testing
+
 - Vitest for unit/integration
 - Playwright for E2E
 - Test behavior, not implementation
 - Co-locate tests in feature folders
 - OpenSpec enforces SDD workflow
 
+## Component Library
+
+- Use components from `src/components/ui/` for all UI elements (Input, Select, Textarea, Button, Card, Badge, Chip, etc.)
+- Never use raw `<input>`, `<select>`, `<textarea>`, or `<button>` with inline Tailwind — use the design system components
+- Form fields use: `<Label>` + `<Input>` (or Select/Textarea) + `<FieldError>` together
+- For new components, follow existing pattern: named exports, forwardRef for form elements, "use client" only when interactive
+- The visual source of truth is `.design-system/mocks/components.html`
+
 ## Patterns
+
 - Next.js App Router conventions (page.tsx, layout.tsx, loading.tsx, error.tsx)
 - Server Components by default; Client Components only for interactivity
 - Supabase RLS for row-level security
@@ -38,10 +50,12 @@
 - Auth.js for authentication flows
 
 ## Health Data (when applicable)
+
 - See rules/health-data-compliance.md
 - No PHI in logs or third-party analytics
 
 ## Workflow Rules
+
 - When debugging, read actual code and config before proposing a fix — trace the execution path first.
 - After any feature, verify completeness: DB migrations, API types, navigation entries, settings, tests.
 - Run preflight (lint, typecheck, tests) before reporting a task complete. Fix failures before declaring done.
@@ -51,5 +65,6 @@
 - Change ONLY what was requested. List planned edits before touching files and wait for approval.
 
 ## Boundaries
+
 - Full-stack web application — optimize for performance and security
 - react-hook-form + Zod for forms (same patterns as Mobile App)

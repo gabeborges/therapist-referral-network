@@ -3,7 +3,9 @@
 import { useFormContext } from "react-hook-form";
 import type { TherapistProfileFormData } from "@/lib/validations/therapist-profile";
 import { LICENSING_LEVELS } from "@/lib/validations/therapist-profile";
-import { inputClasses, selectClasses, selectStyle } from "@/lib/form-styles";
+import { Input } from "@/components/ui/Input";
+import { Select } from "@/components/ui/Select";
+import { Button } from "@/components/ui/Button";
 import { FormGroup } from "@/components/ui/FormGroup";
 
 export function ProfileSectionQualifications(): React.ReactElement {
@@ -37,10 +39,9 @@ export function ProfileSectionQualifications(): React.ReactElement {
         >
           Primary credential <span className="font-normal text-fg-4">(optional)</span>
         </label>
-        <input
+        <Input
           id="pf-primaryCredential"
           {...register("primaryCredential")}
-          className={inputClasses(false)}
           placeholder="e.g. Registered Psychologist"
         />
       </div>
@@ -53,15 +54,15 @@ export function ProfileSectionQualifications(): React.ReactElement {
         <div className="space-y-2">
           {credentials.map((_value, index) => (
             <div key={index} className="flex gap-2">
-              <input
+              <Input
                 {...register(`credentials.${index}` as const)}
-                className={inputClasses(false)}
                 placeholder={`Credential ${index + 1}`}
               />
-              <button
+              <Button
                 type="button"
+                variant="secondary"
                 onClick={() => removeCredential(index)}
-                className="shrink-0 h-11 w-11 inline-flex items-center justify-center rounded-sm border border-border text-fg-3 hover:text-err hover:border-err transition-colors duration-150 cursor-pointer"
+                className="shrink-0 h-11 w-11 !px-0 text-fg-3 hover:text-err hover:border-err"
                 aria-label={`Remove credential ${index + 1}`}
               >
                 <svg
@@ -73,17 +74,18 @@ export function ProfileSectionQualifications(): React.ReactElement {
                 >
                   <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
                 </svg>
-              </button>
+              </Button>
             </div>
           ))}
           {credentials.length < 3 && (
-            <button
+            <Button
               type="button"
+              variant="text"
               onClick={appendCredential}
-              className="text-[0.8125rem] text-brand font-medium hover:underline cursor-pointer"
+              className="text-brand hover:underline"
             >
               + Add credential
-            </button>
+            </Button>
           )}
         </div>
         {errors.credentials && (
@@ -99,19 +101,14 @@ export function ProfileSectionQualifications(): React.ReactElement {
         >
           License level <span className="font-normal text-fg-4">(optional)</span>
         </label>
-        <select
-          id="pf-licensingLevel"
-          {...register("licensingLevel")}
-          className={selectClasses(false)}
-          style={selectStyle}
-        >
+        <Select id="pf-licensingLevel" {...register("licensingLevel")}>
           <option value="">Select license level...</option>
           {LICENSING_LEVELS.map((level) => (
             <option key={level} value={level}>
               {level}
             </option>
           ))}
-        </select>
+        </Select>
       </div>
     </FormGroup>
   );

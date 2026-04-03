@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import { Button } from "@/components/ui/Button";
 
 interface ProfileImageUploadProps {
   currentImageUrl: string | null;
@@ -86,14 +87,15 @@ export function ProfileImageUpload({
         </div>
 
         <div>
-          <button
+          <Button
             type="button"
+            variant="secondary"
+            size="sm"
             onClick={() => inputRef.current?.click()}
-            disabled={uploading}
-            className="h-9 px-4 text-[0.8125rem] font-medium rounded-sm border border-border bg-s1 text-fg hover:bg-s2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            loading={uploading}
           >
             {uploading ? "Uploading..." : preview ? "Change photo" : "Upload photo"}
-          </button>
+          </Button>
           <p className="mt-1 text-[0.75rem] text-fg-4">JPEG, PNG, or WebP. Max 5MB.</p>
         </div>
 

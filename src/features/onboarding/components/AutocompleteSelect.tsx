@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback, useMemo } from "react";
+import { Input } from "@/components/ui/Input";
 
 export interface AutocompleteOption {
   id: string;
@@ -151,7 +152,7 @@ export function AutocompleteSelect({
   const atMax = maxItems !== undefined && selected.length >= maxItems;
 
   return (
-    <div ref={containerRef} className="relative">
+    <div className="relative">
       <label
         id={labelId}
         htmlFor={inputId}
@@ -220,78 +221,74 @@ export function AutocompleteSelect({
         </div>
       )}
 
-      {/* Search input */}
-      <input
-        ref={inputRef}
-        id={inputId}
-        type="text"
-        role="combobox"
-        aria-expanded={isOpen}
-        aria-haspopup="listbox"
-        aria-controls={isOpen ? listboxId : undefined}
-        aria-labelledby={labelId}
-        aria-activedescendant={
-          focusedIndex >= 0 ? `${componentId}-option-${focusedIndex}` : undefined
-        }
-        value={query}
-        disabled={atMax}
-        onChange={(e) => {
-          setQuery(e.target.value);
-          setIsOpen(true);
-          setFocusedIndex(-1);
-        }}
-        onFocus={() => !atMax && setIsOpen(true)}
-        onKeyDown={handleKeyDown}
-        placeholder={atMax ? `Maximum ${maxItems} selected` : placeholder}
-        className={`w-full h-11 px-3 bg-inset text-[0.9375rem] font-sans border rounded-sm transition-[border-color,background,box-shadow] duration-150 ease-out ${
-          atMax ? "opacity-50 cursor-not-allowed" : ""
-        } ${
-          error
-            ? "border-err"
-            : "border-border focus:border-border-f focus:bg-bg focus:outline-2 focus:outline-border-f focus:outline-offset-2"
-        }`}
-      />
-
-      {/* Dropdown list */}
-      {isOpen && !atMax && (
-        <div
-          ref={listRef}
-          role="listbox"
-          id={listboxId}
+      {/* Search input + dropdown wrapper (for click-outside detection) */}
+      <div ref={containerRef}>
+        <Input
+          ref={inputRef}
+          id={inputId}
+          type="text"
+          role="combobox"
+          aria-expanded={isOpen}
+          aria-haspopup="listbox"
+          aria-controls={isOpen ? listboxId : undefined}
           aria-labelledby={labelId}
-          className="absolute z-10 w-full mt-1 bg-s2 border border-border rounded-md shadow-2 max-h-72 overflow-y-auto"
-        >
-          {loading ? (
-            <div className="px-3 py-2 text-[0.875rem] text-fg-4">Loading...</div>
-          ) : filtered.length === 0 ? (
-            <div className="px-3 py-2 text-[0.875rem] text-fg-4">
-              {query ? "No matches found" : "No options available"}
-            </div>
-          ) : (
-            filtered.map((option, index) => (
-              <button
-                key={option.id}
-                ref={(el) => {
-                  optionRefs.current[index] = el;
-                }}
-                id={`${componentId}-option-${index}`}
-                type="button"
-                role="option"
-                aria-selected={focusedIndex === index}
-                onClick={() => handleAdd(option)}
-                className={`w-full px-3 py-2 text-left text-[0.9375rem] text-fg cursor-pointer border-none bg-transparent font-sans transition-colors duration-150 ${
-                  focusedIndex === index ? "bg-s1" : "hover:bg-s1"
-                }`}
-              >
-                {option.name}
-                {option.category && (
-                  <span className="ml-2 text-[0.75rem] text-fg-4">{option.category}</span>
-                )}
-              </button>
-            ))
-          )}
-        </div>
-      )}
+          aria-activedescendant={
+            focusedIndex >= 0 ? `${componentId}-option-${focusedIndex}` : undefined
+          }
+          value={query}
+          disabled={atMax}
+          onChange={(e) => {
+            setQuery(e.target.value);
+            setIsOpen(true);
+            setFocusedIndex(-1);
+          }}
+          onFocus={() => !atMax && setIsOpen(true)}
+          onKeyDown={handleKeyDown}
+          placeholder={atMax ? `Maximum ${maxItems} selected` : placeholder}
+          error={!!error}
+        />
+
+        {/* Dropdown list */}
+        {isOpen && !atMax && (
+          <div
+            ref={listRef}
+            role="listbox"
+            id={listboxId}
+            aria-labelledby={labelId}
+            className="absolute z-10 w-full mt-1 bg-s2 border border-border rounded-md shadow-2 max-h-72 overflow-y-auto"
+          >
+            {loading ? (
+              <div className="px-3 py-2 text-[0.875rem] text-fg-4">Loading...</div>
+            ) : filtered.length === 0 ? (
+              <div className="px-3 py-2 text-[0.875rem] text-fg-4">
+                {query ? "No matches found" : "No options available"}
+              </div>
+            ) : (
+              filtered.map((option, index) => (
+                <button
+                  key={option.id}
+                  ref={(el) => {
+                    optionRefs.current[index] = el;
+                  }}
+                  id={`${componentId}-option-${index}`}
+                  type="button"
+                  role="option"
+                  aria-selected={focusedIndex === index}
+                  onClick={() => handleAdd(option)}
+                  className={`w-full px-3 py-2 text-left text-[0.9375rem] text-fg cursor-pointer border-none bg-transparent font-sans transition-colors duration-150 ${
+                    focusedIndex === index ? "bg-s1" : "hover:bg-s1"
+                  }`}
+                >
+                  {option.name}
+                  {option.category && (
+                    <span className="ml-2 text-[0.75rem] text-fg-4">{option.category}</span>
+                  )}
+                </button>
+              ))
+            )}
+          </div>
+        )}
+      </div>
 
       {error && <p className="mt-1 text-[0.75rem] text-err">{error}</p>}
       {helperText && !error && (

@@ -2,19 +2,16 @@
 
 import { useState } from "react";
 import { ConsentPreferencesModal } from "@/features/consent/components/ConsentPreferencesModal";
+import { Button } from "@/components/ui/Button";
 
 export function CookiePreferencesLink(): React.ReactElement {
   const [open, setOpen] = useState(false);
 
   return (
     <>
-      <button
-        onClick={() => setOpen(true)}
-        className="text-[0.75rem] no-underline hover:underline bg-transparent border-none cursor-pointer p-0"
-        style={{ color: "var(--fg-4)" }}
-      >
+      <Button variant="text" onClick={() => setOpen(true)}>
         Cookies
-      </button>
+      </Button>
       <ConsentPreferencesModal open={open} onClose={() => setOpen(false)} />
     </>
   );

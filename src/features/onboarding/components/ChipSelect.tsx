@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
+import { Chip } from "@/components/ui/Chip";
 
 interface ChipSelectProps {
   label: string;
@@ -115,31 +116,9 @@ export function ChipSelect({
       {selected.length > 0 && (
         <div className="flex flex-wrap gap-2 mb-2" aria-live="polite">
           {selected.map((value) => (
-            <span
-              key={value}
-              className="inline-flex items-center gap-1 h-7 px-2.5 bg-brand-l text-brand rounded-full text-[0.8125rem] font-medium whitespace-nowrap"
-            >
+            <Chip key={value} onRemove={() => handleRemove(value)}>
               {value}
-              <button
-                type="button"
-                onClick={() => handleRemove(value)}
-                className="bg-transparent border-none text-inherit cursor-pointer p-0 ml-0.5 opacity-60 hover:opacity-100 w-3.5 h-3.5 inline-flex items-center justify-center"
-                aria-label={`Remove ${value}`}
-              >
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={3}
-                  strokeLinecap="round"
-                  aria-hidden="true"
-                >
-                  <path d="M18 6L6 18M6 6l12 12" />
-                </svg>
-              </button>
-            </span>
+            </Chip>
           ))}
         </div>
       )}

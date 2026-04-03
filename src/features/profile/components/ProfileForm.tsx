@@ -16,6 +16,8 @@ import { ProfileSectionQualifications } from "@/features/profile/components/Prof
 import { ProfileSectionPractice } from "@/features/profile/components/ProfileSectionPractice";
 import { ProfileSectionCommunities } from "@/features/profile/components/ProfileSectionCommunities";
 import { ProfileSectionFinances } from "@/features/profile/components/ProfileSectionFinances";
+import { Button } from "@/components/ui/Button";
+import { Spinner } from "@/components/ui/Spinner";
 
 interface ProfileFormProps {
   defaultValues: TherapistProfileFormData;
@@ -103,10 +105,7 @@ export function ProfileForm({ defaultValues }: ProfileFormProps): React.ReactEle
       <div className="px-4 sm:px-6 pt-12 pb-24">
         <div className="max-w-[720px] mx-auto">
           <div className="bg-s1 border border-border rounded-md p-6 shadow-1 flex flex-col items-center gap-2">
-            <span
-              aria-hidden="true"
-              className="w-6 h-6 border-2 border-brand/30 border-t-brand rounded-full animate-spin"
-            />
+            <Spinner variant="brand" size={24} />
             <p className="text-fg-3 text-[0.875rem]">Loading profile...</p>
           </div>
         </div>
@@ -204,31 +203,17 @@ export function ProfileForm({ defaultValues }: ProfileFormProps): React.ReactEle
 
               {/* Actions */}
               <div className="flex gap-3">
-                <button
+                <Button
+                  variant="secondary"
                   type="button"
                   onClick={handleCancel}
                   disabled={updateProfile.isPending}
-                  className="inline-flex items-center justify-center gap-2 h-11 px-6 bg-transparent text-fg-2 border border-border rounded-sm text-[0.8125rem] font-medium tracking-[0.01em] cursor-pointer transition-all duration-150 ease-out font-sans hover:border-border-e hover:text-fg focus-visible:outline-2 focus-visible:outline-border-f focus-visible:outline-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={updateProfile.isPending}
-                  className="inline-flex items-center justify-center gap-2 flex-1 h-11 px-6 bg-brand text-brand-on border-none rounded-sm text-[0.8125rem] font-semibold tracking-[0.01em] cursor-pointer transition-[background] duration-150 ease-out font-sans hover:bg-brand-h focus-visible:outline-2 focus-visible:outline-border-f focus-visible:outline-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {updateProfile.isPending ? (
-                    <>
-                      <span
-                        aria-hidden="true"
-                        className="w-[18px] h-[18px] border-2 border-white/30 border-t-white rounded-full animate-spin"
-                      />
-                      Saving...
-                    </>
-                  ) : (
-                    "Save changes"
-                  )}
-                </button>
+                </Button>
+                <Button type="submit" loading={updateProfile.isPending} className="flex-1">
+                  {updateProfile.isPending ? "Saving..." : "Save changes"}
+                </Button>
               </div>
             </form>
           </FormProvider>

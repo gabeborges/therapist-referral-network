@@ -3,7 +3,9 @@
 import { useFormContext } from "react-hook-form";
 import type { TherapistProfileFormData } from "@/lib/validations/therapist-profile";
 import { PRONOUNS_OPTIONS, GENDER_OPTIONS, PROVINCES } from "@/lib/validations/therapist-profile";
-import { inputClasses, selectClasses, selectStyle } from "@/lib/form-styles";
+import { Input } from "@/components/ui/Input";
+import { Select } from "@/components/ui/Select";
+import { Textarea } from "@/components/ui/Textarea";
 import { FormGroup } from "@/components/ui/FormGroup";
 import { ProfileImageUpload } from "@/features/profile/components/ProfileImageUpload";
 
@@ -32,13 +34,13 @@ export function ProfileSectionBio(): React.ReactElement {
           >
             First name
           </label>
-          <input
+          <Input
             id="pf-firstName"
             {...register("firstName")}
             aria-required="true"
             aria-invalid={!!errors.firstName}
             aria-describedby={errors.firstName ? "pf-firstName-error" : undefined}
-            className={inputClasses(!!errors.firstName)}
+            error={!!errors.firstName}
             placeholder="First name"
           />
           {errors.firstName && (
@@ -54,12 +56,7 @@ export function ProfileSectionBio(): React.ReactElement {
           >
             Middle name <span className="font-normal text-fg-4">(optional)</span>
           </label>
-          <input
-            id="pf-middleName"
-            {...register("middleName")}
-            className={inputClasses(false)}
-            placeholder="Middle name"
-          />
+          <Input id="pf-middleName" {...register("middleName")} placeholder="Middle name" />
         </div>
         <div>
           <label
@@ -68,13 +65,13 @@ export function ProfileSectionBio(): React.ReactElement {
           >
             Last name
           </label>
-          <input
+          <Input
             id="pf-lastName"
             {...register("lastName")}
             aria-required="true"
             aria-invalid={!!errors.lastName}
             aria-describedby={errors.lastName ? "pf-lastName-error" : undefined}
-            className={inputClasses(!!errors.lastName)}
+            error={!!errors.lastName}
             placeholder="Last name"
           />
           {errors.lastName && (
@@ -94,19 +91,14 @@ export function ProfileSectionBio(): React.ReactElement {
           >
             Pronouns <span className="font-normal text-fg-4">(optional)</span>
           </label>
-          <select
-            id="pf-pronouns"
-            {...register("pronouns")}
-            className={selectClasses(false)}
-            style={selectStyle}
-          >
+          <Select id="pf-pronouns" {...register("pronouns")}>
             <option value="">Select pronouns...</option>
             {PRONOUNS_OPTIONS.map((p) => (
               <option key={p} value={p}>
                 {p}
               </option>
             ))}
-          </select>
+          </Select>
         </div>
         <div>
           <label
@@ -115,19 +107,14 @@ export function ProfileSectionBio(): React.ReactElement {
           >
             Gender <span className="font-normal text-fg-4">(optional)</span>
           </label>
-          <select
-            id="pf-therapistGender"
-            {...register("therapistGender")}
-            className={selectClasses(false)}
-            style={selectStyle}
-          >
+          <Select id="pf-therapistGender" {...register("therapistGender")}>
             <option value="">Select gender...</option>
             {GENDER_OPTIONS.map((g) => (
               <option key={g} value={g}>
                 {g}
               </option>
             ))}
-          </select>
+          </Select>
         </div>
       </div>
 
@@ -139,12 +126,12 @@ export function ProfileSectionBio(): React.ReactElement {
         >
           Display name <span className="font-normal text-fg-4">(optional)</span>
         </label>
-        <input
+        <Input
           id="pf-displayName"
           {...register("displayName")}
           aria-invalid={!!errors.displayName}
           aria-describedby={errors.displayName ? "pf-displayName-error" : undefined}
-          className={inputClasses(!!errors.displayName)}
+          error={!!errors.displayName}
           placeholder="How your name appears to colleagues"
         />
         {errors.displayName && (
@@ -165,15 +152,13 @@ export function ProfileSectionBio(): React.ReactElement {
         >
           Short bio <span className="font-normal text-fg-4">(optional)</span>
         </label>
-        <textarea
+        <Textarea
           id="pf-bio"
           {...register("bio")}
           maxLength={500}
           aria-invalid={!!errors.bio}
           aria-describedby={errors.bio ? "pf-bio-error" : undefined}
-          className={`w-full min-h-[100px] p-3 bg-inset text-fg border rounded-sm text-[0.9375rem] font-sans resize-y transition-[border-color] duration-150 ease-out focus:border-border-f focus:bg-bg focus:outline-2 focus:outline-border-f focus:outline-offset-2 placeholder:text-fg-4 ${
-            errors.bio ? "border-err" : "border-border"
-          }`}
+          error={!!errors.bio}
           placeholder="Tell colleagues about your practice, experience, and approach..."
         />
         {errors.bio && (
@@ -191,13 +176,13 @@ export function ProfileSectionBio(): React.ReactElement {
         >
           Contact email <span className="font-normal text-fg-4">(optional)</span>
         </label>
-        <input
+        <Input
           id="pf-contactEmail"
           type="email"
           {...register("contactEmail")}
           aria-invalid={!!errors.contactEmail}
           aria-describedby={errors.contactEmail ? "pf-contactEmail-error" : undefined}
-          className={inputClasses(!!errors.contactEmail)}
+          error={!!errors.contactEmail}
           placeholder="contact@yourpractice.com"
         />
         {errors.contactEmail && (
@@ -219,13 +204,13 @@ export function ProfileSectionBio(): React.ReactElement {
           >
             Website URL <span className="font-normal text-fg-4">(optional)</span>
           </label>
-          <input
+          <Input
             id="pf-websiteUrl"
             type="url"
             {...register("websiteUrl")}
             aria-invalid={!!errors.websiteUrl}
             aria-describedby={errors.websiteUrl ? "pf-websiteUrl-error" : undefined}
-            className={inputClasses(!!errors.websiteUrl)}
+            error={!!errors.websiteUrl}
             placeholder="https://yourpractice.com"
           />
           {errors.websiteUrl && (
@@ -241,13 +226,13 @@ export function ProfileSectionBio(): React.ReactElement {
           >
             Psychology Today URL <span className="font-normal text-fg-4">(optional)</span>
           </label>
-          <input
+          <Input
             id="pf-psychologyTodayUrl"
             type="url"
             {...register("psychologyTodayUrl")}
             aria-invalid={!!errors.psychologyTodayUrl}
             aria-describedby={errors.psychologyTodayUrl ? "pf-psychologyTodayUrl-error" : undefined}
-            className={inputClasses(!!errors.psychologyTodayUrl)}
+            error={!!errors.psychologyTodayUrl}
             placeholder="https://psychologytoday.com/profile/..."
           />
           {errors.psychologyTodayUrl && (
@@ -267,13 +252,13 @@ export function ProfileSectionBio(): React.ReactElement {
           >
             City
           </label>
-          <input
+          <Input
             id="pf-city"
             {...register("city")}
             aria-required="true"
             aria-invalid={!!errors.city}
             aria-describedby={errors.city ? "pf-city-error" : undefined}
-            className={inputClasses(!!errors.city)}
+            error={!!errors.city}
             placeholder="Your city"
           />
           {errors.city && (
@@ -289,14 +274,13 @@ export function ProfileSectionBio(): React.ReactElement {
           >
             Province
           </label>
-          <select
+          <Select
             id="pf-province"
             {...register("province")}
             aria-required="true"
             aria-invalid={!!errors.province}
             aria-describedby={errors.province ? "pf-province-error" : undefined}
-            className={selectClasses(!!errors.province)}
-            style={selectStyle}
+            error={!!errors.province}
           >
             <option value="" disabled>
               Select province...
@@ -306,7 +290,7 @@ export function ProfileSectionBio(): React.ReactElement {
                 {p.label}
               </option>
             ))}
-          </select>
+          </Select>
           {errors.province && (
             <p id="pf-province-error" className="mt-1 text-[0.75rem] text-err">
               {errors.province.message}

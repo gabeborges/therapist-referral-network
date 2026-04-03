@@ -4,7 +4,8 @@ import { useFormContext, Controller } from "react-hook-form";
 import type { OnboardingFormData } from "@/lib/validations/onboarding";
 import { ProfileImageUpload } from "@/features/profile/components/ProfileImageUpload";
 import { PRONOUNS_OPTIONS, PROVINCES } from "@/lib/validations/therapist-profile";
-import { inputClasses, selectClasses, selectStyle } from "@/lib/form-styles";
+import { Input } from "@/components/ui/Input";
+import { Select } from "@/components/ui/Select";
 
 export function OnboardingStepBio(): React.ReactElement {
   const {
@@ -33,13 +34,13 @@ export function OnboardingStepBio(): React.ReactElement {
           >
             First name
           </label>
-          <input
+          <Input
             id="ob-firstName"
             {...register("firstName")}
             aria-required="true"
             aria-invalid={!!errors.firstName}
             aria-describedby={errors.firstName ? "ob-firstName-error" : undefined}
-            className={inputClasses(!!errors.firstName)}
+            error={!!errors.firstName}
             placeholder="First name"
           />
           {errors.firstName && (
@@ -55,12 +56,7 @@ export function OnboardingStepBio(): React.ReactElement {
           >
             Middle name <span className="font-normal text-fg-4">(optional)</span>
           </label>
-          <input
-            id="ob-middleName"
-            {...register("middleName")}
-            className={inputClasses(false)}
-            placeholder="Middle name"
-          />
+          <Input id="ob-middleName" {...register("middleName")} placeholder="Middle name" />
         </div>
         <div>
           <label
@@ -69,13 +65,13 @@ export function OnboardingStepBio(): React.ReactElement {
           >
             Last name
           </label>
-          <input
+          <Input
             id="ob-lastName"
             {...register("lastName")}
             aria-required="true"
             aria-invalid={!!errors.lastName}
             aria-describedby={errors.lastName ? "ob-lastName-error" : undefined}
-            className={inputClasses(!!errors.lastName)}
+            error={!!errors.lastName}
             placeholder="Last name"
           />
           {errors.lastName && (
@@ -95,25 +91,20 @@ export function OnboardingStepBio(): React.ReactElement {
           >
             Pronouns <span className="font-normal text-fg-4">(optional)</span>
           </label>
-          <select
-            id="ob-pronouns"
-            {...register("pronouns")}
-            className={selectClasses(false)}
-            style={selectStyle}
-          >
+          <Select id="ob-pronouns" {...register("pronouns")}>
             <option value="">Select pronouns...</option>
             {PRONOUNS_OPTIONS.map((p) => (
               <option key={p} value={p}>
                 {p}
               </option>
             ))}
-          </select>
+          </Select>
           {pronounsValue === "other" && (
             <Controller
               name="pronouns"
               render={({ field }) => (
-                <input
-                  className={`${inputClasses(false)} mt-2`}
+                <Input
+                  className="mt-2"
                   placeholder="Enter your pronouns (max 20 characters)"
                   maxLength={20}
                   value={field.value === "other" ? "" : (field.value ?? "")}
@@ -130,10 +121,10 @@ export function OnboardingStepBio(): React.ReactElement {
           >
             Display name <span className="font-normal text-fg-4">(optional)</span>
           </label>
-          <input
+          <Input
             id="ob-displayName"
             {...register("displayName")}
-            className={inputClasses(!!errors.displayName)}
+            error={!!errors.displayName}
             placeholder="How your name appears to colleagues"
           />
           {errors.displayName && (
@@ -153,13 +144,13 @@ export function OnboardingStepBio(): React.ReactElement {
         >
           Contact email <span className="font-normal text-fg-4">(optional)</span>
         </label>
-        <input
+        <Input
           id="ob-contactEmail"
           type="email"
           {...register("contactEmail")}
           aria-invalid={!!errors.contactEmail}
           aria-describedby={errors.contactEmail ? "ob-email-error" : undefined}
-          className={inputClasses(!!errors.contactEmail)}
+          error={!!errors.contactEmail}
           placeholder="you@practice.com"
         />
         {errors.contactEmail && (
@@ -181,13 +172,13 @@ export function OnboardingStepBio(): React.ReactElement {
           >
             City
           </label>
-          <input
+          <Input
             id="ob-city"
             {...register("city")}
             aria-required="true"
             aria-invalid={!!errors.city}
             aria-describedby={errors.city ? "ob-city-error" : undefined}
-            className={inputClasses(!!errors.city)}
+            error={!!errors.city}
             placeholder="City"
           />
           {errors.city && (
@@ -203,14 +194,13 @@ export function OnboardingStepBio(): React.ReactElement {
           >
             Province
           </label>
-          <select
+          <Select
             id="ob-province"
             {...register("province")}
             aria-required="true"
             aria-invalid={!!errors.province}
             aria-describedby={errors.province ? "ob-province-error" : undefined}
-            className={selectClasses(!!errors.province)}
-            style={selectStyle}
+            error={!!errors.province}
           >
             <option value="">Select province...</option>
             {PROVINCES.map((p) => (
@@ -218,7 +208,7 @@ export function OnboardingStepBio(): React.ReactElement {
                 {p.label}
               </option>
             ))}
-          </select>
+          </Select>
           {errors.province && (
             <p id="ob-province-error" className="mt-1 text-[0.75rem] text-err">
               {errors.province.message}

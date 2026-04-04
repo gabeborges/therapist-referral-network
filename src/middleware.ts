@@ -38,7 +38,8 @@ export default auth((req) => {
     isAuthenticated &&
     req.auth?.needsConsent &&
     nextUrl.pathname !== "/auth/consent" &&
-    !nextUrl.pathname.startsWith("/api/")
+    !nextUrl.pathname.startsWith("/api/") &&
+    !publicPatterns.some((pattern) => pattern.test(nextUrl.pathname))
   ) {
     return Response.redirect(new URL("/auth/consent", nextUrl.origin));
   }

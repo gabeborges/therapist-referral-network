@@ -9,7 +9,7 @@ export default async function LegalLayout({
   children: React.ReactNode;
 }): Promise<React.ReactElement> {
   const session = await auth();
-  const isAuthenticated = !!session?.user;
+  const isAuthenticated = !!session?.user && !session.needsConsent;
 
   return (
     <>

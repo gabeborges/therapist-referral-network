@@ -4,7 +4,6 @@ import { TRPCReactProvider } from "@/lib/trpc/provider";
 import { SessionProvider } from "@/app/providers/session-provider";
 import { ConsentProvider } from "@/lib/consent/ConsentProvider";
 import { CookieConsentBanner } from "@/features/consent/components/CookieConsentBanner";
-import { CookieSettingsTrigger } from "@/features/consent/components/CookieSettingsTrigger";
 import { ConsentModeDefaults } from "@/features/analytics/components/ConsentModeDefaults";
 import { GoogleTagManagerLoader } from "@/features/analytics/components/GoogleTagManagerLoader";
 import "./globals.css";
@@ -51,7 +50,6 @@ export default function RootLayout({
               <GoogleTagManagerLoader gtmId={process.env.NEXT_PUBLIC_GTM_ID ?? ""} />
               <main id="main-content">{children}</main>
               <CookieConsentBanner />
-              <CookieSettingsTrigger />
             </ConsentProvider>
           </TRPCReactProvider>
         </SessionProvider>

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { MatchRingLogo } from "@/features/auth/components/match-ring-logo";
-import { CookiePreferencesLink } from "@/features/consent/components/CookiePreferencesLink";
+import { Footer } from "@/features/layout/components/Footer";
 
 const FACEBOOK_COMMUNITY_URL = "https://www.facebook.com/groups/canadiantherapyreferralnetwork";
 
@@ -222,43 +222,7 @@ export default function LandingPage(): React.ReactElement {
       </section>
 
       {/* ─── Footer ─── */}
-      <footer
-        className="px-6 py-6 text-center mt-auto"
-        style={{ borderTop: "1px solid var(--border-s)" }}
-      >
-        <nav aria-label="Footer" className="flex items-center justify-center gap-4 flex-wrap">
-          <span className="text-[0.75rem] font-medium" style={{ color: "var(--fg-3)" }}>
-            Therapist Referral Network
-          </span>
-          <span className="text-[0.75rem]" style={{ color: "var(--border-e)" }}>
-            &middot;
-          </span>
-          <a
-            href={FACEBOOK_COMMUNITY_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-[0.75rem] no-underline hover:underline"
-            style={{ color: "var(--fg-4)" }}
-          >
-            Community
-          </a>
-          <Link
-            href="/terms"
-            className="text-[0.75rem] no-underline hover:underline"
-            style={{ color: "var(--fg-4)" }}
-          >
-            Terms
-          </Link>
-          <Link
-            href="/privacy"
-            className="text-[0.75rem] no-underline hover:underline"
-            style={{ color: "var(--fg-4)" }}
-          >
-            Privacy
-          </Link>
-          <CookiePreferencesLink />
-        </nav>
-      </footer>
+      <Footer />
     </div>
   );
 }

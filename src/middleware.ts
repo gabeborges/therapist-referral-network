@@ -16,6 +16,7 @@ export default auth((req) => {
     /^\/referrals\/fulfill\//, // Fulfillment check responses
     /^\/terms$/, // Terms of Service
     /^\/privacy$/, // Privacy Policy
+    /^\/cookies$/, // Cookie Policy
   ];
 
   const isPublicRoute = publicPatterns.some((pattern) => pattern.test(nextUrl.pathname));

@@ -132,17 +132,49 @@ The app will be available at [http://localhost:3000](http://localhost:3000).
 | `npm run db:studio`                       | Open Prisma Studio                 |
 | `npm run db:seed`                         | Seed the database                  |
 | `npm run db:reset-user -- user@email.com` | Delete a local user and their data |
+| `npm run email:dev`                       | Preview email templates locally    |
+| `npm run test:referral-e2e`               | E2E referral test (dry-run)        |
+| `npm run test:referral-e2e -- --send`     | E2E referral test (with emails)    |
 
 ### Testing Locally
 
-**Trigger the referral drip cron job:**
+#### Email template preview
+
+Preview and iterate on email templates without sending:
+
+```bash
+npm run email:dev
+```
+
+Opens a live preview at [http://localhost:3001](http://localhost:3001) showing all templates in `src/lib/email/templates/`.
+
+#### E2E referral test script
+
+Test the full referral flow (seed profiles → create referral → match → send emails) without needing the dev server:
+
+```bash
+# Dry-run: seed data, run matching, show scores (no emails sent)
+npm run test:referral-e2e
+
+# Full flow: matching + send emails via Resend
+npm run test:referral-e2e -- --send
+
+# Keep test data in DB after the run (inspect with `npm run db:studio`)
+npm run test:referral-e2e -- --send --keep
+```
+
+After running with `--send`, check the [Resend dashboard](https://resend.com/emails) to see sent emails, delivery status, and rendered HTML. To receive emails in a real inbox, update the test recipient addresses in `scripts/test-referral-e2e.ts`.
+
+#### Trigger the referral drip cron job manually
+
+If you already have referral data in the DB and just want to trigger the drip processor:
 
 ```bash
 curl -X POST http://localhost:3000/api/cron/drip \
   -H "Authorization: Bearer CRON_SECRET"
 ```
 
-Replace `CRON_SECRET` with the value from your `.env.local` file.
+Replace `CRON_SECRET` with the value from your `.env.local` file. Requires the dev server to be running.
 
 ## Environments
 

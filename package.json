@@ -22,7 +22,8 @@
     "postinstall": "prisma generate",
     "email:dev": "email dev --dir src/lib/email/templates --port 3001",
     "db:seed": "tsx prisma/seed.ts",
-    "db:reset-user": "tsx prisma/reset-user.ts"
+    "db:reset-user": "tsx prisma/reset-user.ts",
+    "test:referral-e2e": "tsx scripts/test-referral-e2e.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -52,6 +53,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@playwright/test": "^1.58.2",
+    "@react-email/preview-server": "^5.2.10",
     "@tailwindcss/postcss": "^4",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",

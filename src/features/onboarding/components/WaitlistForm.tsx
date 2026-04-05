@@ -7,13 +7,9 @@ import { useState } from "react";
 import { useTRPC } from "@/lib/trpc/client";
 import { useMutation } from "@tanstack/react-query";
 import { waitlistSchema, type WaitlistFormData } from "@/lib/validations/waitlist";
+import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-
-const COUNTRY_LABELS: Record<string, string> = {
-  US: "United States",
-  OTHER: "Other",
-};
 
 export function WaitlistForm(): React.ReactElement {
   const searchParams = useSearchParams();
@@ -56,9 +52,15 @@ export function WaitlistForm(): React.ReactElement {
         <h2 className="text-[1.25rem] font-semibold tracking-[-0.01em] leading-[1.35] text-fg mb-2">
           You're on the list!
         </h2>
-        <p className="text-[0.875rem] leading-[1.5] text-fg-2">
+        <p className="text-[0.875rem] leading-[1.5] text-fg-2 mb-5">
           We'll let you know as soon as Therapist Referral Network is available in your area.
         </p>
+        <Link
+          href="/"
+          className="inline-flex items-center justify-center h-11 px-6 rounded-sm text-[0.8125rem] font-medium tracking-[0.01em] bg-transparent text-fg-2 border border-border transition-[border-color,color] duration-150 ease-out hover:border-border-e hover:text-fg"
+        >
+          Back to Homepage
+        </Link>
       </div>
     );
   }
@@ -79,18 +81,7 @@ export function WaitlistForm(): React.ReactElement {
           {errors.email && <p className="mt-1 text-[0.75rem] text-err">{errors.email.message}</p>}
         </div>
 
-        <div>
-          <label className="block mb-2 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2">
-            Country
-          </label>
-          <Input
-            type="text"
-            readOnly
-            value={COUNTRY_LABELS[countryParam] ?? countryParam}
-            className="cursor-not-allowed opacity-70"
-          />
-          <input type="hidden" {...register("country")} />
-        </div>
+        <input type="hidden" {...register("country")} />
 
         {joinWaitlist.isError && (
           <p className="text-[0.875rem] text-err">

@@ -102,24 +102,30 @@ export default async function ReferralDetailPage({
 
             {/* Criteria grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
-              <div>
-                <p className="text-[0.75rem] font-medium tracking-[0.04em] uppercase text-fg-3 mb-1">
-                  Age group
-                </p>
-                <p className="text-[0.9375rem] text-fg m-0">{referral.ageGroup.join(", ")}</p>
-              </div>
-              <div>
-                <p className="text-[0.75rem] font-medium tracking-[0.04em] uppercase text-fg-3 mb-1">
-                  Location
-                </p>
-                <p className="text-[0.9375rem] text-fg m-0">{location}</p>
-              </div>
-              <div>
-                <p className="text-[0.75rem] font-medium tracking-[0.04em] uppercase text-fg-3 mb-1">
-                  Modalities
-                </p>
-                <p className="text-[0.9375rem] text-fg m-0">{referral.modalities.join(", ")}</p>
-              </div>
+              {referral.ageGroup.length > 0 && (
+                <div>
+                  <p className="text-[0.75rem] font-medium tracking-[0.04em] uppercase text-fg-3 mb-1">
+                    Age group
+                  </p>
+                  <p className="text-[0.9375rem] text-fg m-0">{referral.ageGroup.join(", ")}</p>
+                </div>
+              )}
+              {location && (
+                <div>
+                  <p className="text-[0.75rem] font-medium tracking-[0.04em] uppercase text-fg-3 mb-1">
+                    Location
+                  </p>
+                  <p className="text-[0.9375rem] text-fg m-0">{location}</p>
+                </div>
+              )}
+              {referral.modalities.length > 0 && (
+                <div>
+                  <p className="text-[0.75rem] font-medium tracking-[0.04em] uppercase text-fg-3 mb-1">
+                    Modalities
+                  </p>
+                  <p className="text-[0.9375rem] text-fg m-0">{referral.modalities.join(", ")}</p>
+                </div>
+              )}
               {referral.participants.length > 0 && (
                 <div>
                   <p className="text-[0.75rem] font-medium tracking-[0.04em] uppercase text-fg-3 mb-1">

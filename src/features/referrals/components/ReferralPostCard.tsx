@@ -50,7 +50,7 @@ export function ReferralPostCard({
 
       <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-[0.8125rem] text-fg-2 mb-3">
         <span>{Array.isArray(ageGroup) ? ageGroup.join(", ") : ageGroup}</span>
-        <span>{location}</span>
+        {location && <span>{location}</span>}
         <span>{modalities.join(", ")}</span>
       </div>
 

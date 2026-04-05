@@ -77,13 +77,13 @@ export function ReferralActionBar({
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
-          className="text-fg-3"
+          className="text-err"
         >
           <circle cx="12" cy="12" r="10" />
           <line x1="15" y1="9" x2="9" y2="15" />
           <line x1="9" y1="9" x2="15" y2="15" />
         </svg>
-        <p className="text-[0.875rem] font-medium text-fg-3 m-0">This referral was cancelled</p>
+        <p className="text-[0.875rem] font-medium text-err m-0">This referral was cancelled</p>
       </div>
     );
   }
@@ -97,20 +97,11 @@ export function ReferralActionBar({
   if (state === "default") {
     return (
       <div className="flex items-center gap-3 flex-wrap">
-        <Button
-          type="button"
-          onClick={() => setState("confirm-fulfill")}
-          className="bg-ok text-white hover:opacity-90"
-        >
-          Mark as Fulfilled
+        <Button variant="secondary" type="button" onClick={() => setState("confirm-cancel")}>
+          Cancel referral
         </Button>
-        <Button
-          variant="secondary"
-          type="button"
-          onClick={() => setState("confirm-cancel")}
-          className="text-err border-err/30 hover:bg-err-l hover:border-err"
-        >
-          Cancel Referral
+        <Button type="button" className="ml-auto" onClick={() => setState("confirm-fulfill")}>
+          Mark as fulfilled
         </Button>
       </div>
     );
@@ -143,9 +134,8 @@ export function ReferralActionBar({
           onClick={() => fulfillMutation.mutate({ id: referralId })}
           loading={fulfillMutation.isPending}
           disabled={isPending}
-          className="bg-ok text-white hover:opacity-90"
         >
-          {fulfillMutation.isPending ? "Fulfilling..." : "Yes, Fulfilled"}
+          {fulfillMutation.isPending ? "Fulfilling..." : "Yes, fulfilled"}
         </Button>
       </div>
     );
@@ -172,14 +162,14 @@ export function ReferralActionBar({
       </Button>
       <Button
         autoFocus
+        variant="danger"
         size="sm"
         type="button"
         onClick={() => cancelMutation.mutate({ id: referralId })}
         loading={cancelMutation.isPending}
         disabled={isPending}
-        className="bg-err text-white hover:opacity-90"
       >
-        {cancelMutation.isPending ? "Cancelling..." : "Yes, Cancel"}
+        {cancelMutation.isPending ? "Cancelling..." : "Yes, cancel"}
       </Button>
     </div>
   );

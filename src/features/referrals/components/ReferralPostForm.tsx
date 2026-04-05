@@ -226,7 +226,7 @@ export function ReferralPostForm(): React.ReactElement {
             control={control}
             label="Modalities"
             options={[...MODALITIES].map((m) => ({ value: m, label: MODALITY_LABELS[m] ?? m }))}
-            itemMinWidth="full"
+            layout="inline"
             error={errors.modalities?.message}
           />
         </FormGroup>

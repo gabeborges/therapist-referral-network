@@ -6,7 +6,6 @@ import {
   computeAgeGroupScore,
   computeModalityScore,
   computeLocationScore,
-  computeActivityDecay,
   computeCompletenessBoost,
   computeParticipantsScore,
   computeLanguageScore,
@@ -16,8 +15,6 @@ import {
 } from "@/features/matching/match-referral-to-profiles";
 
 // ─── Fixtures ──────────────────────────────────────────────────────────────────
-
-const NOW = new Date("2026-03-26T12:00:00Z");
 
 function makeProfile(overrides: Partial<TherapistProfileModel> = {}): TherapistProfileModel {
   return {
@@ -180,32 +177,6 @@ describe("computeLocationScore", () => {
   });
 });
 
-describe("computeActivityDecay", () => {
-  it("returns 1.0 for activity within 7 days", () => {
-    const lastActive = new Date("2026-03-20T12:00:00Z");
-    expect(computeActivityDecay(lastActive, NOW)).toBe(1.0);
-  });
-
-  it("returns 0.8 for activity within 14 days", () => {
-    const lastActive = new Date("2026-03-15T12:00:00Z");
-    expect(computeActivityDecay(lastActive, NOW)).toBe(0.8);
-  });
-
-  it("returns 0.5 for activity within 30 days", () => {
-    const lastActive = new Date("2026-03-01T12:00:00Z");
-    expect(computeActivityDecay(lastActive, NOW)).toBe(0.5);
-  });
-
-  it("returns 0.2 for activity older than 30 days", () => {
-    const lastActive = new Date("2026-01-01T12:00:00Z");
-    expect(computeActivityDecay(lastActive, NOW)).toBe(0.2);
-  });
-
-  it("returns 1.0 for activity exactly now", () => {
-    expect(computeActivityDecay(NOW, NOW)).toBe(1.0);
-  });
-});
-
 describe("computeCompletenessBoost", () => {
   const base = {
     bio: null as string | null,
@@ -340,7 +311,7 @@ describe("scoreProfile", () => {
     const profile = makeProfile();
     const referral = makeReferralPost();
 
-    const result = scoreProfile(profile, referral, NOW);
+    const result = scoreProfile(profile, referral);
 
     expect(result.matchDimensions).toEqual({
       specialty: true,
@@ -352,8 +323,8 @@ describe("scoreProfile", () => {
       therapyType: false,
     });
     // specialty=1 + ageGroup=1 + modality=1 + location=2 + participants=0 + language=0 = 5
-    // decay = 1.0 (1 day ago), completeness = (4/6)*0.5 = 0.333 (bio, approach, languages, insurers filled; participants, topSpecialties empty)
-    // score = 5 * 1.0 + 0.333 = 5.333
+    // completeness = (4/6)*0.5 = 0.333 (bio, approach, languages, insurers filled; participants, topSpecialties empty)
+    // score = 5 + 0.333 = 5.333
     expect(result.score).toBe(5.333);
     expect(result.profileId).toBe("profile-1");
   });
@@ -368,7 +339,7 @@ describe("scoreProfile", () => {
     });
     const referral = makeReferralPost();
 
-    const result = scoreProfile(profile, referral, NOW);
+    const result = scoreProfile(profile, referral);
 
     expect(result.matchDimensions).toEqual({
       specialty: false,
@@ -380,30 +351,16 @@ describe("scoreProfile", () => {
       therapyType: false,
     });
     // specialty=0 + ageGroup=0 + modality=1 + location=2 = 3
-    // decay = 1.0, completeness = (4/6)*0.5 = 0.333
-    // score = 3 * 1.0 + 0.333 = 3.333
+    // completeness = (4/6)*0.5 = 0.333
+    // score = 3 + 0.333 = 3.333
     expect(result.score).toBe(3.333);
-  });
-
-  it("applies activity decay for inactive profiles", () => {
-    const profile = makeProfile({
-      lastActiveAt: new Date("2026-01-01T00:00:00Z"), // very old
-    });
-    const referral = makeReferralPost();
-
-    const result = scoreProfile(profile, referral, NOW);
-
-    // specialty=1 + ageGroup=1 + modality=1 + location=2 = 5
-    // decay = 0.2, completeness = (4/6)*0.5 = 0.333
-    // score = 5 * 0.2 + 0.333 = 1.333
-    expect(result.score).toBe(1.333);
   });
 
   it("scores participants dimension when referral specifies participants", () => {
     const profile = makeProfile({ participants: ["Couples", "Family"] });
     const referral = makeReferralPost({ participants: ["Couples"] });
 
-    const result = scoreProfile(profile, referral, NOW);
+    const result = scoreProfile(profile, referral);
 
     expect(result.matchDimensions.participants).toBe(true);
   });
@@ -412,7 +369,7 @@ describe("scoreProfile", () => {
     const profile = makeProfile({ participants: ["Couples"] });
     const referral = makeReferralPost({ participants: [] });
 
-    const result = scoreProfile(profile, referral, NOW);
+    const result = scoreProfile(profile, referral);
 
     expect(result.matchDimensions.participants).toBe(false);
   });
@@ -421,7 +378,7 @@ describe("scoreProfile", () => {
     const profile = makeProfile({ languages: ["English", "French"] });
     const referral = makeReferralPost({ languages: ["French"] });
 
-    const result = scoreProfile(profile, referral, NOW);
+    const result = scoreProfile(profile, referral);
 
     expect(result.matchDimensions.language).toBe(true);
   });
@@ -430,7 +387,7 @@ describe("scoreProfile", () => {
     const profile = makeProfile({ languages: ["English", "French"] });
     const referral = makeReferralPost({ languages: [] });
 
-    const result = scoreProfile(profile, referral, NOW);
+    const result = scoreProfile(profile, referral);
 
     expect(result.matchDimensions.language).toBe(false);
   });
@@ -439,7 +396,7 @@ describe("scoreProfile", () => {
     const profile = makeProfile({ therapeuticApproach: ["CBT", "EMDR"] });
     const referral = makeReferralPost({ therapyTypes: ["EMDR"] });
 
-    const result = scoreProfile(profile, referral, NOW);
+    const result = scoreProfile(profile, referral);
 
     expect(result.matchDimensions.therapyType).toBe(true);
   });
@@ -448,7 +405,7 @@ describe("scoreProfile", () => {
     const profile = makeProfile({ therapeuticApproach: ["CBT"] });
     const referral = makeReferralPost({ therapyTypes: [] });
 
-    const result = scoreProfile(profile, referral, NOW);
+    const result = scoreProfile(profile, referral);
 
     expect(result.matchDimensions.therapyType).toBe(false);
   });
@@ -465,13 +422,13 @@ describe("scoreProfile", () => {
       therapyTypes: ["EMDR"],
     });
 
-    const result = scoreProfile(profile, referral, NOW);
+    const result = scoreProfile(profile, referral);
 
     expect(result.matchDimensions.participants).toBe(true);
     expect(result.matchDimensions.language).toBe(true);
     expect(result.matchDimensions.therapyType).toBe(true);
     // Base (specialty=1 + ageGroup=1 + modality=1 + location=2 + participants=1 + language=1 + therapyType=1) = 8
-    // decay=1.0, completeness includes therapeuticApproach + languages + participants = (5/6)*0.5 = 0.417
+    // completeness includes therapeuticApproach + languages + participants = (5/6)*0.5 = 0.417
     expect(result.score).toBeGreaterThan(7);
   });
 
@@ -489,7 +446,7 @@ describe("scoreProfile", () => {
     });
     const referral = makeReferralPost();
 
-    const result = scoreProfile(profile, referral, NOW);
+    const result = scoreProfile(profile, referral);
 
     expect(result.matchDimensions).toEqual({
       specialty: false,
@@ -500,7 +457,7 @@ describe("scoreProfile", () => {
       language: false,
       therapyType: false,
     });
-    // 0 * 1.0 + 0 = 0
+    // 0 + 0 = 0
     expect(result.score).toBe(0);
   });
 });
@@ -613,8 +570,8 @@ describe("matchReferralToProfiles", () => {
       makeProfile({
         id: "low-score",
         specialties: ["grief"],
-        ages: ["children"],
-        modalities: ["in-person"],
+        ages: ["adults"], // matches referral age group (passes hard filter)
+        modalities: ["virtual"], // matches referral modality (passes hard filter)
         city: "Vancouver",
         province: "BC",
         bio: null,
@@ -639,5 +596,80 @@ describe("matchReferralToProfiles", () => {
     expect(results[0]!.profileId).toBe("high-score");
     expect(results[1]!.profileId).toBe("low-score");
     expect(results[0]!.score).toBeGreaterThan(results[1]!.score);
+  });
+
+  // ─── Hard-filter tests ──────────────────────────────────────────────────────
+
+  it("excludes profiles with no age group overlap", async () => {
+    const profiles = [
+      makeProfile({ id: "p1", ages: ["children"] }), // referral needs adults
+      makeProfile({ id: "p2", ages: ["adults"] }),
+    ];
+    const prisma = createMockPrisma(profiles);
+    const referral = makeReferralPost({ ageGroup: ["adults"] });
+
+    const results = await matchReferralToProfiles(referral, prisma);
+
+    expect(results).toHaveLength(1);
+    expect(results[0]!.profileId).toBe("p2");
+  });
+
+  it("excludes profiles with no modality overlap", async () => {
+    const profiles = [
+      makeProfile({ id: "p1", modalities: ["in-person"] }), // referral needs virtual
+      makeProfile({ id: "p2", modalities: ["virtual"] }),
+    ];
+    const prisma = createMockPrisma(profiles);
+    const referral = makeReferralPost({ modalities: ["virtual"] });
+
+    const results = await matchReferralToProfiles(referral, prisma);
+
+    expect(results).toHaveLength(1);
+    expect(results[0]!.profileId).toBe("p2");
+  });
+
+  it("excludes profiles with no participants overlap", async () => {
+    const profiles = [
+      makeProfile({ id: "p1", participants: ["Individuals"] }), // referral needs Group
+      makeProfile({ id: "p2", participants: ["Group"] }),
+    ];
+    const prisma = createMockPrisma(profiles);
+    const referral = makeReferralPost({ participants: ["Group"] });
+
+    const results = await matchReferralToProfiles(referral, prisma);
+
+    expect(results).toHaveLength(1);
+    expect(results[0]!.profileId).toBe("p2");
+  });
+
+  it("does not exclude when referral field is empty (no hard filter)", async () => {
+    const profiles = [
+      makeProfile({
+        id: "p1",
+        ages: ["children"],
+        modalities: ["in-person"],
+        participants: ["Group"],
+      }),
+      makeProfile({ id: "p2", ages: ["adults"], modalities: ["virtual"], participants: [] }),
+    ];
+    const prisma = createMockPrisma(profiles);
+    const referral = makeReferralPost({ ageGroup: [], modalities: [], participants: [] });
+
+    const results = await matchReferralToProfiles(referral, prisma);
+
+    expect(results).toHaveLength(2);
+  });
+
+  it("keeps profiles with partial overlap on hard-filter dimensions", async () => {
+    const profiles = [
+      makeProfile({ id: "p1", ages: ["adults", "children"], modalities: ["virtual", "in-person"] }),
+    ];
+    const prisma = createMockPrisma(profiles);
+    const referral = makeReferralPost({ ageGroup: ["adults", "teens"], modalities: ["virtual"] });
+
+    const results = await matchReferralToProfiles(referral, prisma);
+
+    expect(results).toHaveLength(1);
+    expect(results[0]!.profileId).toBe("p1");
   });
 });

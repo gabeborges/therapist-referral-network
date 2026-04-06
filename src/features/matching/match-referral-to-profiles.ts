@@ -22,8 +22,6 @@ export type ProfileMatch = {
 
 // ─── Scoring helpers (exported for unit testing) ────────────────────────────
 
-const MS_PER_DAY = 1000 * 60 * 60 * 24;
-
 export function computeSpecialtyScore(
   profileSpecialties: string[],
   presentingIssue: string,
@@ -66,14 +64,6 @@ export function computeLocationScore(
   if (profileCity.toLowerCase() === referralCity.toLowerCase()) return 2;
   if (profileProvince.toLowerCase() === referralProvince.toLowerCase()) return 1;
   return 0;
-}
-
-export function computeActivityDecay(lastActiveAt: Date, now: Date = new Date()): number {
-  const daysSinceActive = (now.getTime() - lastActiveAt.getTime()) / MS_PER_DAY;
-  if (daysSinceActive <= 7) return 1.0;
-  if (daysSinceActive <= 14) return 0.8;
-  if (daysSinceActive <= 30) return 0.5;
-  return 0.2;
 }
 
 export function computeParticipantsScore(
@@ -131,7 +121,6 @@ export function computeCompletenessBoost(profile: {
 export function scoreProfile(
   profile: TherapistProfileModel,
   referralPost: ReferralPostModel,
-  now: Date = new Date(),
 ): ProfileMatch {
   const specialty = computeSpecialtyScore(profile.specialties, referralPost.presentingIssue);
   const ageGroup = computeAgeGroupScore(profile.ages, referralPost.ageGroup);
@@ -149,12 +138,11 @@ export function scoreProfile(
     referralPost.therapyTypes,
   );
 
-  const activityDecay = computeActivityDecay(profile.lastActiveAt, now);
   const completenessBoost = computeCompletenessBoost(profile);
 
   const rawScore =
     specialty + ageGroup + modality + location + participants + language + therapyType;
-  const finalScore = rawScore * activityDecay + completenessBoost;
+  const finalScore = rawScore + completenessBoost;
 
   return {
     profileId: profile.id,
@@ -198,13 +186,33 @@ export async function matchReferralToProfiles(
     },
   });
 
-  // 3. Filter out already-notified profiles and score the rest
-  const now = new Date();
-  const scored = eligibleProfiles
-    .filter((profile) => !notifiedIds.has(profile.id))
-    .map((profile) => scoreProfile(profile, referralPost, now));
+  // 3. Filter out already-notified profiles
+  const notNotified = eligibleProfiles.filter((profile) => !notifiedIds.has(profile.id));
 
-  // 4. Sort by score descending, take top N
+  // 4. Hard-filter: exclude profiles that cannot serve the referral's requirements
+  const hardFiltered = notNotified.filter((profile) => {
+    if (referralPost.ageGroup.length > 0) {
+      const profileAges = new Set(profile.ages.map((a) => a.toLowerCase()));
+      if (!referralPost.ageGroup.some((a) => profileAges.has(a.toLowerCase()))) return false;
+    }
+
+    if (referralPost.modalities.length > 0) {
+      const profileMods = new Set(profile.modalities.map((m) => m.toLowerCase()));
+      if (!referralPost.modalities.some((m) => profileMods.has(m.toLowerCase()))) return false;
+    }
+
+    if (referralPost.participants.length > 0) {
+      const profileParts = new Set(profile.participants.map((p) => p.toLowerCase()));
+      if (!referralPost.participants.some((p) => profileParts.has(p.toLowerCase()))) return false;
+    }
+
+    return true;
+  });
+
+  // 5. Score remaining profiles
+  const scored = hardFiltered.map((profile) => scoreProfile(profile, referralPost));
+
+  // 6. Sort by score descending, take top N
   scored.sort((a, b) => b.score - a.score);
 
   return scored.slice(0, batchSize);

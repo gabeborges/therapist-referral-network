@@ -58,8 +58,13 @@ export async function sendReferralBatch(
       to: recipient.user.email,
       subject,
       react: ReferralNotificationEmail({
+        baseUrl: APP_URL,
         referrerName: `${author.firstName} ${author.lastName}`,
         referrerEmail: author.user.email,
+        referrerContactEmail: author.contactEmail,
+        referrerPronouns: author.pronouns,
+        referrerWebsiteUrl: author.websiteUrl,
+        referrerPsychologyTodayUrl: author.psychologyTodayUrl,
         presentingIssue: referralPost.presentingIssue,
         ageGroup: referralPost.ageGroup,
         city: referralPost.city,

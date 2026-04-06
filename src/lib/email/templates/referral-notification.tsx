@@ -9,11 +9,19 @@ import {
   Button,
   Hr,
   Link,
+  Img,
+  Row,
+  Column,
 } from "@react-email/components";
 
 interface ReferralNotificationEmailProps {
+  baseUrl: string;
   referrerName: string;
   referrerEmail: string;
+  referrerContactEmail: string | null;
+  referrerPronouns: string | null;
+  referrerWebsiteUrl: string | null;
+  referrerPsychologyTodayUrl: string | null;
   presentingIssue: string;
   ageGroup: string[];
   city: string | null;
@@ -33,8 +41,13 @@ export function referralNotificationSubject(
 }
 
 export function ReferralNotificationEmail({
+  baseUrl,
   referrerName,
   referrerEmail,
+  referrerContactEmail,
+  referrerPronouns,
+  referrerWebsiteUrl,
+  referrerPsychologyTodayUrl,
   presentingIssue,
   ageGroup,
   city,
@@ -44,6 +57,7 @@ export function ReferralNotificationEmail({
   referralUrl,
 }: ReferralNotificationEmailProps): React.ReactElement {
   const location = city ? `${city}, ${province}` : province;
+  const displayEmail = referrerContactEmail ?? referrerEmail;
 
   return (
     <Html lang="en">
@@ -51,14 +65,27 @@ export function ReferralNotificationEmail({
       <Body style={bodyStyle}>
         <Container style={containerStyle}>
           <Section style={headerStyle}>
-            <Text style={logoTextStyle}>Therapist Referral Network</Text>
+            <Row>
+              <Column style={{ width: "36px", verticalAlign: "middle" }}>
+                <Img
+                  src={`${baseUrl}/email/logo-white.png`}
+                  width="28"
+                  height="28"
+                  alt=""
+                  style={{ display: "block" }}
+                />
+              </Column>
+              <Column style={{ verticalAlign: "middle" }}>
+                <Text style={logoTextStyle}>Therapist Referral Network</Text>
+              </Column>
+            </Row>
           </Section>
 
           <Section style={contentStyle}>
-            <Text style={headingStyle}>New Referral Opportunity</Text>
+            <Text style={headingStyle}>New referral opportunity</Text>
             <Text style={introStyle}>
-              A colleague is looking for a therapist for their client. Review the details below to
-              see if this is a good fit for your practice.
+              You've been matched to a referral from a colleague. Review the details below and reach
+              out to coordinate.
             </Text>
 
             <Section style={detailsBoxStyle}>
@@ -84,17 +111,66 @@ export function ReferralNotificationEmail({
 
             <Hr style={hrStyle} />
 
-            <Text style={sectionTitleStyle}>Referring therapist</Text>
-            <Text style={referrerStyle}>{referrerName}</Text>
-            <Link href={`mailto:${referrerEmail}`} style={linkStyle}>
-              {referrerEmail}
-            </Link>
+            <Text style={sectionHeadingStyle}>Are you a good match for this referral?</Text>
 
             <Section style={ctaContainerStyle}>
-              <Button href={referralUrl} style={ctaButtonStyle}>
-                View full details
+              <Button
+                href={`mailto:${displayEmail}?subject=${encodeURIComponent(`Re: Referral — ${presentingIssue} in ${location}`)}`}
+                style={ctaButtonStyle}
+              >
+                Accept referral
               </Button>
             </Section>
+
+            <Text style={helperTextStyle}>
+              Send an email to {referrerName} to accept this referral
+            </Text>
+
+            <Section style={secondaryCtaContainerStyle}>
+              <Link href={referralUrl} style={secondaryCtaStyle}>
+                Check status
+              </Link>
+            </Section>
+
+            <Hr style={hrStyle} />
+
+            <Text style={referredByLabelStyle}>Referred by</Text>
+            <Text style={referredByNameStyle}>
+              {referrerName}
+              {referrerPronouns ? ` (${referrerPronouns})` : ""}
+            </Text>
+
+            {(() => {
+              const links: React.ReactElement[] = [];
+              if (referrerWebsiteUrl) {
+                links.push(
+                  <Link key="website" href={referrerWebsiteUrl} style={referrerLinkStyle}>
+                    Website
+                  </Link>,
+                );
+              }
+              if (referrerPsychologyTodayUrl) {
+                links.push(
+                  <Link key="pt" href={referrerPsychologyTodayUrl} style={referrerLinkStyle}>
+                    Psychology Today
+                  </Link>,
+                );
+              }
+              links.push(
+                <Link key="email" href={`mailto:${displayEmail}`} style={referrerLinkStyle}>
+                  {displayEmail}
+                </Link>,
+              );
+              return (
+                <Text style={referrerLinksStyle}>
+                  {links.reduce<React.ReactNode[]>((acc, link, i) => {
+                    if (i > 0) acc.push(" · ");
+                    acc.push(link);
+                    return acc;
+                  }, [])}
+                </Text>
+              );
+            })()}
           </Section>
 
           <Section style={footerStyle}>
@@ -134,8 +210,9 @@ const headerStyle: React.CSSProperties = {
 
 const logoTextStyle: React.CSSProperties = {
   color: "#FFFFFF",
-  fontSize: "20px",
-  fontWeight: 700,
+  fontSize: "18px",
+  fontWeight: 500,
+  letterSpacing: "-0.005em",
   margin: 0,
 };
 
@@ -156,6 +233,14 @@ const introStyle: React.CSSProperties = {
   fontSize: "16px",
   lineHeight: "24px",
   margin: "0 0 24px 0",
+};
+
+const sectionHeadingStyle: React.CSSProperties = {
+  color: "#1A1A1A",
+  fontSize: "18px",
+  fontWeight: 600,
+  margin: "0 0 4px 0",
+  textAlign: "center" as const,
 };
 
 const detailsBoxStyle: React.CSSProperties = {
@@ -185,28 +270,61 @@ const hrStyle: React.CSSProperties = {
   margin: "24px 0",
 };
 
-const sectionTitleStyle: React.CSSProperties = {
-  color: "#1A1A1A",
+const referredByLabelStyle: React.CSSProperties = {
+  color: "#2A7C7C",
+  fontSize: "12px",
+  fontWeight: 600,
+  textTransform: "uppercase" as const,
+  letterSpacing: "0.5px",
+  margin: "0 0 2px 0",
+  textAlign: "center" as const,
+};
+
+const referredByNameStyle: React.CSSProperties = {
+  color: "#4A4A4A",
   fontSize: "14px",
   fontWeight: 600,
+  lineHeight: "20px",
   margin: "0 0 4px 0",
+  textAlign: "center" as const,
 };
 
-const referrerStyle: React.CSSProperties = {
+const referrerLinksStyle: React.CSSProperties = {
   color: "#4A4A4A",
-  fontSize: "16px",
-  margin: "0 0 2px 0",
+  fontSize: "14px",
+  lineHeight: "20px",
+  margin: "0 0 4px 0",
+  textAlign: "center" as const,
 };
 
-const linkStyle: React.CSSProperties = {
+const referrerLinkStyle: React.CSSProperties = {
   color: "#2A7C7C",
   fontSize: "14px",
   textDecoration: "underline",
 };
 
+const helperTextStyle: React.CSSProperties = {
+  color: "#6B6B6B",
+  fontSize: "14px",
+  lineHeight: "20px",
+  margin: "0 0 16px 0",
+  textAlign: "center" as const,
+};
+
 const ctaContainerStyle: React.CSSProperties = {
   textAlign: "center" as const,
-  margin: "32px 0 8px 0",
+  margin: "12px 0 12px 0",
+};
+
+const secondaryCtaContainerStyle: React.CSSProperties = {
+  textAlign: "center" as const,
+  margin: "0 0 8px 0",
+};
+
+const secondaryCtaStyle: React.CSSProperties = {
+  color: "#2A7C7C",
+  fontSize: "14px",
+  textDecoration: "underline",
 };
 
 const ctaButtonStyle: React.CSSProperties = {
@@ -238,8 +356,13 @@ const footerTextStyle: React.CSSProperties = {
 export default ReferralNotificationEmail;
 
 ReferralNotificationEmail.PreviewProps = {
+  baseUrl: "http://localhost:3000",
   referrerName: "Dr. Sarah Chen",
   referrerEmail: "sarah.chen@practice.com",
+  referrerContactEmail: "sarah@privatepractice.com",
+  referrerPronouns: "she/her",
+  referrerWebsiteUrl: "https://drsarahchen.com",
+  referrerPsychologyTodayUrl: "https://psychologytoday.com/ca/therapists/sarah-chen",
   presentingIssue: "Anxiety & PTSD",
   ageGroup: ["Adults"],
   city: "Toronto",

@@ -43,6 +43,7 @@ export async function sendFulfillmentCheck(
     to: author.user.email,
     subject: fulfillmentCheckSubject(),
     react: FulfillmentCheckEmail({
+      baseUrl: APP_URL,
       referrerName,
       presentingIssue: referralPost.presentingIssue,
       city: referralPost.city,

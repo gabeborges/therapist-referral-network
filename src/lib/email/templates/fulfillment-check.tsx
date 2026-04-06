@@ -8,9 +8,13 @@ import {
   Text,
   Button,
   Hr,
+  Img,
+  Row,
+  Column,
 } from "@react-email/components";
 
 interface FulfillmentCheckEmailProps {
+  baseUrl: string;
   referrerName: string;
   presentingIssue: string;
   city: string | null;
@@ -24,6 +28,7 @@ export function fulfillmentCheckSubject(): string {
 }
 
 export function FulfillmentCheckEmail({
+  baseUrl,
   referrerName,
   presentingIssue,
   city,
@@ -39,14 +44,27 @@ export function FulfillmentCheckEmail({
       <Body style={bodyStyle}>
         <Container style={containerStyle}>
           <Section style={headerStyle}>
-            <Text style={logoTextStyle}>Therapist Referral Network</Text>
+            <Row>
+              <Column style={{ width: "36px", verticalAlign: "middle" }}>
+                <Img
+                  src={`${baseUrl}/email/logo-white.png`}
+                  width="28"
+                  height="28"
+                  alt=""
+                  style={{ display: "block" }}
+                />
+              </Column>
+              <Column style={{ verticalAlign: "middle" }}>
+                <Text style={logoTextStyle}>Therapist Referral Network</Text>
+              </Column>
+            </Row>
           </Section>
 
           <Section style={contentStyle}>
             <Text style={headingStyle}>Was your referral fulfilled?</Text>
             <Text style={introStyle}>
-              Hi {referrerName}, we wanted to check in on the referral you
-              posted. Has a therapist connected with your client?
+              Hi {referrerName}, we wanted to check in on the referral you posted. Has a therapist
+              connected with your client?
             </Text>
 
             <Section style={detailsBoxStyle}>
@@ -78,8 +96,8 @@ export function FulfillmentCheckEmail({
 
           <Section style={footerStyle}>
             <Text style={footerTextStyle}>
-              You received this email because you posted a referral on the
-              Therapist Referral Network.
+              You received this email because you posted a referral on the Therapist Referral
+              Network.
             </Text>
             <Text style={footerTextStyle}>
               &copy; {new Date().getFullYear()} Therapist Referral Network
@@ -95,8 +113,7 @@ export function FulfillmentCheckEmail({
 
 const bodyStyle: React.CSSProperties = {
   backgroundColor: "#FAF7F5",
-  fontFamily:
-    '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+  fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
   margin: 0,
   padding: 0,
 };
@@ -114,8 +131,9 @@ const headerStyle: React.CSSProperties = {
 
 const logoTextStyle: React.CSSProperties = {
   color: "#FFFFFF",
-  fontSize: "20px",
-  fontWeight: 700,
+  fontSize: "18px",
+  fontWeight: 500,
+  letterSpacing: "-0.005em",
   margin: 0,
 };
 
@@ -220,6 +238,7 @@ const footerTextStyle: React.CSSProperties = {
 export default FulfillmentCheckEmail;
 
 FulfillmentCheckEmail.PreviewProps = {
+  baseUrl: "http://localhost:3000",
   referrerName: "Dr. Sarah Chen",
   presentingIssue: "Anxiety & PTSD",
   city: "Toronto",

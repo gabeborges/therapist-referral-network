@@ -204,7 +204,7 @@ model TherapistProfile {
   receivedNotifications ReferralNotification[]   @relation("ReceivedNotifications")
 
   @@index([country, province, city])
-  @@index([acceptingClients, lastActiveAt])
+  @@index([acceptingClients, country])
 }
 
 // === Referral models ===
@@ -257,7 +257,7 @@ model ReferralPost {
   fulfillmentChecks FulfillmentCheck[]
 
   @@index([status, createdAt])
-  @@index([slug])
+  @@index([authorId, createdAt(sort: Desc)])
 }
 
 model ReferralNotification {
@@ -273,6 +273,7 @@ model ReferralNotification {
 
   @@unique([referralPostId, recipientId])
   @@index([referralPostId, batch])
+  @@index([recipientId, sentAt(sort: Desc)])
 }
 
 model FulfillmentCheck {
@@ -287,7 +288,6 @@ model FulfillmentCheck {
   token String @unique @default(cuid()) // Secure token for email link
 
   @@index([referralPostId])
-  @@index([token])
 }
 
 model Waitlist {

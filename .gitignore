@@ -2,6 +2,7 @@
 
 # local
 .ops
+.mcp.json
 
 # dependencies
 /node_modules

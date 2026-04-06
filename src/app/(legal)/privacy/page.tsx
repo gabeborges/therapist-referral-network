@@ -33,10 +33,10 @@ export default function PrivacyPage(): React.ReactElement {
         </p>
 
         <p className={bodyText} style={{ color: "var(--fg-2)" }}>
-          This privacy policy for Therapist Referral Network (&ldquo;we,&rdquo; &ldquo;us,&rdquo;
-          or &ldquo;our&rdquo;), operated by Gabriel Borges, describes how and why we access, collect, store, use, and share
-          (&ldquo;process&rdquo;) your personal information when you use our services
-          (&ldquo;Services&rdquo;), including when you:
+          This privacy policy for Therapist Referral Network (&ldquo;we,&rdquo; &ldquo;us,&rdquo; or
+          &ldquo;our&rdquo;), operated by Gabriel Borges, describes how and why we access, collect,
+          store, use, and share (&ldquo;process&rdquo;) your personal information when you use our
+          services (&ldquo;Services&rdquo;), including when you:
         </p>
         <ul className={listStyle} style={{ color: "var(--fg-2)" }}>
           <li>
@@ -52,10 +52,10 @@ export default function PrivacyPage(): React.ReactElement {
         </ul>
         <p className={bodyText} style={{ color: "var(--fg-2)" }}>
           <strong style={{ color: "var(--fg)" }}>Questions or concerns?</strong> Reading this
-          privacy policy will help you understand your privacy rights and choices. We are responsible
-          for making decisions about how your personal information is processed. If you do not agree
-          with our policies and practices, please do not use our Services. If you still have any
-          questions or concerns, please contact us at{" "}
+          privacy policy will help you understand your privacy rights and choices. We are
+          responsible for making decisions about how your personal information is processed. If you
+          do not agree with our policies and practices, please do not use our Services. If you still
+          have any questions or concerns, please contact us at{" "}
           <a
             href="mailto:hi@therapistreferralnetwork.com"
             className="underline"
@@ -72,9 +72,7 @@ export default function PrivacyPage(): React.ReactElement {
             Summary of key points
           </h2>
           <p className={bodyText} style={{ color: "var(--fg-2)" }}>
-            <strong style={{ color: "var(--fg)" }}>
-              What personal information do we process?
-            </strong>{" "}
+            <strong style={{ color: "var(--fg)" }}>What personal information do we process?</strong>{" "}
             When you visit, use, or navigate our Services, we may process personal information
             depending on how you interact with us and the Services, the choices you make, and the
             features you use.
@@ -83,9 +81,9 @@ export default function PrivacyPage(): React.ReactElement {
             <strong style={{ color: "var(--fg)" }}>
               Do we process any sensitive personal information?
             </strong>{" "}
-            Yes. When you choose to provide your ethnicity or faith orientation under &ldquo;communities
-            served,&rdquo; we process this information only with your express consent. You may
-            withdraw this consent at any time.
+            Yes. When you choose to provide your ethnicity or faith orientation under
+            &ldquo;communities served,&rdquo; we process this information only with your express
+            consent. You may withdraw this consent at any time.
           </p>
           <p className={bodyText} style={{ color: "var(--fg-2)" }}>
             <strong style={{ color: "var(--fg)" }}>
@@ -155,7 +153,8 @@ export default function PrivacyPage(): React.ReactElement {
             <li>Pronouns and gender</li>
             <li>Profile image</li>
             <li>
-              Credentials and licensing level (e.g., Registered Psychotherapist, Supervised Practice)
+              Credentials and licensing level (e.g., Registered Psychotherapist, Supervised
+              Practice)
             </li>
             <li>Primary credential designation</li>
             <li>Specialties and presenting issues you treat</li>
@@ -203,8 +202,9 @@ export default function PrivacyPage(): React.ReactElement {
           </p>
 
           <p className={bodyText} style={{ color: "var(--fg-2)" }}>
-            <strong style={{ color: "var(--fg)" }}>Waitlist information.</strong> If you are located in the United States, we collect your email address to notify you
-            when the service becomes available in your region.
+            <strong style={{ color: "var(--fg)" }}>Waitlist information.</strong> If you are located
+            in the United States, we collect your email address to notify you when the service
+            becomes available in your region.
           </p>
 
           <h3 className={subSectionTitle} style={{ color: "var(--fg)" }}>
@@ -244,8 +244,8 @@ export default function PrivacyPage(): React.ReactElement {
               <strong style={{ color: "var(--fg)" }}>Log and usage data.</strong> Service-related,
               diagnostic, usage, and performance information our servers automatically collect when
               you access or use our Services. This may include your IP address, device information,
-              browser type and settings, and information about your activity in the Services (such as
-              date/time stamps, pages and files viewed, searches, and other actions you take).
+              browser type and settings, and information about your activity in the Services (such
+              as date/time stamps, pages and files viewed, searches, and other actions you take).
             </li>
             <li>
               <strong style={{ color: "var(--fg)" }}>Device data.</strong> Information about your
@@ -256,8 +256,8 @@ export default function PrivacyPage(): React.ReactElement {
             </li>
             <li>
               <strong style={{ color: "var(--fg)" }}>Activity data.</strong> We track when you last
-              used the platform to prioritize active profiles in referral matching. This timestamp is
-              not displayed to other users.
+              used the platform to prioritize active profiles in referral matching. This timestamp
+              is not displayed to other users.
             </li>
           </ul>
 
@@ -289,8 +289,8 @@ export default function PrivacyPage(): React.ReactElement {
               No therapist profile data is sent to analytics processors.
             </strong>{" "}
             Google Analytics and PostHog receive only technical and behavioral data from users who
-            have opted in. We do not include therapist names, emails, or other profile identifiers in
-            analytics events or URL parameters.
+            have opted in. We do not include therapist names, emails, or other profile identifiers
+            in analytics events or URL parameters.
           </p>
           <p className={bodyText} style={{ color: "var(--fg-2)" }}>
             These services process data in the United States under their own privacy policies:{" "}
@@ -341,8 +341,8 @@ export default function PrivacyPage(): React.ReactElement {
           </p>
           <p className={bodyText} style={{ color: "var(--fg-2)" }}>
             <strong style={{ color: "var(--fg)" }}>Why we collect it.</strong> This data enables
-            culturally matched referrals between therapists&nbsp;&mdash; helping referring therapists
-            find colleagues who serve specific communities.
+            culturally matched referrals between therapists&nbsp;&mdash; helping referring
+            therapists find colleagues who serve specific communities.
           </p>
           <p className={bodyText} style={{ color: "var(--fg-2)" }}>
             <strong style={{ color: "var(--fg)" }}>It is optional.</strong> These fields are not
@@ -350,8 +350,8 @@ export default function PrivacyPage(): React.ReactElement {
             without providing communities served information.
           </p>
           <p className={bodyText} style={{ color: "var(--fg-2)" }}>
-            <strong style={{ color: "var(--fg)" }}>Express consent required.</strong> We collect this
-            data only with your express consent, provided via a separate, dedicated
+            <strong style={{ color: "var(--fg)" }}>Express consent required.</strong> We collect
+            this data only with your express consent, provided via a separate, dedicated
             checkbox&nbsp;&mdash; not bundled with the general Terms of Service or Privacy Policy
             agreement. This checkbox appears adjacent to the ethnicity and faith orientation fields
             when you fill them in.
@@ -371,15 +371,15 @@ export default function PrivacyPage(): React.ReactElement {
           </ul>
           <p className={bodyText} style={{ color: "var(--fg-2)" }}>
             <strong style={{ color: "var(--fg)" }}>On account closure.</strong> If you delete your
-            account, all communities served data is deleted immediately regardless of consent status.
-            There is no retention period for sensitive data.
+            account, all communities served data is deleted immediately regardless of consent
+            status. There is no retention period for sensitive data.
           </p>
           <p className={bodyText} style={{ color: "var(--fg-2)" }}>
-            <strong style={{ color: "var(--fg)" }}>Reclassification note.</strong> We frame ethnicity
-            and faith orientation as populations you <em>serve</em> rather than personal identity
-            attributes. However, because the Office of the Privacy Commissioner of Canada (OPC) may
-            treat this as a proxy for personal identity, we apply express consent and independent
-            withdrawability as safeguards.
+            <strong style={{ color: "var(--fg)" }}>Reclassification note.</strong> We frame
+            ethnicity and faith orientation as populations you <em>serve</em> rather than personal
+            identity attributes. However, because the Office of the Privacy Commissioner of Canada
+            (OPC) may treat this as a proxy for personal identity, we apply express consent and
+            independent withdrawability as safeguards.
           </p>
         </section>
 
@@ -413,8 +413,8 @@ export default function PrivacyPage(): React.ReactElement {
               track whether referrals were successfully completed
             </li>
             <li>
-              <strong style={{ color: "var(--fg)" }}>To maintain the directory</strong> by displaying
-              your therapist profile to other registered therapists
+              <strong style={{ color: "var(--fg)" }}>To maintain the directory</strong> by
+              displaying your therapist profile to other registered therapists
             </li>
             <li>
               <strong style={{ color: "var(--fg)" }}>To improve our Services</strong> through
@@ -446,8 +446,8 @@ export default function PrivacyPage(): React.ReactElement {
           <p className={bodyText} style={{ color: "var(--fg-2)" }}>
             We may process your information if you have given us specific permission (i.e., express
             consent) to use your personal information for a specific purpose, or in situations where
-            your permission can be inferred (i.e., implied consent). You can withdraw your consent at
-            any time.
+            your permission can be inferred (i.e., implied consent). You can withdraw your consent
+            at any time.
           </p>
 
           <p className={bodyText} style={{ color: "var(--fg-2)" }}>
@@ -470,11 +470,13 @@ export default function PrivacyPage(): React.ReactElement {
               </thead>
               <tbody>
                 <tr style={rowBorder}>
-                  <td className={tdStyle}>Standard profile fields (name, email, credentials, location)</td>
+                  <td className={tdStyle}>
+                    Standard profile fields (name, email, credentials, location)
+                  </td>
                   <td className={tdStyle}>Implied</td>
                   <td className={tdStyle}>
-                    Registration constitutes consent for the primary purpose of referral matching and
-                    directory listing
+                    Registration constitutes consent for the primary purpose of referral matching
+                    and directory listing
                   </td>
                 </tr>
                 <tr style={rowBorder}>
@@ -517,9 +519,7 @@ export default function PrivacyPage(): React.ReactElement {
               If disclosure is required to comply with a subpoena, warrant, court order, or rules of
               the court relating to the production of records
             </li>
-            <li>
-              If the information is publicly available and is specified by the regulations
-            </li>
+            <li>If the information is publicly available and is specified by the regulations</li>
           </ul>
         </section>
 
@@ -533,10 +533,10 @@ export default function PrivacyPage(): React.ReactElement {
             providers, contractors, or agents (&ldquo;third parties&rdquo;) who perform services for
             us or on our behalf and require access to such information to do that work. We establish
             data processing agreements with our third parties, which are designed to help safeguard
-            your personal information. These agreements require that third parties cannot do anything
-            with your personal information unless we have instructed them to do it, will not share
-            your personal information with any organization apart from us, and commit to protect the
-            data they hold on our behalf and to retain it for the period we instruct.
+            your personal information. These agreements require that third parties cannot do
+            anything with your personal information unless we have instructed them to do it, will
+            not share your personal information with any organization apart from us, and commit to
+            protect the data they hold on our behalf and to retain it for the period we instruct.
           </p>
 
           <div className={tableWrapper}>
@@ -559,45 +559,51 @@ export default function PrivacyPage(): React.ReactElement {
               </thead>
               <tbody>
                 <tr style={rowBorder}>
-                  <td className={tdStyle}><strong>Supabase</strong></td>
+                  <td className={tdStyle}>
+                    <strong>Supabase</strong>
+                  </td>
                   <td className={tdStyle}>Database hosting</td>
                   <td className={tdStyle}>Full therapist profile data</td>
                   <td className={tdStyle}>United States</td>
                 </tr>
                 <tr style={rowBorder}>
-                  <td className={tdStyle}><strong>Vercel</strong></td>
+                  <td className={tdStyle}>
+                    <strong>Vercel</strong>
+                  </td>
                   <td className={tdStyle}>Application hosting</td>
                   <td className={tdStyle}>Request/server logs (IP, user agent)</td>
                   <td className={tdStyle}>United States</td>
                 </tr>
                 <tr style={rowBorder}>
-                  <td className={tdStyle}><strong>Resend</strong></td>
+                  <td className={tdStyle}>
+                    <strong>Resend</strong>
+                  </td>
                   <td className={tdStyle}>Transactional email</td>
                   <td className={tdStyle}>Name, email (for delivery)</td>
                   <td className={tdStyle}>United States</td>
                 </tr>
                 <tr style={rowBorder}>
-                  <td className={tdStyle}><strong>Google Analytics</strong></td>
+                  <td className={tdStyle}>
+                    <strong>Google Analytics</strong>
+                  </td>
                   <td className={tdStyle}>Web analytics (with cookie consent)</td>
                   <td className={tdStyle}>IP address, device identifiers, browsing behavior</td>
                   <td className={tdStyle}>United States</td>
                 </tr>
                 <tr style={rowBorder}>
-                  <td className={tdStyle}><strong>PostHog</strong></td>
+                  <td className={tdStyle}>
+                    <strong>PostHog</strong>
+                  </td>
                   <td className={tdStyle}>Product analytics (with cookie consent)</td>
                   <td className={tdStyle}>IP address, device identifiers, session data</td>
                   <td className={tdStyle}>United States</td>
                 </tr>
-                <tr style={rowBorder}>
-                  <td className={tdStyle}><strong>Google OAuth</strong></td>
+                <tr>
+                  <td className={tdStyle}>
+                    <strong>Google OAuth</strong>
+                  </td>
                   <td className={tdStyle}>Authentication</td>
                   <td className={tdStyle}>Name, email (received from Google at login)</td>
-                  <td className={tdStyle}>United States</td>
-                </tr>
-                <tr>
-                  <td className={tdStyle}><strong>Sentry</strong></td>
-                  <td className={tdStyle}>Error monitoring</td>
-                  <td className={tdStyle}>Error reports, device/browser info</td>
                   <td className={tdStyle}>United States</td>
                 </tr>
               </tbody>
@@ -638,8 +644,8 @@ export default function PrivacyPage(): React.ReactElement {
             <strong style={{ color: "var(--fg)" }}>Analytics cookies</strong> (Google Analytics,
             PostHog) are blocked by default and only activated when you provide express consent via
             our cookie consent banner. You can change your cookie preferences at any time using the
-            cookie preferences link in our site footer, or through your account settings when
-            logged in.
+            cookie preferences link in our site footer, or through your account settings when logged
+            in.
           </p>
           <p className={bodyText} style={{ color: "var(--fg-2)" }}>
             For more details, see our{" "}
@@ -725,7 +731,9 @@ export default function PrivacyPage(): React.ReactElement {
               </thead>
               <tbody>
                 <tr style={rowBorder}>
-                  <td className={tdStyle}>Therapist profile (name, email, credentials, location, specialties)</td>
+                  <td className={tdStyle}>
+                    Therapist profile (name, email, credentials, location, specialties)
+                  </td>
                   <td className={tdStyle}>Active account lifetime</td>
                 </tr>
                 <tr style={rowBorder}>
@@ -774,12 +782,18 @@ export default function PrivacyPage(): React.ReactElement {
               <tbody>
                 <tr style={rowBorder}>
                   <td className={tdStyle}>Communities served data</td>
-                  <td className={tdStyle}><strong>Deleted immediately</strong></td>
-                  <td className={tdStyle}>Sensitive data&nbsp;&mdash; no purpose survives account closure</td>
+                  <td className={tdStyle}>
+                    <strong>Deleted immediately</strong>
+                  </td>
+                  <td className={tdStyle}>
+                    Sensitive data&nbsp;&mdash; no purpose survives account closure
+                  </td>
                 </tr>
                 <tr style={rowBorder}>
                   <td className={tdStyle}>Login credentials and sessions</td>
-                  <td className={tdStyle}><strong>Deleted immediately</strong></td>
+                  <td className={tdStyle}>
+                    <strong>Deleted immediately</strong>
+                  </td>
                   <td className={tdStyle}>No purpose after closure</td>
                 </tr>
                 <tr style={rowBorder}>
@@ -824,11 +838,11 @@ export default function PrivacyPage(): React.ReactElement {
             Anonymization standard
           </h3>
           <p className={bodyText} style={{ color: "var(--fg-2)" }}>
-            When we anonymize data (for example, referral history for aggregate analytics), we follow
-            the standard established by the Office of the Privacy Commissioner of Canada: there must
-            be no serious possibility that the information can be re-identified, either alone or in
-            combination with other available information. We aggregate data across multiple records
-            and remove all direct and indirect identifiers.
+            When we anonymize data (for example, referral history for aggregate analytics), we
+            follow the standard established by the Office of the Privacy Commissioner of Canada:
+            there must be no serious possibility that the information can be re-identified, either
+            alone or in combination with other available information. We aggregate data across
+            multiple records and remove all direct and indirect identifiers.
           </p>
         </section>
 
@@ -868,12 +882,12 @@ export default function PrivacyPage(): React.ReactElement {
           </h2>
           <p className={bodyText} style={{ color: "var(--fg-2)" }}>
             We do not knowingly collect, solicit data from, or market to children under 18 years of
-            age. The Therapist Referral Network is designed for licensed therapists and therapists in
-            supervised practice. By using the Services, you represent that you are at least 18 years
-            of age. If we learn that personal information from users under 18 years of age has been
-            collected, we will deactivate the account and take reasonable measures to promptly delete
-            such data from our records. If you become aware of any data we may have collected from
-            children under age 18, please contact us at{" "}
+            age. The Therapist Referral Network is designed for licensed therapists and therapists
+            in supervised practice. By using the Services, you represent that you are at least 18
+            years of age. If we learn that personal information from users under 18 years of age has
+            been collected, we will deactivate the account and take reasonable measures to promptly
+            delete such data from our records. If you become aware of any data we may have collected
+            from children under age 18, please contact us at{" "}
             <a
               href="mailto:hi@therapistreferralnetwork.com"
               className="underline"
@@ -930,7 +944,8 @@ export default function PrivacyPage(): React.ReactElement {
                 <tr>
                   <td className={tdStyle}>Withdraw cookie consent</td>
                   <td className={tdStyle}>
-                    Immediate effect; accessible from the cookie preferences link in the site footer or your account settings
+                    Immediate effect; accessible from the cookie preferences link in the site footer
+                    or your account settings
                   </td>
                 </tr>
               </tbody>
@@ -979,11 +994,11 @@ export default function PrivacyPage(): React.ReactElement {
             link in those emails.
           </p>
           <p className={bodyText} style={{ color: "var(--fg-2)" }}>
-            <strong style={{ color: "var(--fg)" }}>Account information.</strong> If you would like to
-            review or change the information in your account, or terminate your account, you can log
-            in to your account settings and update your profile or request account deletion. Upon
-            your request to terminate your account, we will deactivate or delete your account and
-            information according to the retention schedule described in Section 9.
+            <strong style={{ color: "var(--fg)" }}>Account information.</strong> If you would like
+            to review or change the information in your account, or terminate your account, you can
+            log in to your account settings and update your profile or request account deletion.
+            Upon your request to terminate your account, we will deactivate or delete your account
+            and information according to the retention schedule described in Section 9.
           </p>
           <p className={bodyText} style={{ color: "var(--fg-2)" }}>
             <strong style={{ color: "var(--fg)" }}>Complaints and challenges.</strong> If you are
@@ -1006,8 +1021,8 @@ export default function PrivacyPage(): React.ReactElement {
               to file a complaint. We will investigate and respond to your complaint.
             </li>
             <li>
-              If you are not satisfied with our response, you have the right to file a complaint with
-              the Office of the Privacy Commissioner of Canada (OPC) at{" "}
+              If you are not satisfied with our response, you have the right to file a complaint
+              with the Office of the Privacy Commissioner of Canada (OPC) at{" "}
               <a
                 href="https://www.priv.gc.ca/en/report-a-concern/"
                 target="_blank"
@@ -1028,8 +1043,8 @@ export default function PrivacyPage(): React.ReactElement {
             13. Affiliated service communications
           </h2>
           <p className={bodyText} style={{ color: "var(--fg-2)" }}>
-            Referral notification emails sent by the Therapist Referral Network may contain a clearly
-            delineated section with information about affiliated services:
+            Referral notification emails sent by the Therapist Referral Network may contain a
+            clearly delineated section with information about affiliated services:
           </p>
           <ul className={listStyle} style={{ color: "var(--fg-2)" }}>
             <li>
@@ -1048,9 +1063,9 @@ export default function PrivacyPage(): React.ReactElement {
           </p>
           <p className={bodyText} style={{ color: "var(--fg-2)" }}>
             The platform does not send standalone marketing emails promoting affiliated services
-            without your separate, express consent. If we ever introduce such communications, we will
-            provide a separate opt-in mechanism and include an unsubscribe option in every email, in
-            compliance with Canada&apos;s Anti-Spam Legislation (CASL).
+            without your separate, express consent. If we ever introduce such communications, we
+            will provide a separate opt-in mechanism and include an unsubscribe option in every
+            email, in compliance with Canada&apos;s Anti-Spam Legislation (CASL).
           </p>
         </section>
 
@@ -1069,12 +1084,10 @@ export default function PrivacyPage(): React.ReactElement {
             </li>
             <li>
               Notify you as soon as practicable, describing the nature of the breach, the personal
-              information involved, the steps we have taken to reduce the risk of harm, and the steps
-              you can take to protect yourself
+              information involved, the steps we have taken to reduce the risk of harm, and the
+              steps you can take to protect yourself
             </li>
-            <li>
-              Maintain a record of the breach for 24 months, as required by PIPEDA
-            </li>
+            <li>Maintain a record of the breach for 24 months, as required by PIPEDA</li>
           </ul>
           <p className={bodyText} style={{ color: "var(--fg-2)" }}>
             A &ldquo;breach of security safeguards&rdquo; means the loss of, unauthorized access to,
@@ -1092,12 +1105,12 @@ export default function PrivacyPage(): React.ReactElement {
             Most web browsers and some mobile operating systems include a Do-Not-Track
             (&ldquo;DNT&rdquo;) feature or setting you can activate to signal your privacy
             preference not to have data about your online browsing activities monitored and
-            collected. At this stage, no uniform technology standard for recognizing and implementing
-            DNT signals has been finalized. As such, we do not currently respond to DNT browser
-            signals or any other mechanism that automatically communicates your choice not to be
-            tracked online. If a standard for online tracking is adopted that we must follow in the
-            future, we will inform you about that practice in a revised version of this privacy
-            policy.
+            collected. At this stage, no uniform technology standard for recognizing and
+            implementing DNT signals has been finalized. As such, we do not currently respond to DNT
+            browser signals or any other mechanism that automatically communicates your choice not
+            to be tracked online. If a standard for online tracking is adopted that we must follow
+            in the future, we will inform you about that practice in a revised version of this
+            privacy policy.
           </p>
         </section>
 
@@ -1145,8 +1158,8 @@ export default function PrivacyPage(): React.ReactElement {
             Canada
           </p>
           <p className={bodyText} style={{ color: "var(--fg-2)" }}>
-            <strong style={{ color: "var(--fg)" }}>Privacy accountability.</strong> Gabriel Borges is
-            responsible for our privacy compliance practices and can be reached at the contact
+            <strong style={{ color: "var(--fg)" }}>Privacy accountability.</strong> Gabriel Borges
+            is responsible for our privacy compliance practices and can be reached at the contact
             information above.
           </p>
         </section>
@@ -1157,10 +1170,10 @@ export default function PrivacyPage(): React.ReactElement {
             18. How can you review, update, or delete the data we collect from you?
           </h2>
           <p className={bodyText} style={{ color: "var(--fg-2)" }}>
-            Based on the applicable laws of your country, you have the right to request access to the
-            personal information we collect from you, details about how we have processed it, correct
-            inaccuracies, or delete your personal information. You may also have the right to
-            withdraw your consent to our processing of your personal information.
+            Based on the applicable laws of your country, you have the right to request access to
+            the personal information we collect from you, details about how we have processed it,
+            correct inaccuracies, or delete your personal information. You may also have the right
+            to withdraw your consent to our processing of your personal information.
           </p>
           <p className={bodyText} style={{ color: "var(--fg-2)" }}>
             To review or update your personal information, log in to your account settings. To

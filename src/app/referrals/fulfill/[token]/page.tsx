@@ -1,7 +1,8 @@
 import { prisma } from "@/lib/prisma";
+import { MatchRingLogo } from "@/features/auth/components/match-ring-logo";
 
 export const metadata = {
-  title: "Referral Fulfillment — Match Ring",
+  title: "Referral Fulfillment — Therapist Referral Network",
 };
 
 type FulfillmentPageProps = {
@@ -35,8 +36,7 @@ export default async function FulfillmentPage({
           Invalid or Expired Link
         </h1>
         <p className="text-[0.875rem] leading-[1.5] text-fg-2 max-w-[400px]">
-          This fulfillment link is no longer valid. It may have expired or
-          already been used.
+          This fulfillment link is no longer valid. It may have expired or already been used.
         </p>
       </FulfillmentLayout>
     );
@@ -44,9 +44,7 @@ export default async function FulfillmentPage({
 
   // Already responded
   if (fulfillmentCheck.respondedAt !== null && fulfilledParam === undefined) {
-    const previousResponse = fulfillmentCheck.fulfilled
-      ? "fulfilled"
-      : "still looking";
+    const previousResponse = fulfillmentCheck.fulfilled ? "fulfilled" : "still looking";
 
     return (
       <FulfillmentLayout>
@@ -55,8 +53,8 @@ export default async function FulfillmentPage({
           Already Responded
         </h1>
         <p className="text-[0.875rem] leading-[1.5] text-fg-2 max-w-[400px]">
-          You&apos;ve already responded to this fulfillment check. Your referral
-          was marked as <strong>{previousResponse}</strong>.
+          You&apos;ve already responded to this fulfillment check. Your referral was marked as{" "}
+          <strong>{previousResponse}</strong>.
         </p>
       </FulfillmentLayout>
     );
@@ -94,14 +92,8 @@ export default async function FulfillmentPage({
           Thank You!
         </h1>
         <p className="text-[0.875rem] leading-[1.5] text-fg-2 max-w-[400px]">
-          Your referral has been marked as{" "}
-          <strong>{statusLabel}</strong>.
-          {!isFulfilled && (
-            <span>
-              {" "}
-              We&apos;ll send you additional therapist matches shortly.
-            </span>
-          )}
+          Your referral has been marked as <strong>{statusLabel}</strong>.
+          {!isFulfilled && <span> We&apos;ll send you additional therapist matches shortly.</span>}
         </p>
       </FulfillmentLayout>
     );
@@ -110,7 +102,6 @@ export default async function FulfillmentPage({
   // No fulfilled parameter — show the choice prompt
   return (
     <FulfillmentLayout>
-      <MatchRingLogo />
       <h1 className="text-[1.25rem] font-semibold tracking-[-0.01em] text-fg mt-6 mb-2">
         Referral Fulfillment Check
       </h1>
@@ -126,7 +117,7 @@ export default async function FulfillmentPage({
         </a>
         <a
           href={`/referrals/fulfill/${token}?fulfilled=false`}
-          className="flex-1 inline-flex items-center justify-center h-11 px-6 bg-surface-2 text-fg border border-border rounded-sm text-[0.875rem] font-semibold tracking-[0.01em] no-underline transition-[background] duration-150 ease-out hover:bg-surface-3 focus-visible:outline-2 focus-visible:outline-border-f focus-visible:outline-offset-2"
+          className="flex-1 inline-flex items-center justify-center h-11 px-6 bg-s2 text-fg border border-border rounded-sm text-[0.875rem] font-semibold tracking-[0.01em] no-underline transition-[background] duration-150 ease-out hover:bg-s1 focus-visible:outline-2 focus-visible:outline-border-f focus-visible:outline-offset-2"
         >
           No, Still Looking
         </a>
@@ -137,54 +128,23 @@ export default async function FulfillmentPage({
 
 // ─── Layout wrapper ─────────────────────────────────────────────────────────────
 
-function FulfillmentLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}): React.ReactElement {
+function FulfillmentLayout({ children }: { children: React.ReactNode }): React.ReactElement {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-surface px-4 py-12">
-      <div className="w-full max-w-[480px] bg-surface-2 border border-border rounded-lg p-8 sm:p-10 flex flex-col items-center text-center">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-bg px-4 py-12">
+      <div className="flex flex-col items-center gap-2 mb-6">
+        <MatchRingLogo size={40} />
+        <span className="text-[1.125rem] font-semibold text-fg">Therapist Referral Network</span>
+      </div>
+      <div className="w-full max-w-[480px] bg-s2 border border-border rounded-lg p-8 sm:p-10 flex flex-col items-center text-center">
         {children}
       </div>
     </div>
   );
 }
 
-// ─── Match Ring Logo ────────────────────────────────────────────────────────────
-
-function MatchRingLogo(): React.ReactElement {
-  return (
-    <div className="w-12 h-12 rounded-full bg-brand flex items-center justify-center">
-      <svg
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        aria-label="Match Ring"
-      >
-        <circle
-          cx="12"
-          cy="12"
-          r="9"
-          stroke="currentColor"
-          strokeWidth="2"
-          className="text-brand-on"
-        />
-        <circle cx="12" cy="12" r="4" className="fill-brand-on" />
-      </svg>
-    </div>
-  );
-}
-
 // ─── Status icons ───────────────────────────────────────────────────────────────
 
-function StatusIcon({
-  variant,
-}: {
-  variant: "success" | "error" | "info";
-}): React.ReactElement {
+function StatusIcon({ variant }: { variant: "success" | "error" | "info" }): React.ReactElement {
   const colorClasses = {
     success: "bg-green-100 text-green-600",
     error: "bg-red-100 text-red-600",

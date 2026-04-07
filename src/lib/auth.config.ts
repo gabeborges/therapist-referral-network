@@ -20,6 +20,7 @@ export const authConfig = {
         session.user.id = token.sub;
       }
       session.needsConsent = !!token.needsConsent;
+      session.isDeleted = !!token.isDeleted;
       return session;
     },
   },

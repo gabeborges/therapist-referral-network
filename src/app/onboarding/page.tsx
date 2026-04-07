@@ -15,6 +15,15 @@ export default async function OnboardingPage(): Promise<React.ReactElement> {
     redirect("/auth/signin");
   }
 
+  // Block soft-deleted users before they can interact with onboarding
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { deletedAt: true },
+  });
+  if (!user || user.deletedAt) {
+    redirect("/auth/signin");
+  }
+
   const existingProfile = await prisma.therapistProfile.findUnique({
     where: { userId: session.user.id },
     select: { id: true },

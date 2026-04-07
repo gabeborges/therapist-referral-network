@@ -68,6 +68,22 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         }
       }
 
+      // Check soft-delete status (throttled: every 60s)
+      if (token.sub && !token.isDeleted) {
+        const now = Date.now();
+        const lastCheck = token.deletedCheckedAt ?? 0;
+        if (now - lastCheck > 60_000) {
+          const user = await prisma.user.findUnique({
+            where: { id: token.sub },
+            select: { deletedAt: true },
+          });
+          if (!user || user.deletedAt) {
+            token.isDeleted = true;
+          }
+          token.deletedCheckedAt = now;
+        }
+      }
+
       return token;
     },
   },

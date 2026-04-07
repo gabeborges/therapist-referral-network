@@ -33,6 +33,11 @@ export default auth((req) => {
     return Response.redirect(new URL("/referrals", nextUrl.origin));
   }
 
+  // Soft-deleted user — force sign-out to clear stale JWT
+  if (isAuthenticated && req.auth?.isDeleted && !isPublicRoute) {
+    return Response.redirect(new URL("/api/auth/signout", nextUrl.origin));
+  }
+
   // Authenticated but hasn't accepted terms — force consent screen (skip API routes)
   if (
     isAuthenticated &&

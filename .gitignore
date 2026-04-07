@@ -3,6 +3,11 @@
 # local
 .ops
 .mcp.json
+codex.md
+.codesight
+.cursorrules
+.claude
+openspec
 
 # dependencies
 /node_modules

@@ -286,7 +286,7 @@ model FulfillmentCheck {
   respondedAt DateTime?
   fulfilled   Boolean?  // null = pending, true = yes, false = no
 
-  token String @unique @default(cuid()) // Secure token for email link
+  token String @unique @default(uuid()) // Cryptographically random token for email link
 
   @@index([referralPostId])
 }

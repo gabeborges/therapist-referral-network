@@ -1,4 +1,5 @@
 import { TRPCError } from "@trpc/server";
+import { PrismaClientKnownRequestError } from "@/generated/prisma/internal/prismaNamespace";
 import { router, publicProcedure } from "@/lib/trpc/server";
 import { waitlistSchema } from "@/lib/validations/waitlist";
 import { subscribeToWaitlist } from "@/lib/email/mailerlite";
@@ -18,7 +19,7 @@ export const waitlistRouter = router({
       return { success: true, id: entry.id };
     } catch (error) {
       // Handle duplicate email gracefully
-      if (error instanceof Error && error.message.includes("Unique constraint")) {
+      if (error instanceof PrismaClientKnownRequestError && error.code === "P2002") {
         // Already on waitlist — still sync to MailerLite (idempotent)
         subscribeToWaitlist(input.email, input.country);
         return { success: true, id: null };

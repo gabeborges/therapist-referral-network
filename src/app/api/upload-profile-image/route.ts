@@ -27,10 +27,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   }
 
   if (file.size > MAX_SIZE) {
-    return NextResponse.json(
-      { error: "File too large. Maximum 5MB." },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: "File too large. Maximum 5MB." }, { status: 400 });
   }
 
   const ext = file.name.split(".").pop() ?? "jpg";
@@ -48,13 +45,11 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
   if (uploadError) {
     console.error("Upload error:", uploadError);
-    return NextResponse.json(
-      { error: "Upload failed. Please try again." },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: "Upload failed. Please try again." }, { status: 500 });
   }
 
   const { data: urlData } = supabase.storage.from(BUCKET).getPublicUrl(path);
+  const cacheBustedUrl = `${urlData.publicUrl}?t=${Date.now()}`;
 
-  return NextResponse.json({ url: urlData.publicUrl });
+  return NextResponse.json({ url: cacheBustedUrl });
 }

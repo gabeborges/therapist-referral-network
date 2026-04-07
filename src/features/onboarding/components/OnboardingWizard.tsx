@@ -84,6 +84,7 @@ export function OnboardingWizard(): React.ReactElement {
   const createProfile = useMutation(
     trpc.therapist.createProfile.mutationOptions({
       onSuccess() {
+        router.refresh();
         router.push("/referrals");
       },
       onError(error) {

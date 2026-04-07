@@ -80,6 +80,7 @@ export function ProfileForm({ defaultValues }: ProfileFormProps): React.ReactEle
   const updateProfile = useMutation(
     trpc.therapist.updateProfile.mutationOptions({
       onSuccess() {
+        router.refresh();
         router.push("/profile");
       },
       onError(error) {

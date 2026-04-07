@@ -17,7 +17,9 @@ export async function acceptTerms(): Promise<{ success: boolean; error?: string 
   // getToken() handles cookie name resolution automatically (secure vs non-secure).
   const hdrs = await headers();
   const cookieStore = await cookies();
-  const req = new Request("http://localhost", {
+  const proto = hdrs.get("x-forwarded-proto") ?? "https";
+  const host = hdrs.get("host") ?? "localhost";
+  const req = new Request(`${proto}://${host}`, {
     headers: {
       cookie: cookieStore.toString(),
       ...Object.fromEntries(hdrs.entries()),

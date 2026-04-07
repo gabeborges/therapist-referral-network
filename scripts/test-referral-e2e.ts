@@ -128,7 +128,7 @@ const TEST_PROFILES = [
     topSpecialties: [],
     paymentMethods: [],
   },
-] as const;
+];
 
 const TEST_REFERRAL = {
   id: `${PREFIX}-referral`,
@@ -220,7 +220,7 @@ async function seedReferral(): Promise<void> {
     data: {
       id: TEST_REFERRAL.id,
       slug: TEST_REFERRAL.slug,
-      authorId: TEST_PROFILES[0].id,
+      authorId: TEST_PROFILES[0]!.id,
       presentingIssue: TEST_REFERRAL.presentingIssue,
       ageGroup: [...TEST_REFERRAL.ageGroup],
       city: TEST_REFERRAL.city,

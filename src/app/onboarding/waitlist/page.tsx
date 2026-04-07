@@ -15,7 +15,7 @@ export default function WaitlistPage(): React.ReactElement {
         {/* Heading */}
         <div className="text-center mb-8">
           <h1 className="text-[1.5rem] font-semibold tracking-[-0.015em] leading-[1.3] text-fg mb-2">
-            We're launching in Canada first
+            We&apos;re launching in Canada first
           </h1>
           <p className="text-[0.875rem] leading-[1.5] text-fg-2">
             Therapist Referral Network is currently available for Canadian practitioners. Join our

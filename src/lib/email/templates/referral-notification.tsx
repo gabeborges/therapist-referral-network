@@ -84,8 +84,8 @@ export function ReferralNotificationEmail({
           <Section style={contentStyle}>
             <Text style={headingStyle}>New referral opportunity</Text>
             <Text style={introStyle}>
-              You've been matched to a referral from a colleague. Review the details below and reach
-              out to coordinate.
+              You&apos;ve been matched to a referral from a colleague. Review the details below and
+              reach out to coordinate.
             </Text>
 
             <Section style={detailsBoxStyle}>

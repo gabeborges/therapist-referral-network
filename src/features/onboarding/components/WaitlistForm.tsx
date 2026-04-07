@@ -50,10 +50,10 @@ export function WaitlistForm(): React.ReactElement {
           </svg>
         </div>
         <h2 className="text-[1.25rem] font-semibold tracking-[-0.01em] leading-[1.35] text-fg mb-2">
-          You're on the list!
+          You&apos;re on the list!
         </h2>
         <p className="text-[0.875rem] leading-[1.5] text-fg-2 mb-5">
-          We'll let you know as soon as Therapist Referral Network is available in your area.
+          We&apos;ll let you know as soon as Therapist Referral Network is available in your area.
         </p>
         <Link
           href="/"

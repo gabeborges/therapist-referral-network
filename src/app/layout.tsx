@@ -14,10 +14,34 @@ const plusJakartaSans = Plus_Jakarta_Sans({
   weight: ["400", "500", "600", "700"],
 });
 
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://therapistreferralnetwork.com";
+
 export const metadata: Metadata = {
-  title: "Therapist Referral Network",
+  metadataBase: new URL(APP_URL),
+  title: {
+    default: "Therapist Referral Network",
+    template: "%s — Therapist Referral Network",
+  },
   description:
     "Structured referral matching for Canadian therapists — find the right fit for every client.",
+  openGraph: {
+    type: "website",
+    siteName: "Therapist Referral Network",
+    title: "Therapist Referral Network",
+    description:
+      "Structured referral matching for Canadian therapists — find the right fit for every client.",
+    url: APP_URL,
+  },
+  twitter: {
+    card: "summary",
+    title: "Therapist Referral Network",
+    description:
+      "Structured referral matching for Canadian therapists — find the right fit for every client.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({

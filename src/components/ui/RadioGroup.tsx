@@ -27,11 +27,12 @@ export function RadioGroup({
   error,
   allowDeselect = false,
 }: RadioGroupProps): React.ReactElement | null {
+  const prevValueRef = useRef<string | null>(null);
+
   if (options.length === 0) return null;
 
   const legendId = `${name}-legend`;
   const errorId = `${name}-error`;
-  const prevValueRef = useRef<string | null>(null);
 
   return (
     <fieldset className="border-none p-0">

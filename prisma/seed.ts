@@ -13,6 +13,7 @@ async function upsertAll(
 ) {
   for (let i = 0; i < items.length; i++) {
     const item = items[i]!;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     await (prisma[model] as any).upsert({
       where: { name: item.name },
       update: { sortOrder: i, ...(item.category !== undefined ? { category: item.category } : {}) },

@@ -5,6 +5,15 @@ declare module "next-auth" {
   interface Session {
     needsConsent: boolean;
     isDeleted?: boolean;
+    pendingProfile?: {
+      name: string;
+      email: string;
+      image: string;
+    };
+    pendingAccount?: {
+      provider: string;
+      providerAccountId: string;
+    };
   }
 }
 

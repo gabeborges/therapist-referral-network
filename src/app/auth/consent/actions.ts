@@ -2,8 +2,6 @@
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { getToken } from "next-auth/jwt";
-import { headers, cookies } from "next/headers";
 
 const TERMS_VERSION = "2026-04-01";
 
@@ -13,26 +11,11 @@ export async function acceptTerms(): Promise<{ success: boolean; error?: string 
     return { success: false, error: "Not authenticated" };
   }
 
-  // Build a minimal Request from headers+cookies so getToken() can read the JWT.
-  // getToken() handles cookie name resolution automatically (secure vs non-secure).
-  const hdrs = await headers();
-  const cookieStore = await cookies();
-  const proto = hdrs.get("x-forwarded-proto") ?? "https";
-  const host = hdrs.get("host") ?? "localhost";
-  const req = new Request(`${proto}://${host}`, {
-    headers: {
-      cookie: cookieStore.toString(),
-      ...Object.fromEntries(hdrs.entries()),
-    },
-  });
+  const { pendingProfile, pendingAccount } = session;
 
-  const token = await getToken({ req, secret: process.env.AUTH_SECRET! });
-
-  if (!token?.pendingProfile || !token?.pendingAccount) {
+  if (!pendingProfile || !pendingAccount) {
     return { success: false, error: "No pending profile data" };
   }
-
-  const { pendingProfile, pendingAccount } = token;
 
   // Check if user already exists (race condition guard + soft-deleted re-registration)
   const existing = await prisma.user.findUnique({

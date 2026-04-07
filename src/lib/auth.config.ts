@@ -21,6 +21,8 @@ export const authConfig = {
       }
       session.needsConsent = !!token.needsConsent;
       session.isDeleted = !!token.isDeleted;
+      if (token.pendingProfile) session.pendingProfile = token.pendingProfile;
+      if (token.pendingAccount) session.pendingAccount = token.pendingAccount;
       return session;
     },
   },

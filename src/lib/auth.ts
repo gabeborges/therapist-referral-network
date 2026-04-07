@@ -69,7 +69,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       }
 
       // Check soft-delete status (throttled: every 60s)
-      if (token.sub && !token.isDeleted) {
+      // Skip for new users who haven't completed consent yet (token.sub is Google's ID, not a DB user ID)
+      if (token.sub && !token.isDeleted && !token.needsConsent) {
         const now = Date.now();
         const lastCheck = token.deletedCheckedAt ?? 0;
         if (now - lastCheck > 60_000) {

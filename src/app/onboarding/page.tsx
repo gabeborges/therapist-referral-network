@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { OnboardingPageClient } from "@/features/onboarding/components/OnboardingPageClient";
 import { BrandHeader } from "@/features/layout/components/BrandHeader";
+import { OnboardingSignOutLink } from "@/features/onboarding/components/OnboardingSignOutLink";
 
 export const metadata = {
   title: "Onboarding — Therapist Referral Network",
@@ -40,6 +41,8 @@ export default async function OnboardingPage(): Promise<React.ReactElement> {
 
         {/* Wizard (progress bar + step title rendered by OnboardingWizard) */}
         <OnboardingPageClient />
+
+        <OnboardingSignOutLink />
       </div>
     </div>
   );

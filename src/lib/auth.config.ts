@@ -10,6 +10,7 @@ export const authConfig = {
   ],
   pages: {
     signIn: "/auth/signin",
+    signOut: "/auth/signout",
   },
   session: {
     strategy: "jwt",

@@ -47,6 +47,7 @@ export function NavbarMobile({ initials, imageUrl }: NavbarMobileProps): React.R
   const links = [
     { href: "/referrals", label: "Referrals" },
     { href: "/profile", label: "Profile" },
+    { href: "/account/contact", label: "Contact Us" },
   ];
 
   return (

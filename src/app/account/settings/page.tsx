@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { Navbar } from "@/features/layout/components/Navbar";
 import { Card } from "@/components/ui/Card";
+import { StyledLink } from "@/components/ui/StyledLink";
 import { ConsentSettingsForm } from "@/features/consent/components/ConsentSettingsForm";
 import { DeleteAccountForm } from "@/features/account/components/DeleteAccountForm";
 
@@ -33,6 +34,25 @@ export default async function AccountSettingsPage(): Promise<React.ReactElement>
             </p>
             <Card className="p-6">
               <ConsentSettingsForm />
+            </Card>
+          </section>
+
+          {/* Support */}
+          <section className="mt-10">
+            <p
+              className="text-[0.6875rem] font-semibold tracking-[0.06em] uppercase mb-4"
+              style={{ color: "var(--fg-3)" }}
+            >
+              Support
+            </p>
+            <Card className="p-6">
+              <h2 className="text-[1rem] font-semibold mb-1" style={{ color: "var(--fg)" }}>
+                Contact us
+              </h2>
+              <p className="text-[0.8125rem] mb-6" style={{ color: "var(--fg-3)" }}>
+                Questions, feedback, or need help? We&apos;d love to hear from you.
+              </p>
+              <StyledLink href="/account/contact">Send a message</StyledLink>
             </Card>
           </section>
 

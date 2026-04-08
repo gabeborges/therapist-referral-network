@@ -59,6 +59,13 @@ export function UserAvatar({ initials, imageUrl }: UserAvatarProps): React.React
           >
             Settings
           </Link>
+          <Link
+            href="/account/contact"
+            className="block w-full text-center px-4 py-2 text-[0.8125rem] font-medium transition-[color] duration-150 no-underline"
+            style={{ color: "var(--fg-2)" }}
+          >
+            Contact Us
+          </Link>
           <div className="my-1" style={{ borderTop: "1px solid var(--border-s)" }} />
           <SignOutButton />
         </div>

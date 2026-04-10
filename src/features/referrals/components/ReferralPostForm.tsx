@@ -229,23 +229,6 @@ export function ReferralPostForm(): React.ReactElement {
             layout="inline"
             error={errors.modalities?.message}
           />
-        </FormGroup>
-
-        <FormGroup title="Service preferences">
-          {/* Participants (dropdown) */}
-          <div>
-            <label htmlFor="participants" className={labelClass}>
-              Participants <span className="font-normal text-fg-4">(optional)</span>
-            </label>
-            <Select id="participants" {...register("participants")} defaultValue="">
-              <option value="">Select participant type...</option>
-              {PARTICIPANT_OPTIONS.map((p) => (
-                <option key={p} value={p}>
-                  {p}
-                </option>
-              ))}
-            </Select>
-          </div>
 
           {/* City + Province */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -275,29 +258,6 @@ export function ReferralPostForm(): React.ReactElement {
                 Quebec is not yet supported.
               </p>
             </div>
-          </div>
-
-          {/* Rate (radio buttons) */}
-          <RadioGroup
-            name="rate"
-            control={control}
-            label="Rate"
-            optional
-            options={RATE_OPTIONS.map((r) => ({ value: r, label: r }))}
-            layout="inline"
-            allowDeselect
-          />
-
-          {/* Insurance */}
-          <div>
-            <span className={labelClass}>
-              Insurance <span className="font-normal text-fg-4">(optional)</span>
-            </span>
-            <BooleanCheckbox
-              name="insuranceRequired"
-              control={control}
-              label="Insurance required"
-            />
           </div>
         </FormGroup>
 
@@ -334,6 +294,44 @@ export function ReferralPostForm(): React.ReactElement {
               id="additional-details-section"
               className="px-4 pb-4 space-y-5 border-t border-border"
             >
+              {/* Participants */}
+              <div className="pt-4">
+                <label htmlFor="participants" className={labelClass}>
+                  Participants <span className="font-normal text-fg-4">(optional)</span>
+                </label>
+                <Select id="participants" {...register("participants")} defaultValue="">
+                  <option value="">Select participant type...</option>
+                  {PARTICIPANT_OPTIONS.map((p) => (
+                    <option key={p} value={p}>
+                      {p}
+                    </option>
+                  ))}
+                </Select>
+              </div>
+
+              {/* Rate */}
+              <RadioGroup
+                name="rate"
+                control={control}
+                label="Rate"
+                optional
+                options={RATE_OPTIONS.map((r) => ({ value: r, label: r }))}
+                layout="inline"
+                allowDeselect
+              />
+
+              {/* Insurance */}
+              <div>
+                <span className={labelClass}>
+                  Insurance <span className="font-normal text-fg-4">(optional)</span>
+                </span>
+                <BooleanCheckbox
+                  name="insuranceRequired"
+                  control={control}
+                  label="Insurance required"
+                />
+              </div>
+
               {/* Therapist gender preference */}
               <div className="pt-4">
                 <label htmlFor="therapistGenderPref" className={labelClass}>

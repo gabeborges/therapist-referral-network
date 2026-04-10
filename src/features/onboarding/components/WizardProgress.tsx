@@ -4,7 +4,6 @@ const STEPS = [
   { label: "Country", number: 1 },
   { label: "Bio", number: 2 },
   { label: "Communities", number: 3 },
-  { label: "Services", number: 4 },
 ] as const;
 
 interface WizardProgressProps {

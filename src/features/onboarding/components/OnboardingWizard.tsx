@@ -10,17 +10,15 @@ import {
   onboardingSchema,
   stepBioSchema,
   stepCommunitiesSchema,
-  stepServicesSchema,
   type OnboardingFormData,
 } from "@/lib/validations/onboarding";
 import { WizardProgress } from "@/features/onboarding/components/WizardProgress";
 import { OnboardingStepCountry } from "@/features/onboarding/components/OnboardingStepCountry";
 import { OnboardingStepBio } from "@/features/onboarding/components/OnboardingStepBio";
 import { OnboardingStepCommunities } from "@/features/onboarding/components/OnboardingStepCommunities";
-import { OnboardingStepServices } from "@/features/onboarding/components/OnboardingStepServices";
 import { Button } from "@/components/ui/Button";
 
-const STEP_SCHEMAS = [null, stepBioSchema, stepCommunitiesSchema, stepServicesSchema];
+const STEP_SCHEMAS = [null, stepBioSchema, stepCommunitiesSchema];
 
 const STEP_INFO = [
   {
@@ -33,11 +31,7 @@ const STEP_INFO = [
   },
   {
     title: "Communities served",
-    description: "Who are your clients and what do you specialize in?",
-  },
-  {
-    title: "Your services",
-    description: "Set your rates and service options.",
+    description: "Who are your clients?",
   },
 ];
 
@@ -60,24 +54,11 @@ export function OnboardingWizard(): React.ReactElement {
       firstName: "",
       middleName: "",
       lastName: "",
-      pronouns: "",
-      displayName: "",
-      contactEmail: "",
       city: "",
       province: "",
-      specialties: [],
       participants: [],
       ages: [],
       modalities: [],
-      rateIndividual: undefined,
-      rateGroup: undefined,
-      rateFamily: undefined,
-      rateCouples: undefined,
-      acceptsInsurance: false,
-      reducedFees: false,
-      proBono: false,
-      freeConsultation: false,
-      acceptingClients: true,
     },
   });
 
@@ -120,7 +101,7 @@ export function OnboardingWizard(): React.ReactElement {
       }
     }
 
-    setCurrentStep((prev) => Math.min(prev + 1, 4));
+    setCurrentStep((prev) => Math.min(prev + 1, 3));
   }
 
   function handleBack(): void {
@@ -136,7 +117,8 @@ export function OnboardingWizard(): React.ReactElement {
 
     createProfile.mutate({
       ...data,
-      displayName: data.displayName || `${data.firstName} ${data.lastName}`.trim(),
+      displayName: `${data.firstName} ${data.lastName}`.trim(),
+      specialties: [] as string[],
       bio: "",
       primaryCredential: "",
       credentials: [],
@@ -155,6 +137,11 @@ export function OnboardingWizard(): React.ReactElement {
       therapistGender: "",
       insurers: [],
       paymentMethods: [],
+      acceptingClients: true,
+      acceptsInsurance: false,
+      reducedFees: false,
+      proBono: false,
+      freeConsultation: false,
     });
   }
 
@@ -205,7 +192,7 @@ export function OnboardingWizard(): React.ReactElement {
             <form
               onSubmit={(e) => {
                 e.preventDefault();
-                if (currentStep === 4) {
+                if (currentStep === 3) {
                   handleComplete();
                 } else {
                   handleNext();
@@ -215,7 +202,6 @@ export function OnboardingWizard(): React.ReactElement {
             >
               {currentStep === 2 && <OnboardingStepBio />}
               {currentStep === 3 && <OnboardingStepCommunities />}
-              {currentStep === 4 && <OnboardingStepServices />}
 
               {/* Navigation buttons */}
               <div className="mt-6 pt-4 border-t border-border-s flex justify-between">
@@ -223,7 +209,7 @@ export function OnboardingWizard(): React.ReactElement {
                   Back
                 </Button>
                 <Button type="submit" loading={createProfile.isPending}>
-                  {currentStep === 4
+                  {currentStep === 3
                     ? createProfile.isPending
                       ? "Creating profile..."
                       : "Complete"

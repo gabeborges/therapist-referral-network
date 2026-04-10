@@ -50,7 +50,7 @@ describe("therapistProfileSchema", () => {
     },
   );
 
-  it.each([["specialties"], ["modalities"], ["ages"], ["participants"]])(
+  it.each([["modalities"], ["ages"], ["participants"]])(
     "rejects empty array for required array field %s",
     (field) => {
       const result = therapistProfileSchema.safeParse(validProfile({ [field]: [] }));

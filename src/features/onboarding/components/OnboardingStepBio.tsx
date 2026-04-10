@@ -1,13 +1,9 @@
 "use client";
 
-import { useFormContext, Controller } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import type { OnboardingFormData } from "@/lib/validations/onboarding";
 import { ProfileImageUpload } from "@/features/profile/components/ProfileImageUpload";
-import {
-  PRONOUNS_OPTIONS,
-  PROVINCES,
-  UNSUPPORTED_PROVINCES,
-} from "@/lib/validations/therapist-profile";
+import { PROVINCES, UNSUPPORTED_PROVINCES } from "@/lib/validations/therapist-profile";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 
@@ -18,8 +14,6 @@ export function OnboardingStepBio(): React.ReactElement {
     setValue,
     formState: { errors },
   } = useFormContext<OnboardingFormData>();
-
-  const pronounsValue = watch("pronouns");
 
   return (
     <div className="space-y-5">
@@ -84,87 +78,6 @@ export function OnboardingStepBio(): React.ReactElement {
             </p>
           )}
         </div>
-      </div>
-
-      {/* Pronouns + Display name */}
-      <div className="grid grid-cols-2 gap-3">
-        <div>
-          <label
-            htmlFor="ob-pronouns"
-            className="block mb-1 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2"
-          >
-            Pronouns <span className="font-normal text-fg-4">(optional)</span>
-          </label>
-          <Select id="ob-pronouns" {...register("pronouns")}>
-            <option value="">Select pronouns...</option>
-            {PRONOUNS_OPTIONS.map((p) => (
-              <option key={p} value={p}>
-                {p}
-              </option>
-            ))}
-          </Select>
-          {pronounsValue === "other" && (
-            <Controller
-              name="pronouns"
-              render={({ field }) => (
-                <Input
-                  className="mt-2"
-                  placeholder="Enter your pronouns (max 20 characters)"
-                  maxLength={20}
-                  value={field.value === "other" ? "" : (field.value ?? "")}
-                  onChange={(e) => field.onChange(e.target.value || "other")}
-                />
-              )}
-            />
-          )}
-        </div>
-        <div>
-          <label
-            htmlFor="ob-displayName"
-            className="block mb-1 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2"
-          >
-            Display name <span className="font-normal text-fg-4">(optional)</span>
-          </label>
-          <Input
-            id="ob-displayName"
-            {...register("displayName")}
-            error={!!errors.displayName}
-            placeholder="How your name appears to colleagues"
-          />
-          {errors.displayName && (
-            <p className="mt-1 text-[0.75rem] text-err">{errors.displayName.message}</p>
-          )}
-          <p className="mt-1 text-[0.75rem] italic text-fg-3 tracking-[0.015em]">
-            This is how your name appears to other therapists.
-          </p>
-        </div>
-      </div>
-
-      {/* Contact email */}
-      <div>
-        <label
-          htmlFor="ob-contactEmail"
-          className="block mb-1 text-[0.8125rem] font-medium tracking-[0.01em] text-fg-2"
-        >
-          Contact email <span className="font-normal text-fg-4">(optional)</span>
-        </label>
-        <Input
-          id="ob-contactEmail"
-          type="email"
-          {...register("contactEmail")}
-          aria-invalid={!!errors.contactEmail}
-          aria-describedby={errors.contactEmail ? "ob-email-error" : undefined}
-          error={!!errors.contactEmail}
-          placeholder="you@practice.com"
-        />
-        {errors.contactEmail && (
-          <p id="ob-email-error" className="mt-1 text-[0.75rem] text-err">
-            {errors.contactEmail.message}
-          </p>
-        )}
-        <p className="mt-1 text-[0.75rem] italic text-fg-3 tracking-[0.015em]">
-          We will use this email to send you referrals.
-        </p>
       </div>
 
       {/* City + Province */}

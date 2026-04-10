@@ -102,7 +102,7 @@ export const therapistProfileSchema = z.object({
   country: z.literal("CA"),
 
   // Specialties & approaches (taxonomy IDs)
-  specialties: z.array(z.string()).min(1, "Select at least one specialty"),
+  specialties: z.array(z.string()),
   topSpecialties: z.array(z.string()).max(3, "Maximum 3 top specialties").optional(),
   therapeuticApproach: z.array(z.string()).optional(),
 

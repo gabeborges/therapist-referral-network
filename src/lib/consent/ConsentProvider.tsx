@@ -36,6 +36,11 @@ export function ConsentProvider({ children }: { children: React.ReactNode }): Re
 
   const updatePreferences = useCallback(
     (prefs: Omit<ConsentPreferences, "essential" | "updatedAt">) => {
+      if (typeof window.gtag === "function") {
+        window.gtag("consent", "update", {
+          analytics_storage: prefs.analytics ? "granted" : "denied",
+        });
+      }
       const updated = setConsentPreferences(prefs);
       setPreferences(updated);
       setConsented(true);

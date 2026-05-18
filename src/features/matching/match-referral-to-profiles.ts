@@ -175,22 +175,25 @@ export async function matchReferralToProfiles(
     where: { referralPostId: referralPost.id },
     select: { recipientId: true },
   });
-  const notifiedIds = new Set(alreadyNotified.map((n) => n.recipientId));
+  const notifiedIds = alreadyNotified.map((n) => n.recipientId);
 
-  // 2. Query eligible profiles
+  // 2. Query eligible profiles. Excluded IDs are pushed into the SQL
+  // WHERE so we don't pull rows just to drop them client-side. Hard
+  // filters on array fields (ages/modalities/participants) stay in JS
+  // because case-normalization differs between profile rows and
+  // referral inputs — pushing them via `hasSome` would require a
+  // separate data-normalization migration.
+  const excludedIds = [referralPost.authorId, ...notifiedIds];
   const eligibleProfiles = await prisma.therapistProfile.findMany({
     where: {
       acceptingClients: true,
       country: "CA",
-      id: { notIn: [referralPost.authorId] },
+      id: { notIn: excludedIds },
     },
   });
 
-  // 3. Filter out already-notified profiles
-  const notNotified = eligibleProfiles.filter((profile) => !notifiedIds.has(profile.id));
-
-  // 4. Hard-filter: exclude profiles that cannot serve the referral's requirements
-  const hardFiltered = notNotified.filter((profile) => {
+  // 3. Hard-filter: exclude profiles that cannot serve the referral's requirements
+  const hardFiltered = eligibleProfiles.filter((profile) => {
     if (referralPost.ageGroup.length > 0) {
       const profileAges = new Set(profile.ages.map((a) => a.toLowerCase()));
       if (!referralPost.ageGroup.some((a) => profileAges.has(a.toLowerCase()))) return false;

@@ -24,15 +24,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           // Returning user
           token.sub = existingUser.id;
           token.needsConsent = false;
-          // Touch lastActiveAt (fire-and-forget)
-          prisma.therapistProfile
-            .update({
-              where: { userId: existingUser.id },
-              data: { lastActiveAt: new Date() },
-            })
-            .catch(() => {
-              // Profile may not exist yet (consented but not onboarded)
-            });
+          // Touch lastActiveAt. Awaited so the write completes before
+          // the lambda returns; updateMany with where ensures no throw
+          // when the profile row doesn't exist yet (consented but not
+          // onboarded).
+          await prisma.therapistProfile.updateMany({
+            where: { userId: existingUser.id },
+            data: { lastActiveAt: new Date() },
+          });
         } else {
           // New user — needs consent before account creation
           token.needsConsent = true;
@@ -68,12 +67,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         }
       }
 
-      // Check soft-delete status (throttled: every 60s)
-      // Skip for new users who haven't completed consent yet (token.sub is Google's ID, not a DB user ID)
+      // Check soft-delete status (throttled: every 10s).
+      // Tightened from 60s so a freshly soft-deleted user has at most
+      // a 10-second window with a valid JWT against protected routes.
+      // Skip for new users who haven't completed consent yet
+      // (token.sub is Google's ID, not a DB user ID).
       if (token.sub && !token.isDeleted && !token.needsConsent) {
         const now = Date.now();
         const lastCheck = token.deletedCheckedAt ?? 0;
-        if (now - lastCheck > 60_000) {
+        if (now - lastCheck > 10_000) {
           const user = await prisma.user.findUnique({
             where: { id: token.sub },
             select: { deletedAt: true },

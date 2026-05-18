@@ -32,15 +32,14 @@ export const protectedProcedure = t.procedure.use(async ({ ctx, next }) => {
     throw new TRPCError({ code: "UNAUTHORIZED", message: "Account has been deleted" });
   }
 
-  // Touch lastActiveAt for matching decay scoring (fire-and-forget)
-  ctx.prisma.therapistProfile
-    .update({
-      where: { userId: ctx.session.user.id },
-      data: { lastActiveAt: new Date() },
-    })
-    .catch(() => {
-      // Profile may not exist yet (onboarding) — safe to ignore
-    });
+  // Touch lastActiveAt for matching decay scoring. Awaited so the
+  // write completes before the lambda returns. updateMany returns
+  // count=0 (no throw) when the profile row doesn't exist yet —
+  // safe during onboarding.
+  await ctx.prisma.therapistProfile.updateMany({
+    where: { userId: ctx.session.user.id },
+    data: { lastActiveAt: new Date() },
+  });
 
   return next({
     ctx: {

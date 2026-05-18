@@ -6,9 +6,10 @@ import {
   FulfillmentCheckEmail,
   fulfillmentCheckSubject,
 } from "@/lib/email/templates/fulfillment-check";
+import { getAppUrl, getResendFromEmail } from "@/lib/env";
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
-const FROM_EMAIL = process.env.RESEND_FROM_EMAIL ?? "noreply@example.com";
+const APP_URL = getAppUrl();
+const FROM_EMAIL = getResendFromEmail();
 
 /**
  * Creates a FulfillmentCheck record and sends a fulfillment check email
@@ -33,8 +34,10 @@ export async function sendFulfillmentCheck(
     },
   });
 
-  const fulfillYesUrl = `${APP_URL}/referrals/fulfill/${fulfillmentCheck.token}?fulfilled=true`;
-  const fulfillNoUrl = `${APP_URL}/referrals/fulfill/${fulfillmentCheck.token}?fulfilled=false`;
+  // Single landing URL — recipient confirms via form POST on the page,
+  // not a GET, so email prefetchers / link scanners cannot record a
+  // response by visiting the link.
+  const fulfillUrl = `${APP_URL}/referrals/fulfill/${fulfillmentCheck.token}`;
 
   const referrerName = author.user.name ?? `${author.firstName} ${author.lastName}`;
 
@@ -48,8 +51,7 @@ export async function sendFulfillmentCheck(
       presentingIssue: referralPost.presentingIssue,
       city: referralPost.city,
       province: referralPost.province ?? "Unknown",
-      fulfillYesUrl,
-      fulfillNoUrl,
+      fulfillUrl,
     }),
   });
 

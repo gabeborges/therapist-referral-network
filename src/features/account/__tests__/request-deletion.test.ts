@@ -2,9 +2,12 @@ import { describe, expect, it, vi, beforeEach } from "vitest";
 import type { PrismaClient } from "@/generated/prisma/client";
 import { requestDeletion } from "@/features/account/request-deletion";
 
-function createMockTx(hasProfile = true) {
+function createMockTx(hasProfile = true, alreadyDeleted = false) {
   return {
     user: {
+      findUnique: vi
+        .fn()
+        .mockResolvedValue(alreadyDeleted ? { deletedAt: new Date() } : { deletedAt: null }),
       update: vi.fn().mockResolvedValue({}),
     },
     therapistProfile: {

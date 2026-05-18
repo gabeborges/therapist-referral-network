@@ -59,7 +59,57 @@ export async function acceptTerms(): Promise<{ success: boolean; error?: string 
           },
         });
       });
+      return { success: true };
     }
+
+    // Active user with the same email already exists. The session JWT
+    // callback only clears `needsConsent` once an Account row matches
+    // the inbound provider tuple. If that Account is missing, returning
+    // `{ success: true }` would silently send the user back into the
+    // consent screen → infinite loop. Ensure the Account exists.
+    const matchingAccount = await prisma.account.findUnique({
+      where: {
+        provider_providerAccountId: {
+          provider: pendingAccount.provider,
+          providerAccountId: pendingAccount.providerAccountId,
+        },
+      },
+      select: { userId: true },
+    });
+
+    if (matchingAccount === null) {
+      // Try to link the inbound provider to the existing user. If a
+      // different provider already owns the email, fail loudly so the
+      // user is told to sign in with their original provider rather
+      // than getting stuck in a redirect loop.
+      const otherProviderAccount = await prisma.account.findFirst({
+        where: { userId: existing.id },
+        select: { provider: true },
+      });
+
+      if (otherProviderAccount && otherProviderAccount.provider !== pendingAccount.provider) {
+        return {
+          success: false,
+          error: `This email is already registered via ${otherProviderAccount.provider}. Please sign in with that provider.`,
+        };
+      }
+
+      await prisma.account.create({
+        data: {
+          userId: existing.id,
+          type: "oidc",
+          provider: pendingAccount.provider,
+          providerAccountId: pendingAccount.providerAccountId,
+        },
+      });
+    } else if (matchingAccount.userId !== existing.id) {
+      // Shouldn't happen given the email lookup, but guard anyway.
+      return {
+        success: false,
+        error: "This account is linked to a different user.",
+      };
+    }
+
     return { success: true };
   }
 

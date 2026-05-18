@@ -55,11 +55,12 @@ export const referralRouter = router({
       };
     }
 
-    // Unauthenticated: return limited teaser data only
+    // Unauthenticated: return minimal, non-PHI fields only.
+    // presentingIssue, city, ageGroup, details are PHI under
+    // .claude/rules/health-data-compliance.md and must NOT be exposed
+    // to anonymous viewers.
     return {
       id: referralPost.id,
-      presentingIssue: referralPost.presentingIssue,
-      city: referralPost.city,
       province: referralPost.province,
       modalities: referralPost.modalities,
       status: referralPost.status,

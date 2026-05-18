@@ -19,8 +19,7 @@ interface FulfillmentCheckEmailProps {
   presentingIssue: string;
   city: string | null;
   province: string;
-  fulfillYesUrl: string;
-  fulfillNoUrl: string;
+  fulfillUrl: string;
 }
 
 export function fulfillmentCheckSubject(): string {
@@ -33,8 +32,7 @@ export function FulfillmentCheckEmail({
   presentingIssue,
   city,
   province,
-  fulfillYesUrl,
-  fulfillNoUrl,
+  fulfillUrl,
 }: FulfillmentCheckEmailProps): React.ReactElement {
   const location = city ? `${city}, ${province}` : province;
 
@@ -82,14 +80,8 @@ export function FulfillmentCheckEmail({
             </Text>
 
             <Section style={buttonContainerStyle}>
-              <Button href={fulfillYesUrl} style={yesButtonStyle}>
-                Yes, it was filled
-              </Button>
-            </Section>
-
-            <Section style={buttonContainerStyle}>
-              <Button href={fulfillNoUrl} style={noButtonStyle}>
-                No, still looking
+              <Button href={fulfillUrl} style={yesButtonStyle}>
+                Respond to fulfillment check
               </Button>
             </Section>
           </Section>
@@ -207,19 +199,6 @@ const yesButtonStyle: React.CSSProperties = {
   width: "220px",
 };
 
-const noButtonStyle: React.CSSProperties = {
-  backgroundColor: "#FFFFFF",
-  color: "#2A7C7C",
-  fontSize: "16px",
-  fontWeight: 600,
-  padding: "12px 32px",
-  borderRadius: "6px",
-  textDecoration: "none",
-  display: "inline-block",
-  border: "2px solid #2A7C7C",
-  width: "220px",
-};
-
 const footerStyle: React.CSSProperties = {
   backgroundColor: "#F5F5F5",
   padding: "20px 32px",
@@ -243,6 +222,5 @@ FulfillmentCheckEmail.PreviewProps = {
   presentingIssue: "Anxiety & PTSD",
   city: "Toronto",
   province: "ON",
-  fulfillYesUrl: "https://therapistreferralnetwork.com/referrals/fulfill/tok123?fulfilled=true",
-  fulfillNoUrl: "https://therapistreferralnetwork.com/referrals/fulfill/tok123?fulfilled=false",
+  fulfillUrl: "https://therapistreferralnetwork.com/referrals/fulfill/tok123",
 } satisfies FulfillmentCheckEmailProps;

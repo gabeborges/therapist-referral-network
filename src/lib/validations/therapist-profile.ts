@@ -102,26 +102,28 @@ export const therapistProfileSchema = z.object({
   country: z.literal("CA"),
 
   // Specialties & approaches (taxonomy IDs)
-  specialties: z.array(z.string()),
+  // Caps are upper bounds against unbounded array attacks — actual UI
+  // limits are lower (typically 3-10 per field).
+  specialties: z.array(z.string()).max(50, "Too many specialties"),
   topSpecialties: z.array(z.string()).max(3, "Maximum 3 top specialties").optional(),
-  therapeuticApproach: z.array(z.string()).optional(),
+  therapeuticApproach: z.array(z.string()).max(50, "Too many approaches").optional(),
 
   // Session details
-  modalities: z.array(z.enum(MODALITIES)).min(1, "Select at least one modality"),
-  languages: z.array(z.string()).optional(),
-  ages: z.array(z.string()).min(1, "Select at least one age group"),
+  modalities: z.array(z.enum(MODALITIES)).min(1, "Select at least one modality").max(5),
+  languages: z.array(z.string()).max(20, "Too many languages").optional(),
+  ages: z.array(z.string()).min(1, "Select at least one age group").max(10),
 
   // Communities served
   consentCommunitiesServed: z.boolean(),
-  participants: z.array(z.string()).min(1, "Select at least one participant type"),
-  groups: z.array(z.string()).optional(),
-  faithOrientation: z.array(z.string()).default([]),
-  ethnicity: z.array(z.string()).optional(),
-  therapyStyle: z.array(z.string()).optional(),
+  participants: z.array(z.string()).min(1, "Select at least one participant type").max(20),
+  groups: z.array(z.string()).max(50, "Too many groups").optional(),
+  faithOrientation: z.array(z.string()).max(20).default([]),
+  ethnicity: z.array(z.string()).max(20).optional(),
+  therapyStyle: z.array(z.string()).max(20).optional(),
 
   // Insurance & pricing
-  insurers: z.array(z.string()).optional(),
-  paymentMethods: z.array(z.string()).optional(),
+  insurers: z.array(z.string()).max(50, "Too many insurers").optional(),
+  paymentMethods: z.array(z.string()).max(20).optional(),
   rateIndividual: z.number().positive().optional(),
   rateGroup: z.number().positive().optional(),
   rateFamily: z.number().positive().optional(),

@@ -14,6 +14,18 @@ export async function requestDeletion(prisma: PrismaClient, userId: string): Pro
   const now = new Date();
 
   await prisma.$transaction(async (tx) => {
+    // Idempotent: if the user is already soft-deleted, bail out.
+    // Without this guard, a double-submit (or Server Action replay)
+    // would reset deletedAt and append a duplicate ConsentLog row,
+    // shifting the 25-month retention cutoff.
+    const current = await tx.user.findUnique({
+      where: { id: userId },
+      select: { deletedAt: true },
+    });
+    if (!current || current.deletedAt !== null) {
+      return;
+    }
+
     // 1. Soft-delete the user
     await tx.user.update({
       where: { id: userId },

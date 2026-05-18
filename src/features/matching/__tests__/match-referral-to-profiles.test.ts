@@ -468,9 +468,16 @@ function createMockPrisma(
   profiles: TherapistProfileModel[],
   notifications: Array<{ recipientId: string }> = [],
 ) {
+  // The mock honors the `id.notIn` filter the production code now uses
+  // (formerly JS-side, now pushed into SQL).
+  const findManyMock = vi.fn(async (args?: { where?: { id?: { notIn?: string[] } } }) => {
+    const excluded = new Set(args?.where?.id?.notIn ?? []);
+    return profiles.filter((p) => !excluded.has(p.id));
+  });
+
   return {
     therapistProfile: {
-      findMany: vi.fn().mockResolvedValue(profiles),
+      findMany: findManyMock,
     },
     referralNotification: {
       findMany: vi.fn().mockResolvedValue(notifications),

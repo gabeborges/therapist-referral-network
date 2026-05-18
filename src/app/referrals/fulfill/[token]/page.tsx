@@ -1,13 +1,21 @@
 import { prisma } from "@/lib/prisma";
 import { MatchRingLogo } from "@/features/auth/components/match-ring-logo";
+import { submitFulfillmentResponse } from "./actions";
 
 export const metadata = {
   title: "Referral Fulfillment — Therapist Referral Network",
+  robots: { index: false, follow: false },
 };
+
+// Page is GET-safe (no DB mutations). The mutation lives behind the
+// `submitFulfillmentResponse` Server Action so that email prefetchers
+// and link scanners cannot record a response by GET-fetching this URL.
+// Always served fresh — never cached.
+export const dynamic = "force-dynamic";
 
 type FulfillmentPageProps = {
   params: Promise<{ token: string }>;
-  searchParams: Promise<{ fulfilled?: string }>;
+  searchParams: Promise<{ confirmed?: string }>;
 };
 
 export default async function FulfillmentPage({
@@ -15,19 +23,17 @@ export default async function FulfillmentPage({
   searchParams,
 }: FulfillmentPageProps): Promise<React.ReactElement> {
   const { token } = await params;
-  const { fulfilled: fulfilledParam } = await searchParams;
+  const { confirmed } = await searchParams;
 
-  // Look up the fulfillment check by its secure token
   const fulfillmentCheck = await prisma.fulfillmentCheck.findUnique({
     where: { token },
-    include: {
-      referralPost: {
-        select: { id: true, status: true, presentingIssue: true },
-      },
+    select: {
+      id: true,
+      respondedAt: true,
+      fulfilled: true,
     },
   });
 
-  // Invalid or expired token
   if (!fulfillmentCheck) {
     return (
       <FulfillmentLayout>
@@ -42,64 +48,38 @@ export default async function FulfillmentPage({
     );
   }
 
-  // Already responded
-  if (fulfillmentCheck.respondedAt !== null && fulfilledParam === undefined) {
+  // Already responded — show the recorded status and stop here.
+  if (fulfillmentCheck.respondedAt !== null) {
     const previousResponse = fulfillmentCheck.fulfilled ? "fulfilled" : "still looking";
+    const isJustSubmitted = confirmed !== undefined;
 
     return (
       <FulfillmentLayout>
-        <StatusIcon variant="info" />
+        <StatusIcon variant={fulfillmentCheck.fulfilled ? "success" : "info"} />
         <h1 className="text-[1.25rem] font-semibold tracking-[-0.01em] text-fg mt-6 mb-2">
-          Already Responded
+          {isJustSubmitted ? "Thank You!" : "Already Responded"}
         </h1>
         <p className="text-[0.875rem] leading-[1.5] text-fg-2 max-w-[400px]">
-          You&apos;ve already responded to this fulfillment check. Your referral was marked as{" "}
-          <strong>{previousResponse}</strong>.
+          {isJustSubmitted ? (
+            <>
+              Your referral has been marked as <strong>{previousResponse}</strong>.
+              {!fulfillmentCheck.fulfilled && (
+                <span> We&apos;ll send you additional therapist matches shortly.</span>
+              )}
+            </>
+          ) : (
+            <>
+              You&apos;ve already responded to this fulfillment check. Your referral was marked as{" "}
+              <strong>{previousResponse}</strong>.
+            </>
+          )}
         </p>
       </FulfillmentLayout>
     );
   }
 
-  // Process the response if a fulfilled parameter was provided
-  if (fulfilledParam !== undefined) {
-    const isFulfilled = fulfilledParam === "true";
-
-    // Record the response (idempotent: skip if already responded)
-    if (fulfillmentCheck.respondedAt === null) {
-      await prisma.fulfillmentCheck.update({
-        where: { id: fulfillmentCheck.id },
-        data: {
-          fulfilled: isFulfilled,
-          respondedAt: new Date(),
-        },
-      });
-
-      // If fulfilled, also mark the referral post as FULFILLED
-      if (isFulfilled) {
-        await prisma.referralPost.update({
-          where: { id: fulfillmentCheck.referralPostId },
-          data: { status: "FULFILLED" },
-        });
-      }
-    }
-
-    const statusLabel = isFulfilled ? "fulfilled" : "still looking";
-
-    return (
-      <FulfillmentLayout>
-        <StatusIcon variant={isFulfilled ? "success" : "info"} />
-        <h1 className="text-[1.25rem] font-semibold tracking-[-0.01em] text-fg mt-6 mb-2">
-          Thank You!
-        </h1>
-        <p className="text-[0.875rem] leading-[1.5] text-fg-2 max-w-[400px]">
-          Your referral has been marked as <strong>{statusLabel}</strong>.
-          {!isFulfilled && <span> We&apos;ll send you additional therapist matches shortly.</span>}
-        </p>
-      </FulfillmentLayout>
-    );
-  }
-
-  // No fulfilled parameter — show the choice prompt
+  // No response yet — show the choice form. Submitting POSTs to the
+  // Server Action, so prefetchers visiting this URL only see the form.
   return (
     <FulfillmentLayout>
       <h1 className="text-[1.25rem] font-semibold tracking-[-0.01em] text-fg mt-6 mb-2">
@@ -109,18 +89,26 @@ export default async function FulfillmentPage({
         Has your client found a therapist from the referrals we sent?
       </p>
       <div className="flex flex-col sm:flex-row gap-3 w-full max-w-[320px]">
-        <a
-          href={`/referrals/fulfill/${token}?fulfilled=true`}
-          className="flex-1 inline-flex items-center justify-center h-11 px-6 bg-brand text-brand-on border-none rounded-sm text-[0.875rem] font-semibold tracking-[0.01em] no-underline transition-[background] duration-150 ease-out hover:bg-brand-h focus-visible:outline-2 focus-visible:outline-border-f focus-visible:outline-offset-2"
-        >
-          Yes, Fulfilled
-        </a>
-        <a
-          href={`/referrals/fulfill/${token}?fulfilled=false`}
-          className="flex-1 inline-flex items-center justify-center h-11 px-6 bg-s2 text-fg border border-border rounded-sm text-[0.875rem] font-semibold tracking-[0.01em] no-underline transition-[background] duration-150 ease-out hover:bg-s1 focus-visible:outline-2 focus-visible:outline-border-f focus-visible:outline-offset-2"
-        >
-          No, Still Looking
-        </a>
+        <form action={submitFulfillmentResponse} className="flex-1">
+          <input type="hidden" name="token" value={token} />
+          <input type="hidden" name="fulfilled" value="true" />
+          <button
+            type="submit"
+            className="w-full inline-flex items-center justify-center h-11 px-6 bg-brand text-brand-on border-none rounded-sm text-[0.875rem] font-semibold tracking-[0.01em] cursor-pointer transition-[background] duration-150 ease-out hover:bg-brand-h focus-visible:outline-2 focus-visible:outline-border-f focus-visible:outline-offset-2"
+          >
+            Yes, Fulfilled
+          </button>
+        </form>
+        <form action={submitFulfillmentResponse} className="flex-1">
+          <input type="hidden" name="token" value={token} />
+          <input type="hidden" name="fulfilled" value="false" />
+          <button
+            type="submit"
+            className="w-full inline-flex items-center justify-center h-11 px-6 bg-s2 text-fg border border-border rounded-sm text-[0.875rem] font-semibold tracking-[0.01em] cursor-pointer transition-[background] duration-150 ease-out hover:bg-s1 focus-visible:outline-2 focus-visible:outline-border-f focus-visible:outline-offset-2"
+          >
+            No, Still Looking
+          </button>
+        </form>
       </div>
     </FulfillmentLayout>
   );

@@ -6,9 +6,10 @@ import {
   ReferralNotificationEmail,
   referralNotificationSubject,
 } from "@/lib/email/templates/referral-notification";
+import { getAppUrl, getResendFromEmail } from "@/lib/env";
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
-const FROM_EMAIL = process.env.RESEND_FROM_EMAIL ?? "noreply@example.com";
+const APP_URL = getAppUrl();
+const FROM_EMAIL = getResendFromEmail();
 
 /**
  * Sends referral notification emails to a batch of matched therapist profiles.

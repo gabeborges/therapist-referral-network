@@ -13,15 +13,17 @@ export const waitlistRouter = router({
           country: input.country,
         },
       });
-      // Sync to MailerLite (fire-and-forget, never blocks response)
-      subscribeToWaitlist(input.email, input.country);
+      // Awaited so the outbound MailerLite call completes before the
+      // serverless function returns (Vercel may otherwise terminate
+      // the lambda and drop the request mid-flight).
+      await subscribeToWaitlist(input.email, input.country);
 
       return { success: true, id: entry.id };
     } catch (error) {
       // Handle duplicate email gracefully
       if (error instanceof PrismaClientKnownRequestError && error.code === "P2002") {
         // Already on waitlist — still sync to MailerLite (idempotent)
-        subscribeToWaitlist(input.email, input.country);
+        await subscribeToWaitlist(input.email, input.country);
         return { success: true, id: null };
       }
       throw new TRPCError({

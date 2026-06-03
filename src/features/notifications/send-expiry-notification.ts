@@ -1,11 +1,11 @@
 import type { PrismaClient } from "@/generated/prisma/client";
 import type { ReferralPostModel } from "@/generated/prisma/models/ReferralPost";
-import { resend } from "@/lib/email/resend";
+import { sendEmailWithRetry } from "@/lib/email/send-with-retry";
 import {
   ReferralExpiredEmail,
   referralExpiredSubject,
 } from "@/lib/email/templates/referral-expired";
-import { getAppUrl, getResendFromEmail } from "@/lib/env";
+import { getAppUrl, getResendFromEmail, getSupportEmail } from "@/lib/env";
 
 const APP_URL = getAppUrl();
 const FROM_EMAIL = getResendFromEmail();
@@ -29,8 +29,9 @@ export async function sendExpiryNotification(
 
   const referrerName = author.user.name ?? `${author.firstName} ${author.lastName}`;
 
-  const { error } = await resend.emails.send({
+  const { error } = await sendEmailWithRetry({
     from: FROM_EMAIL,
+    replyTo: getSupportEmail(),
     to: author.user.email,
     subject: referralExpiredSubject(),
     react: ReferralExpiredEmail({

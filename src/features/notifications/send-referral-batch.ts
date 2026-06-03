@@ -1,12 +1,12 @@
 import type { PrismaClient } from "@/generated/prisma/client";
 import type { ReferralPostModel } from "@/generated/prisma/models/ReferralPost";
 import type { ProfileMatch } from "@/features/matching/match-referral-to-profiles";
-import { resend } from "@/lib/email/resend";
+import { sendEmailWithRetry } from "@/lib/email/send-with-retry";
 import {
   ReferralNotificationEmail,
   referralNotificationSubject,
 } from "@/lib/email/templates/referral-notification";
-import { getAppUrl, getResendFromEmail } from "@/lib/env";
+import { getAppUrl, getResendFromEmail, getSupportEmail } from "@/lib/env";
 
 const APP_URL = getAppUrl();
 const FROM_EMAIL = getResendFromEmail();
@@ -54,8 +54,9 @@ export async function sendReferralBatch(
     const recipient = recipientMap.get(match.profileId);
     if (!recipient) continue;
 
-    const { data, error } = await resend.emails.send({
+    const { data, error } = await sendEmailWithRetry({
       from: FROM_EMAIL,
+      replyTo: getSupportEmail(),
       to: recipient.user.email,
       subject,
       react: ReferralNotificationEmail({
@@ -96,14 +97,19 @@ export async function sendReferralBatch(
     sentCount++;
   }
 
-  // Update the referral post batch tracking
-  await prisma.referralPost.update({
-    where: { id: referralPost.id },
-    data: {
-      currentBatch: batch,
-      lastDrippedAt: new Date(),
-    },
-  });
+  // Only advance batch tracking when at least one email actually went out.
+  // A batch where every send failed (e.g. all rate-limited with retries
+  // exhausted) must NOT advance — otherwise those recipients are skipped
+  // forever and the referral marches toward EXPIRED having notified no one.
+  if (sentCount > 0) {
+    await prisma.referralPost.update({
+      where: { id: referralPost.id },
+      data: {
+        currentBatch: batch,
+        lastDrippedAt: new Date(),
+      },
+    });
+  }
 
   return sentCount;
 }

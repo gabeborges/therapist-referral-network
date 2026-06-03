@@ -1,12 +1,12 @@
 import type { PrismaClient } from "@/generated/prisma/client";
 import type { ReferralPostModel } from "@/generated/prisma/models/ReferralPost";
 import type { FulfillmentCheckModel } from "@/generated/prisma/models/FulfillmentCheck";
-import { resend } from "@/lib/email/resend";
+import { sendEmailWithRetry } from "@/lib/email/send-with-retry";
 import {
   FulfillmentCheckEmail,
   fulfillmentCheckSubject,
 } from "@/lib/email/templates/fulfillment-check";
-import { getAppUrl, getResendFromEmail } from "@/lib/env";
+import { getAppUrl, getResendFromEmail, getSupportEmail } from "@/lib/env";
 
 const APP_URL = getAppUrl();
 const FROM_EMAIL = getResendFromEmail();
@@ -41,8 +41,9 @@ export async function sendFulfillmentCheck(
 
   const referrerName = author.user.name ?? `${author.firstName} ${author.lastName}`;
 
-  const { error } = await resend.emails.send({
+  const { error } = await sendEmailWithRetry({
     from: FROM_EMAIL,
+    replyTo: getSupportEmail(),
     to: author.user.email,
     subject: fulfillmentCheckSubject(),
     react: FulfillmentCheckEmail({

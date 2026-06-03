@@ -36,6 +36,16 @@ export function getResendFromEmail(): string {
   return process.env.RESEND_FROM_EMAIL ?? "noreply@example.com";
 }
 
+/**
+ * Returns the support inbox used as the `replyTo` on outbound notifications,
+ * or `undefined` when unset (Resend simply omits the header). Read at call
+ * time so deployments can change it without a rebuild.
+ */
+export function getSupportEmail(): string | undefined {
+  const value = process.env.SUPPORT_EMAIL;
+  return value && value.length > 0 ? value : undefined;
+}
+
 export function getCronSecret(): string {
   return requireEnv("CRON_SECRET");
 }
